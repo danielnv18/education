@@ -41,3 +41,27 @@ test('users can logout', function () {
     $this->assertGuest();
     $response->assertRedirect('/');
 });
+
+test('users are locked out after too many login attempts', function () {
+    $user = User::factory()->create();
+
+    // Attempt to login with wrong password multiple times
+    for ($i = 0; $i < 5; $i++) {
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'wrong-password',
+        ]);
+
+        $response->assertSessionHasErrors('email');
+        $this->assertGuest();
+    }
+
+    // The 6th attempt should trigger the lockout
+    $response = $this->post('/login', [
+        'email' => $user->email,
+        'password' => 'wrong-password',
+    ]);
+
+    $response->assertSessionHasErrors('email');
+    $this->assertStringContainsString('Too many login attempts', $response->getSession()->get('errors')->getBag('default')->first('email'));
+});

@@ -40,3 +40,14 @@ test('correct password must be provided to update password', function () {
         ->assertSessionHasErrors('current_password')
         ->assertRedirect('/settings/password');
 });
+
+test('password edit page can be rendered', function () {
+    $user = User::factory()->create();
+
+    $response = $this
+        ->actingAs($user)
+        ->get('/settings/password');
+
+    $response->assertStatus(200);
+    $response->assertInertia(fn ($page) => $page->component('settings/password'));
+});
