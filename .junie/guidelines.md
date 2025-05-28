@@ -150,6 +150,11 @@ Fix code style issues:
 composer lint
 ```
 
+When adding new code, run the following command to ensure it adheres to the code style:
+```bash
+composer lint
+```
+
 ### JavaScript/TypeScript Code Style
 - Uses Prettier for code formatting
 - ESLint for linting
