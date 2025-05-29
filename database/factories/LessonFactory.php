@@ -9,7 +9,7 @@ use App\Models\Module;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Lesson>
+ * @extends Factory<\App\Models\Lesson>
  */
 final class LessonFactory extends Factory
 {
@@ -33,7 +33,7 @@ final class LessonFactory extends Factory
     /**
      * Indicate that the lesson is published.
      */
-    public function published(): LessonFactory
+    public function published(): self
     {
         return $this->state(fn (array $attributes): array => [
             'is_published' => true,
@@ -43,7 +43,7 @@ final class LessonFactory extends Factory
     /**
      * Indicate that the lesson is unpublished.
      */
-    public function unpublished(): LessonFactory
+    public function unpublished(): self
     {
         return $this->state(fn (array $attributes): array => [
             'is_published' => false,
@@ -53,7 +53,7 @@ final class LessonFactory extends Factory
     /**
      * Set a specific order for the lesson.
      */
-    public function withOrder(int $order): LessonFactory
+    public function withOrder(int $order): self
     {
         return $this->state(fn (array $attributes): array => [
             'order' => $order,
@@ -63,7 +63,7 @@ final class LessonFactory extends Factory
     /**
      * Set the lesson type to text.
      */
-    public function asText(): LessonFactory
+    public function asText(): self
     {
         return $this->state(fn (array $attributes): array => [
             'type' => LessonType::TEXT,
@@ -73,7 +73,7 @@ final class LessonFactory extends Factory
     /**
      * Set the lesson type to video.
      */
-    public function asVideo(): LessonFactory
+    public function asVideo(): self
     {
         return $this->state(fn (array $attributes): array => [
             'type' => LessonType::VIDEO,
@@ -83,7 +83,7 @@ final class LessonFactory extends Factory
     /**
      * Set the lesson type to document.
      */
-    public function asDocument(): LessonFactory
+    public function asDocument(): self
     {
         return $this->state(fn (array $attributes): array => [
             'type' => LessonType::DOCUMENT,
@@ -93,7 +93,7 @@ final class LessonFactory extends Factory
     /**
      * Set the lesson type to interactive.
      */
-    public function asInteractive(): LessonFactory
+    public function asInteractive(): self
     {
         return $this->state(fn (array $attributes): array => [
             'type' => LessonType::INTERACTIVE,

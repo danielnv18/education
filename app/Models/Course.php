@@ -42,7 +42,7 @@ final class Course extends Model
     }
 
     /**
-     * @return BelongsToMany<User>
+     * @return BelongsToMany<User, $this>
      */
     public function students(): BelongsToMany
     {

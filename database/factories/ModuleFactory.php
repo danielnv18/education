@@ -8,7 +8,7 @@ use App\Models\Course;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Module>
+ * @extends Factory<\App\Models\Module>
  */
 final class ModuleFactory extends Factory
 {
@@ -31,7 +31,7 @@ final class ModuleFactory extends Factory
     /**
      * Indicate that the module is published.
      */
-    public function published(): ModuleFactory
+    public function published(): self
     {
         return $this->state(fn (array $attributes): array => [
             'is_published' => true,
@@ -41,7 +41,7 @@ final class ModuleFactory extends Factory
     /**
      * Indicate that the module is unpublished.
      */
-    public function unpublished(): ModuleFactory
+    public function unpublished(): self
     {
         return $this->state(fn (array $attributes): array => [
             'is_published' => false,
@@ -51,7 +51,7 @@ final class ModuleFactory extends Factory
     /**
      * Set a specific order for the module.
      */
-    public function withOrder(int $order): ModuleFactory
+    public function withOrder(int $order): self
     {
         return $this->state(fn (array $attributes): array => [
             'order' => $order,

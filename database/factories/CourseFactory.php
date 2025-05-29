@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace Database\Factories;
 
 use App\Enums\CourseStatus;
+use App\Models\Course;
 use App\Models\File;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Course>
+ * @extends Factory<Course>
  */
 final class CourseFactory extends Factory
 {
@@ -26,17 +27,33 @@ final class CourseFactory extends Factory
             'description' => fake()->paragraph(),
             'status' => fake()->randomElement(CourseStatus::cases()),
             'is_published' => fake()->boolean(),
-            'teacher_id' => User::factory(),
-            'thumbnail_id' => File::factory(),
+            'teacher_id' => User::factory()->create(),
+            'thumbnail_id' => null,
             'start_date' => fake()->dateTimeBetween('now', '+1 month'),
             'end_date' => fake()->dateTimeBetween('+2 months', '+6 months'),
         ];
     }
 
     /**
+     * Configure the model factory.
+     */
+    public function configure(): self
+    {
+        return $this->afterCreating(function (Course $course): void {
+            // Create and associate a thumbnail file
+            $thumbnail = File::factory()->create([
+                'fileable_id' => $course->id,
+                'fileable_type' => Course::class,
+            ]);
+
+            $course->update(['thumbnail_id' => $thumbnail->id]);
+        });
+    }
+
+    /**
      * Indicate that the course is published.
      */
-    public function published(): CourseFactory
+    public function published(): self
     {
         return $this->state(fn (array $attributes): array => [
             'is_published' => true,
@@ -46,7 +63,7 @@ final class CourseFactory extends Factory
     /**
      * Indicate that the course is a draft.
      */
-    public function draft(): CourseFactory
+    public function draft(): self
     {
         return $this->state(fn (array $attributes): array => [
             'is_published' => false,
@@ -57,7 +74,7 @@ final class CourseFactory extends Factory
     /**
      * Indicate that the course is active.
      */
-    public function active(): CourseFactory
+    public function active(): self
     {
         return $this->state(fn (array $attributes): array => [
             'is_published' => true,
@@ -68,7 +85,7 @@ final class CourseFactory extends Factory
     /**
      * Indicate that the course is archived.
      */
-    public function archived(): CourseFactory
+    public function archived(): self
     {
         return $this->state(fn (array $attributes): array => [
             'status' => CourseStatus::ARCHIVED,
@@ -78,7 +95,7 @@ final class CourseFactory extends Factory
     /**
      * Indicate that the course has no teacher.
      */
-    public function withoutTeacher(): CourseFactory
+    public function withoutTeacher(): self
     {
         return $this->state(fn (array $attributes): array => [
             'teacher_id' => null,
