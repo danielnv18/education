@@ -193,17 +193,67 @@ Apply refactoring:
 composer refactor
 ```
 
+### React Component Conventions
+
+#### File Structure
+- All file paths should be lowercase: `resources/js/pages/courses/index.tsx`
+
+#### Component Names
+- Components should follow the pattern `{Model}{Action}Page`:
+  - `CourseIndexPage`
+  - `CourseShowPage`
+  - `DashboardIndexPage`
+
+#### Props Interfaces
+- Props interfaces should follow the convention `{PageName}Props`:
+  - `CourseIndexPageProps`
+  - `CourseShowPageProps`
+  - `DashboardIndexPageProps`
+
+#### Routes
+- Never use hardcoded routes in React components
+- Always use the `route()` function from Inertia:
+  ```tsx
+  // Incorrect
+  <Link href="/dashboard">Dashboard</Link>
+
+  // Correct
+  <Link href={route('dashboard')}>Dashboard</Link>
+  ```
+
+### Controller Conventions
+- Use Single Action Controllers for simple pages with a single action
+- Implement the `__invoke` method in the controller
+- Register the controller class directly in the routes file:
+  ```php
+  Route::get('dashboard', DashboardController::class)->name('dashboard');
+  ```
+
+### Redirects in Controllers
+- Always use `to_route()` for redirects to named routes
+- Never use `redirect()->route()` or hardcoded URLs like `redirect('/')`
+- For redirects with flash data, use `to_route('route.name')->with('key', 'value')`
+
 ### Actions
 - Use Action classes for business logic
+- Wrap all database operations in a `DB::transaction` to ensure data consistency:
+  ```php
+  public function handle(): void
+  {
+      DB::transaction(function (): void {
+          // Database operations
+      });
+  }
+  ```
 - Actions pattern and naming verbs. Example:
-```php
-public function store(CreateTodoRequest $request, CreateTodoAction $action)
-{
-    $user = $request->user();
+  ```php
+  public function store(CreateTodoRequest $request, CreateTodoAction $action)
+  {
+      $user = $request->user();
 
-    $action->handle($user, $request->validated());
-}
-```
+      $action->handle($user, $request->validated());
+  }
+  ```
 
 ### Requests
 - Use FormRequest for validation
