@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 
-class LocalSeeder extends Seeder
+final class LocalSeeder extends Seeder
 {
     /**
      * Run the database seeds.
