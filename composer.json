@@ -82,7 +82,10 @@
             "npm run format:check"
         ],
         "test:unit": "pest --parallel --coverage --exactly=100.0",
-        "test:types": "phpstan --configuration=phpstan.neon",
+        "test:types": [
+            "phpstan --configuration=phpstan.neon",
+            "npm run types"
+        ],
         "test:refactor": "rector --dry-run",
         "test": [
             "@php artisan config:clear --ansi",

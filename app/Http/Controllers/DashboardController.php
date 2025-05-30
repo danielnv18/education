@@ -16,11 +16,6 @@ final class DashboardController extends Controller
      */
     public function __invoke(Request $request): Response
     {
-        // Ensure the user is authenticated
-        $request->validate([
-            'user' => 'required|exists:users,id',
-        ]);
-
         $user = $request->user();
 
         // Get courses where the user is a teacher
