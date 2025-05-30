@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -43,6 +44,24 @@ final class User extends Authenticatable implements MustVerifyEmail
     public function files(): HasMany
     {
         return $this->hasMany(File::class, 'uploaded_by');
+    }
+
+    /**
+     * @return HasMany<Course, $this>
+     */
+    public function teachingCourses(): HasMany
+    {
+        return $this->hasMany(Course::class, 'teacher_id');
+    }
+
+    /**
+     * @return BelongsToMany<Course, $this>
+     */
+    public function enrolledCourses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'course_enrollments')
+            ->withPivot(['enrolled_at', 'status'])
+            ->withTimestamps();
     }
 
     /**
