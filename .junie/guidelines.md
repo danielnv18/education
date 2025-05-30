@@ -85,7 +85,7 @@ Run a specific test file:
 ### Creating Tests
 1. Tests are organized in the `tests` directory:
     - `tests/Feature/Console` - For console command tests
-    - `tests/Feature/Http` - For HTTP-related tests
+    - `tests/Feature/Http` - For HTTP-related tests (Controllers, requests, etc.)
     - `tests/Unit/Actions` - For action classes
     - `tests/Unit/Models` - For model tests
     - `tests/Unit/Jobs` - For job tests
