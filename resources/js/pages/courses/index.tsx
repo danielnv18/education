@@ -1,0 +1,110 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import AppLayout from '@/layouts/app-layout';
+import { Course } from '@/types';
+import { Head, Link } from '@inertiajs/react';
+import { format } from 'date-fns';
+
+interface CourseIndexPageProps {
+    courses: {
+        data: Course[];
+        links: {
+            first: string | null;
+            last: string | null;
+            prev: string | null;
+            next: string | null;
+        };
+        meta: {
+            current_page: number;
+            from: number;
+            last_page: number;
+            links: Array<{
+                url: string | null;
+                label: string;
+                active: boolean;
+            }>;
+            path: string;
+            per_page: number;
+            to: number;
+            total: number;
+        };
+    };
+}
+
+const breadcrumbs = [
+    {
+        title: 'Dashboard',
+        href: route('dashboard'),
+    },
+    {
+        title: 'Courses',
+        href: route('courses.index'),
+    },
+];
+
+export default function CourseIndexPage({ courses }: CourseIndexPageProps) {
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Courses" />
+
+            <div className="p-4">
+                <div className="mb-6 flex items-center justify-between">
+                    <h1 className="text-2xl font-bold">Courses</h1>
+                    <Link href={route('courses.create')}>
+                        <Button>Create Course</Button>
+                    </Link>
+                </div>
+
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {courses.data.map((course) => (
+                        <Card key={course.id} className="overflow-hidden">
+                            {course.thumbnail && (
+                                <div className="aspect-video overflow-hidden">
+                                    <img src={course.thumbnail.url} alt={course.title} className="h-full w-full object-cover" />
+                                </div>
+                            )}
+                            <CardHeader>
+                                <CardTitle>{course.title}</CardTitle>
+                                <CardDescription>{course.teacher ? `Instructor: ${course.teacher.name}` : 'No instructor assigned'}</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="line-clamp-3">{course.description}</p>
+                                <div className="mt-2 flex items-center gap-2">
+                                    <span
+                                        className={`rounded-full px-2 py-1 text-xs ${
+                                            course.status === 'active'
+                                                ? 'bg-green-100 text-green-800'
+                                                : course.status === 'draft'
+                                                  ? 'bg-yellow-100 text-yellow-800'
+                                                  : 'bg-gray-100 text-gray-800'
+                                        }`}
+                                    >
+                                        {course.status.toUpperCase()}
+                                    </span>
+                                    {course.start_date && (
+                                        <span className="text-xs text-gray-500">Starts: {format(new Date(course.start_date), 'MMM d, yyyy')}</span>
+                                    )}
+                                </div>
+                            </CardContent>
+                            <CardFooter>
+                                <Link href={route('courses.show', { course: course.id })} className="w-full">
+                                    <Button variant="outline" className="w-full">
+                                        View Course
+                                    </Button>
+                                </Link>
+                            </CardFooter>
+                        </Card>
+                    ))}
+                </div>
+
+                {courses.data.length === 0 && (
+                    <div className="py-12 text-center">
+                        <p className="text-gray-500">No courses found.</p>
+                    </div>
+                )}
+
+                {/* Pagination can be added here */}
+            </div>
+        </AppLayout>
+    );
+}

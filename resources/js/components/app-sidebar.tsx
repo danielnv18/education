@@ -15,20 +15,17 @@ const mainNavItems: NavItem[] = [
     },
 ];
 
-const footerNavItems: NavItem[] = [];
+const footerNavItems: NavItem[] = [
+    {
+        title: 'Courses',
+        href: route('courses.index'),
+        icon: BookOpenCheck,
+    },
+];
 
 export function AppSidebar() {
     const { auth } = usePage<SharedData>().props;
     const isAdmin = auth.user?.roles?.includes('admin');
-
-    // Add the admin courses navigation item if the user is an admin
-    if (isAdmin) {
-        footerNavItems.push({
-            title: 'Courses',
-            href: route('courses.index'),
-            icon: BookOpenCheck,
-        });
-    }
 
     return (
         <Sidebar collapsible="icon" variant="inset">
@@ -49,7 +46,7 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                {footerNavItems.length > 0 && <NavFooter items={footerNavItems} className="mt-auto" />}
+                {isAdmin && <NavFooter items={footerNavItems} className="mt-auto" />}
                 <NavUser />
             </SidebarFooter>
         </Sidebar>
