@@ -30,13 +30,8 @@ final class CoursePolicy
         if ($user->hasRole('teacher') && $course->teacher_id === $user->id) {
             return true;
         }
-
         // if the User is enrolled in the course
-        if ($course->students()->where('user_id', $user->id)->exists()) {
-            return true;
-        }
-
-        return false;
+        return $course->students()->where('user_id', $user->id)->exists();
     }
 
     /**
@@ -52,13 +47,16 @@ final class CoursePolicy
      */
     public function update(User $user, Course $course): bool
     {
-        return $user->hasRole('admin') || ($user->hasRole('teacher') && $course->teacher_id === $user->id);
+        if ($user->hasRole('admin')) {
+            return true;
+        }
+        return $user->hasRole('teacher') && $course->teacher_id === $user->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Course $course): bool
+    public function delete(User $user): bool
     {
         return $user->hasRole('admin');
     }
@@ -66,7 +64,7 @@ final class CoursePolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Course $course): bool
+    public function restore(User $user): bool
     {
         return $user->hasRole('admin');
     }
@@ -74,7 +72,7 @@ final class CoursePolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Course $course): bool
+    public function forceDelete(User $user): bool
     {
         return $user->hasRole('admin');
     }

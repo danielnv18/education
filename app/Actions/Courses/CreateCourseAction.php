@@ -16,8 +16,6 @@ final class CreateCourseAction
      */
     public function handle(array $data): Course
     {
-        return DB::transaction(function () use ($data): Course {
-            return Course::query()->create($data);
-        });
+        return DB::transaction(fn(): Course => Course::query()->create($data));
     }
 }
