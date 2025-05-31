@@ -30,6 +30,7 @@ final class CoursePolicy
         if ($user->hasRole('teacher') && $course->teacher_id === $user->id) {
             return true;
         }
+
         // if the User is enrolled in the course
         return $course->students()->where('user_id', $user->id)->exists();
     }
@@ -50,6 +51,7 @@ final class CoursePolicy
         if ($user->hasRole('admin')) {
             return true;
         }
+
         return $user->hasRole('teacher') && $course->teacher_id === $user->id;
     }
 
