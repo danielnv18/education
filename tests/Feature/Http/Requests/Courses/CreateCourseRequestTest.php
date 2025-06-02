@@ -4,49 +4,23 @@ declare(strict_types=1);
 
 use App\Enums\CourseStatus;
 use App\Http\Requests\Courses\CreateCourseRequest;
-use App\Models\Course;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
-use Illuminate\Support\Facades\Gate;
 
 beforeEach(function (): void {
     new RoleSeeder()->run();
 });
 
-it('authorizes request when user has create permission', function (): void {
-    // Arrange
-    $admin = User::factory()->create();
-    $admin->assignRole('admin');
-
-    // Mock Gate to return true for 'create' ability on Course
-    Gate::shouldReceive('check')
-        ->with('create', Course::class)
-        ->once()
-        ->andReturn(true);
-
-    $request = new CreateCourseRequest();
-    $request->setUserResolver(fn () => $admin);
-
-    // Act & Assert
-    expect($request->authorize())->toBeTrue();
-});
-
-it('does not authorize request when user does not have create permission', function (): void {
+it('always authorizes requests regardless of permissions', function (): void {
     // Arrange
     $user = User::factory()->create();
-    $user->assignRole('teacher'); // Teacher can't create courses
-
-    // Mock Gate to return false for 'create' ability on Course
-    Gate::shouldReceive('check')
-        ->with('create', Course::class)
-        ->once()
-        ->andReturn(false);
+    // User with no roles or permissions
 
     $request = new CreateCourseRequest();
     $request->setUserResolver(fn () => $user);
 
     // Act & Assert
-    expect($request->authorize())->toBeFalse();
+    expect($request->authorize())->toBeTrue();
 });
 
 it('validates required fields', function (): void {

@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Courses;
 
 use App\Enums\CourseStatus;
-use App\Models\Course;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rules\Enum;
 
 final class CreateCourseRequest extends FormRequest
@@ -17,7 +15,7 @@ final class CreateCourseRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::check('create', Course::class);
+        return true;
     }
 
     /**

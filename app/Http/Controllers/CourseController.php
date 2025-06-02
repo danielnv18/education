@@ -43,7 +43,9 @@ final class CourseController extends Controller
         Gate::authorize('create', Course::class);
 
         $teachers = User::query()
-            ->where('role', 'teacher')
+            ->whereHas('roles', function ($query): void {
+                $query->where('name', 'teacher');
+            })
             ->orderBy('name')
             ->get(['id', 'name']);
 
@@ -89,7 +91,9 @@ final class CourseController extends Controller
         $course->load(['teacher', 'thumbnail']);
 
         $teachers = User::query()
-            ->where('role', 'teacher')
+            ->whereHas('roles', function ($query): void {
+                $query->where('name', 'teacher');
+            })
             ->orderBy('name')
             ->get(['id', 'name']);
 

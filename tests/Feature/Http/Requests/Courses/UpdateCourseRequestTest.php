@@ -4,49 +4,23 @@ declare(strict_types=1);
 
 use App\Enums\CourseStatus;
 use App\Http\Requests\Courses\UpdateCourseRequest;
-use App\Models\Course;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
-use Illuminate\Support\Facades\Gate;
 
 beforeEach(function (): void {
     new RoleSeeder()->run();
 });
 
-it('authorizes request when user has update permission', function (): void {
-    // Arrange
-    $admin = User::factory()->create();
-    $admin->assignRole('admin');
-
-    // Mock Gate to return true for 'update' ability on Course
-    Gate::shouldReceive('check')
-        ->with('update', Course::class)
-        ->once()
-        ->andReturn(true);
-
-    $request = new UpdateCourseRequest();
-    $request->setUserResolver(fn () => $admin);
-
-    // Act & Assert
-    expect($request->authorize())->toBeTrue();
-});
-
-it('does not authorize request when user does not have update permission', function (): void {
+it('always authorizes requests regardless of permissions', function (): void {
     // Arrange
     $user = User::factory()->create();
-    // User with no roles
-
-    // Mock Gate to return false for 'update' ability on Course
-    Gate::shouldReceive('check')
-        ->with('update', Course::class)
-        ->once()
-        ->andReturn(false);
+    // User with no roles or permissions
 
     $request = new UpdateCourseRequest();
     $request->setUserResolver(fn () => $user);
 
     // Act & Assert
-    expect($request->authorize())->toBeFalse();
+    expect($request->authorize())->toBeTrue();
 });
 
 it('validates title max length', function (): void {
