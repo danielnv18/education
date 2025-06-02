@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\UserRole;
 use App\Models\Course;
 use App\Models\User;
 use App\Policies\CoursePolicy;
@@ -18,7 +19,7 @@ beforeEach(function (): void {
 it('allows admin to view any courses', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole('admin');
+    $admin->assignRole(UserRole::ADMIN);
 
     $policy = new CoursePolicy();
 
@@ -29,8 +30,8 @@ it('allows admin to view any courses', function (): void {
 it('allows user with multiple roles to view any courses if they have admin role', function (): void {
     // Arrange
     $user = User::factory()->create();
-    $user->assignRole('admin');
-    $user->assignRole('teacher');  // User has both admin and teacher roles
+    $user->assignRole(UserRole::ADMIN);
+    $user->assignRole(UserRole::TEACHER);  // User has both admin and teacher roles
 
     $policy = new CoursePolicy();
 
@@ -52,7 +53,7 @@ it('does not allow non-admin to view any courses', function (): void {
 it('allows admin to view a course', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole('admin');
+    $admin->assignRole(UserRole::ADMIN);
 
     $course = Course::factory()->create();
 
@@ -65,7 +66,7 @@ it('allows admin to view a course', function (): void {
 it('allows teacher to view their own course', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole('teacher');
+    $teacher->assignRole(UserRole::TEACHER);
 
     $course = Course::factory()->create(['teacher_id' => $teacher->id]);
 
@@ -78,7 +79,7 @@ it('allows teacher to view their own course', function (): void {
 it('does not allow teacher to view other teachers courses', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole('teacher');
+    $teacher->assignRole(UserRole::TEACHER);
 
     $otherTeacher = User::factory()->create();
     $course = Course::factory()->create(['teacher_id' => $otherTeacher->id]);
@@ -119,7 +120,7 @@ it('does not allow non-enrolled user to view a course', function (): void {
 it('allows admin to create a course', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole('admin');
+    $admin->assignRole(UserRole::ADMIN);
 
     $policy = new CoursePolicy();
 
@@ -130,7 +131,7 @@ it('allows admin to create a course', function (): void {
 it('does not allow non-admin to create a course', function (): void {
     // Arrange
     $user = User::factory()->create();
-    $user->assignRole('teacher');  // Even a teacher can't create a course without admin role
+    $user->assignRole(UserRole::TEACHER);  // Even a teacher can't create a course without admin role
 
     $policy = new CoursePolicy();
 
@@ -141,7 +142,7 @@ it('does not allow non-admin to create a course', function (): void {
 it('allows admin to update any course', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole('admin');
+    $admin->assignRole(UserRole::ADMIN);
 
     $course = Course::factory()->create();
 
@@ -154,7 +155,7 @@ it('allows admin to update any course', function (): void {
 it('allows teacher to update their own course', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole('teacher');
+    $teacher->assignRole(UserRole::TEACHER);
 
     $course = Course::factory()->create(['teacher_id' => $teacher->id]);
 
@@ -167,9 +168,9 @@ it('allows teacher to update their own course', function (): void {
 it('allows user with multiple roles to update their own course if they have teacher role', function (): void {
     // Arrange
     $user = User::factory()->create();
-    $user->assignRole('teacher');  // User needs teacher role to update their own course
+    $user->assignRole(UserRole::TEACHER);  // User needs teacher role to update their own course
     // Additional role that doesn't affect this permission
-    $user->assignRole('admin');  // User has both teacher and admin roles
+    $user->assignRole(UserRole::ADMIN);  // User has both teacher and admin roles
 
     $course = Course::factory()->create(['teacher_id' => $user->id]);
 
@@ -182,7 +183,7 @@ it('allows user with multiple roles to update their own course if they have teac
 it('does not allow teacher to update other teachers courses', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole('teacher');
+    $teacher->assignRole(UserRole::TEACHER);
 
     $otherTeacher = User::factory()->create();
     $course = Course::factory()->create(['teacher_id' => $otherTeacher->id]);
@@ -209,7 +210,7 @@ it('does not allow regular user to update a course', function (): void {
 it('allows admin to delete a course', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole('admin');
+    $admin->assignRole(UserRole::ADMIN);
 
     $course = Course::factory()->create();
 
@@ -222,7 +223,7 @@ it('allows admin to delete a course', function (): void {
 it('does not allow non-admin to delete a course', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole('teacher');
+    $teacher->assignRole(UserRole::TEACHER);
 
     $course = Course::factory()->create(['teacher_id' => $teacher->id]);
 
@@ -235,7 +236,7 @@ it('does not allow non-admin to delete a course', function (): void {
 it('allows admin to restore a course', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole('admin');
+    $admin->assignRole(UserRole::ADMIN);
 
     $course = Course::factory()->create();
 
@@ -248,7 +249,7 @@ it('allows admin to restore a course', function (): void {
 it('does not allow non-admin to restore a course', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole('teacher');
+    $teacher->assignRole(UserRole::TEACHER);
 
     $course = Course::factory()->create(['teacher_id' => $teacher->id]);
 
@@ -261,7 +262,7 @@ it('does not allow non-admin to restore a course', function (): void {
 it('allows admin to force delete a course', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole('admin');
+    $admin->assignRole(UserRole::ADMIN);
 
     $course = Course::factory()->create();
 
@@ -274,7 +275,7 @@ it('allows admin to force delete a course', function (): void {
 it('does not allow non-admin to force delete a course', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole('teacher');
+    $teacher->assignRole(UserRole::TEACHER);
 
     $course = Course::factory()->create(['teacher_id' => $teacher->id]);
 

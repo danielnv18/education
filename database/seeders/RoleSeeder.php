@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Enums\UserRole;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 
@@ -16,8 +17,8 @@ final class RoleSeeder extends Seeder
     {
         // Define roles
         $roles = [
-            ['name' => 'admin'],
-            ['name' => 'teacher'],
+            ['name' => UserRole::ADMIN],
+            ['name' => UserRole::TEACHER],
         ];
 
         // Insert roles into the database
