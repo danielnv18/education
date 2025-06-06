@@ -11,6 +11,7 @@ use App\Http\Requests\Courses\CreateCourseRequest;
 use App\Http\Requests\Courses\UpdateCourseRequest;
 use App\Models\Course;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
@@ -43,7 +44,7 @@ final class CourseController extends Controller
         Gate::authorize('create', Course::class);
 
         $teachers = User::query()
-            ->whereHas('roles', function ($query): void {
+            ->whereHas('roles', function (Builder $query): void {
                 $query->where('name', 'teacher');
             })
             ->orderBy('name')
@@ -91,7 +92,7 @@ final class CourseController extends Controller
         $course->load(['teacher', 'thumbnail']);
 
         $teachers = User::query()
-            ->whereHas('roles', function ($query): void {
+            ->whereHas('roles', function (Builder $query): void {
                 $query->where('name', 'teacher');
             })
             ->orderBy('name')

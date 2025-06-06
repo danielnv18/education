@@ -3,6 +3,7 @@ import type { Config } from 'ziggy-js';
 
 export interface Auth {
     user: User;
+    roles: string[];
 }
 
 export interface BreadcrumbItem {
@@ -30,15 +31,19 @@ export interface SharedData {
     [key: string]: unknown;
 }
 
+export interface Role {
+    name: string;
+}
+
 export interface User {
     id: number;
     name: string;
     email: string;
     avatar?: string;
     email_verified_at: string | null;
+    roles: Role[];
     created_at: string;
     updated_at: string;
-    roles: string[];
 }
 
 export interface File {
