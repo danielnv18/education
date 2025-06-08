@@ -2,11 +2,11 @@ import UserTable from '@/components/admin/user-table';
 import HeadingLarge from '@/components/heading-large';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { PageProps, User } from '@/types';
+import { User } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { PlusIcon } from 'lucide-react';
 
-interface UserIndexPageProps extends PageProps {
+interface UserIndexPageProps {
     users: {
         data: User[];
         links: { url: string | null; label: string; active: boolean }[];

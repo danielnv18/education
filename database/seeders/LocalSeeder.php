@@ -21,5 +21,26 @@ final class LocalSeeder extends Seeder
             'password' => bcrypt('password'),
             'email_verified_at' => now(),
         ])->assignRole(UserRole::ADMIN);
+
+        User::factory()->count(5)->create([
+            'password' => bcrypt('password'),
+            'email_verified_at' => now(),
+        ])->each(function (User $user) {
+            $user->assignRole(UserRole::ADMIN, UserRole::TEACHER);
+        });
+
+        // Teachers
+        User::factory()->count(5)->create([
+            'password' => bcrypt('password'),
+            'email_verified_at' => now(),
+        ])->each(function (User $user) {
+            $user->assignRole(UserRole::TEACHER);
+        });
+
+        // Students
+        User::factory()->count(80)->create([
+            'password' => bcrypt('password'),
+            'email_verified_at' => now(),
+        ]);
     }
 }
