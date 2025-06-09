@@ -63,9 +63,14 @@ export default function UserForm({ user, action }: UserFormProps) {
                 </div>
 
                 <div>
-                    <Label htmlFor="password">Password {user && '(leave blank to keep current password)'}</Label>
+                    <Label htmlFor="password">Password {user ? '(leave blank to keep current password)' : '(optional)'}</Label>
                     <Input id="password" type="password" value={data.password} onChange={(e) => setData('password', e.target.value)} />
                     <InputError message={errors.password} />
+                    {!user && (
+                        <p className="mt-1 text-sm text-gray-500">
+                            If left blank, a default password will be set and the user will need to reset it.
+                        </p>
+                    )}
                 </div>
 
                 <div>

@@ -7,6 +7,7 @@ namespace App\Actions\Users;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 final class CreateUserAction
 {
@@ -16,7 +17,7 @@ final class CreateUserAction
             $userData = [
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'password' => Hash::make($data['password']),
+                'password' => Hash::make($data['password'] ?? Str::password()),
             ];
 
             if (isset($data['email_verified']) && $data['email_verified']) {

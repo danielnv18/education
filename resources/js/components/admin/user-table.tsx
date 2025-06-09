@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { User } from '@/types';
 import { Link } from '@inertiajs/react';
-import { PencilIcon, TrashIcon } from 'lucide-react';
+import { PencilIcon } from 'lucide-react';
+import DeleteUserModal from './delete-user-modal';
 
 interface UserTableProps {
     users: {
@@ -55,12 +56,7 @@ export default function UserTable({ users }: UserTableProps) {
                                                 <span className="sr-only">Edit</span>
                                             </Link>
                                         </Button>
-                                        <Button variant="ghost" size="icon" asChild>
-                                            <Link href={route('admin.users.destroy', user.id)} method="delete" as="button">
-                                                <TrashIcon className="h-4 w-4" />
-                                                <span className="sr-only">Delete</span>
-                                            </Link>
-                                        </Button>
+                                        <DeleteUserModal user={user} />
                                     </div>
                                 </TableCell>
                             </TableRow>

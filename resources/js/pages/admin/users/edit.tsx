@@ -1,3 +1,4 @@
+import ResetPasswordButton from '@/components/admin/reset-password-button';
 import UserForm from '@/components/admin/user-form';
 import HeadingLarge from '@/components/heading-large';
 import { Button } from '@/components/ui/button';
@@ -33,12 +34,15 @@ export default function UserEditPage({ user }: UserEditPageProps) {
             <div className="space-y-6 p-4">
                 <div className="flex items-center justify-between">
                     <HeadingLarge title="Edit User" description={`Update information for ${user.name}`} />
-                    <Button variant="outline" asChild>
-                        <Link href={route('admin.users.index')}>
-                            <ArrowLeftIcon className="mr-2 h-4 w-4" />
-                            Back to Users
-                        </Link>
-                    </Button>
+                    <div className="flex flex-row gap-2">
+                        <Button variant="outline" asChild>
+                            <Link href={route('admin.users.index')}>
+                                <ArrowLeftIcon className="mr-2 h-4 w-4" />
+                                Back to Users
+                            </Link>
+                        </Button>
+                        <ResetPasswordButton user={user} />
+                    </div>
                 </div>
 
                 <div className="rounded-lg border p-6">

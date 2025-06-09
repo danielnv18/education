@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Actions\Users\CreateUserAction;
 use App\Actions\Users\DeleteUserAction;
+use App\Actions\Users\SendPasswordResetLinkAction;
 use App\Actions\Users\UpdateUserAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\CreateUserRequest;
@@ -70,5 +71,12 @@ final class UserController extends Controller
 
         return to_route('admin.users.index')
             ->with('success', 'User deleted successfully.');
+    }
+
+    public function sendPasswordResetLink(User $user, SendPasswordResetLinkAction $action): RedirectResponse
+    {
+        $action->handle($user);
+
+        return back()->with('success', 'Password reset link sent successfully.');
     }
 }

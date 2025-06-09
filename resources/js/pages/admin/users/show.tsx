@@ -1,3 +1,4 @@
+import ResetPasswordButton from '@/components/admin/reset-password-button';
 import HeadingLarge from '@/components/heading-large';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -41,6 +42,7 @@ export default function UserShowPage({ user }: UserShowPageProps) {
                                 Back to Users
                             </Link>
                         </Button>
+                        <ResetPasswordButton user={user} />
                         <Button asChild>
                             <Link href={route('admin.users.edit', user.id)}>
                                 <PencilIcon className="mr-2 h-4 w-4" />
