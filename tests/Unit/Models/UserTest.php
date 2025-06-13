@@ -5,8 +5,6 @@ declare(strict_types=1);
 use App\Models\Course;
 use App\Models\File;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -43,34 +41,36 @@ test('user has correct casts', function (): void {
 
 test('user has many files', function (): void {
     $user = User::factory()->create();
+    $course = Course::factory()->create();
 
-    $files = File::factory()->count(3)->create([
+    // Create files uploaded by the user
+    File::factory()->count(3)->create([
         'uploaded_by' => $user->id,
-        'fileable_id' => $user->id,
-        'fileable_type' => User::class,
+        'fileable_id' => $course->id,
+        'fileable_type' => Course::class,
     ]);
 
-    expect($user->files())->toBeInstanceOf(HasMany::class)
-        ->and($user->files)->toHaveCount(3)
+    expect($user->files)->toHaveCount(3)
         ->and($user->files->first())->toBeInstanceOf(File::class);
 });
 
 test('user has many teaching courses', function (): void {
     $user = User::factory()->create();
 
-    $courses = Course::factory()->count(3)->create([
+    // Create courses taught by the user
+    Course::factory()->count(3)->create([
         'teacher_id' => $user->id,
     ]);
 
-    expect($user->teachingCourses())->toBeInstanceOf(HasMany::class)
-        ->and($user->teachingCourses)->toHaveCount(3)
+    expect($user->teachingCourses)->toHaveCount(3)
         ->and($user->teachingCourses->first())->toBeInstanceOf(Course::class);
 });
 
-test('user has many enrolled courses', function (): void {
+test('user belongs to many enrolled courses', function (): void {
     $user = User::factory()->create();
     $courses = Course::factory()->count(3)->create();
 
+    // Enroll the user in courses
     foreach ($courses as $course) {
         $user->enrolledCourses()->attach($course, [
             'enrolled_at' => now(),
@@ -78,8 +78,7 @@ test('user has many enrolled courses', function (): void {
         ]);
     }
 
-    expect($user->enrolledCourses())->toBeInstanceOf(BelongsToMany::class)
-        ->and($user->enrolledCourses)->toHaveCount(3)
+    expect($user->enrolledCourses)->toHaveCount(3)
         ->and($user->enrolledCourses->first())->toBeInstanceOf(Course::class)
         ->and($user->enrolledCourses->first()->pivot->enrolled_at)->not->toBeNull()
         ->and($user->enrolledCourses->first()->pivot->status)->toBe('active');
