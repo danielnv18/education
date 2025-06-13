@@ -25,7 +25,7 @@ final class LocalSeeder extends Seeder
         User::factory()->count(5)->create([
             'password' => bcrypt('password'),
             'email_verified_at' => now(),
-        ])->each(function (User $user) {
+        ])->each(function (User $user): void {
             $user->assignRole(UserRole::ADMIN, UserRole::TEACHER);
         });
 
@@ -33,7 +33,7 @@ final class LocalSeeder extends Seeder
         User::factory()->count(5)->create([
             'password' => bcrypt('password'),
             'email_verified_at' => now(),
-        ])->each(function (User $user) {
+        ])->each(function (User $user): void {
             $user->assignRole(UserRole::TEACHER);
         });
 

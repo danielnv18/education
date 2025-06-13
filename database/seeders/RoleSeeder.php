@@ -15,15 +15,9 @@ final class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // Define roles
-        $roles = [
-            ['name' => UserRole::ADMIN],
-            ['name' => UserRole::TEACHER],
-        ];
-
         // Insert roles into the database
-        foreach ($roles as $role) {
-            Role::create($role);
+        foreach (UserRole::cases() as $role) {
+            Role::create(['name' => $role->value]);
         }
     }
 }
