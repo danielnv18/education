@@ -6,14 +6,14 @@ use App\Enums\UserRole;
 use App\Models\Course;
 use App\Models\User;
 use App\Policies\CoursePolicy;
-use Database\Seeders\RoleSeeder;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
 
 beforeEach(function (): void {
-    new RoleSeeder()->run();
+    new DatabaseSeeder()->run();
 });
 
 it('allows admin to view any courses', function (): void {

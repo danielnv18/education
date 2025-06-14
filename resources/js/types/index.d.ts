@@ -68,6 +68,7 @@ export interface Course {
     updated_at: string;
     teacher?: User;
     thumbnail?: File;
+    students?: User[];
 }
 
 export interface Lesson {

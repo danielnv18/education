@@ -16,8 +16,8 @@ final class EnrollStudentAction
     /**
      * Enroll students in a course.
      *
-     * @param Course $course The course to enroll students in
-     * @param User|Collection<User> $students A single student or collection of students to enroll
+     * @param  Course  $course  The course to enroll students in
+     * @param  User|Collection<User>  $students  A single student or collection of students to enroll
      */
     public function handle(Course $course, User|Collection $students): void
     {
@@ -48,7 +48,7 @@ final class EnrollStudentAction
 
             // Merge with existing students to avoid removing them
             foreach ($existingStudentIds as $id) {
-                if (!isset($enrollmentData[$id])) {
+                if (! isset($enrollmentData[$id])) {
                     $existingPivot = $course->students()->where('user_id', $id)->first()->pivot;
                     $enrollmentData[$id] = [
                         'status' => $existingPivot->status,

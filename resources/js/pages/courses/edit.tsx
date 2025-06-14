@@ -1,5 +1,6 @@
 import CourseForm from '@/components/forms/course-form';
 import AppLayout from '@/layouts/app-layout';
+import CourseLayout from '@/layouts/course/layout';
 import { Course, User } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 
@@ -47,11 +48,7 @@ export default function CourseEditPage({ course, teachers = [] }: CourseEditPage
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Edit ${course.title}`} />
 
-            <div className="p-4">
-                <div className="mb-6">
-                    <h1 className="text-2xl font-bold">Edit Course</h1>
-                </div>
-
+            <CourseLayout course={course}>
                 <CourseForm
                     data={data}
                     setData={setData}
@@ -61,7 +58,7 @@ export default function CourseEditPage({ course, teachers = [] }: CourseEditPage
                     onSubmit={handleSubmit}
                     submitButtonText="Update Course"
                 />
-            </div>
+            </CourseLayout>
         </AppLayout>
     );
 }

@@ -14,7 +14,7 @@ interface CourseShowPageProps {
 
 export default function CourseShowPage({ course }: CourseShowPageProps) {
     const { auth } = usePage<SharedData>().props;
-    const isAdmin = auth.user?.roles?.includes('admin');
+    const isAdmin = auth.roles?.includes('admin');
 
     const handleDelete = () => {
         router.delete(route('courses.destroy', { course: course.id }));
@@ -45,6 +45,9 @@ export default function CourseShowPage({ course }: CourseShowPageProps) {
                     <div className="flex gap-2">
                         <Link href={route('courses.edit', { course: course.id })}>
                             <Button variant="outline">Edit Course</Button>
+                        </Link>
+                        <Link href={route('courses.students', { course: course.id })}>
+                            <Button variant="outline">Manage Students</Button>
                         </Link>
                         {isAdmin && (
                             <Dialog>
@@ -170,6 +173,27 @@ export default function CourseShowPage({ course }: CourseShowPageProps) {
                                         <h3 className="text-sm font-medium text-gray-500">Published</h3>
                                         <p className="mt-1">{course.is_published ? 'Yes' : 'No'}</p>
                                     </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Student Information */}
+                        <Card className="mt-4">
+                            <CardHeader>
+                                <CardTitle>Students</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="flex flex-col space-y-2">
+                                    <p>
+                                        {course.students && course.students.length > 0
+                                            ? `${course.students.length} student${course.students.length > 1 ? 's' : ''} enrolled`
+                                            : 'No students enrolled yet'}
+                                    </p>
+                                    <Link href={route('courses.students', { course: course.id })}>
+                                        <Button variant="outline" size="sm">
+                                            Manage Students
+                                        </Button>
+                                    </Link>
                                 </div>
                             </CardContent>
                         </Card>

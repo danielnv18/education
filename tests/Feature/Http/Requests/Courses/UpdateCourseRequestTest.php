@@ -5,10 +5,10 @@ declare(strict_types=1);
 use App\Enums\CourseStatus;
 use App\Http\Requests\Courses\UpdateCourseRequest;
 use App\Models\User;
-use Database\Seeders\RoleSeeder;
+use Database\Seeders\DatabaseSeeder;
 
 beforeEach(function (): void {
-    new RoleSeeder()->run();
+    new DatabaseSeeder()->run();
 });
 
 it('always authorizes requests regardless of permissions', function (): void {

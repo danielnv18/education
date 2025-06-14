@@ -6,11 +6,11 @@ use App\Enums\CourseStatus;
 use App\Enums\UserRole;
 use App\Models\Course;
 use App\Models\User;
-use Database\Seeders\RoleSeeder;
+use Database\Seeders\DatabaseSeeder;
 use Inertia\Testing\AssertableInertia;
 
 beforeEach(function (): void {
-    new RoleSeeder()->run();
+    new DatabaseSeeder()->run();
 });
 
 test('index method returns courses list for authorized users', function (): void {
