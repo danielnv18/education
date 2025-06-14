@@ -23,11 +23,7 @@ final class UpdateUserAction
             }
 
             if (isset($data['email_verified'])) {
-                if ($data['email_verified']) {
-                    $userData['email_verified_at'] = $user->email_verified_at ?? now();
-                } else {
-                    $userData['email_verified_at'] = null;
-                }
+                $userData['email_verified_at'] = $data['email_verified'] ? $user->email_verified_at ?? now() : null;
             }
 
             $user->update($userData);

@@ -75,7 +75,7 @@ final class CourseController extends Controller
     {
         Gate::authorize('view', $course);
 
-        $course->load(['teacher', 'thumbnail', 'modules.lessons']);
+        $course->load(['teacher', 'thumbnail', 'modules.lessons', 'students']);
 
         return Inertia::render('courses/show', [
             'course' => $course,

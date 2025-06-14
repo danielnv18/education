@@ -18,7 +18,7 @@ export default function UserForm({ user, action }: UserFormProps) {
         email: user?.email || '',
         password: '',
         password_confirmation: '',
-        roles: user?.roles.map(r => r.name) || [],
+        roles: user?.roles.map((r) => r.name) || [],
         email_verified: user ? !!user.email_verified_at : false,
     });
 
