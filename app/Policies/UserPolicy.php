@@ -49,12 +49,12 @@ final class UserPolicy
         return $user->hasPermissionTo(PermissionEnum::DELETE_USER);
     }
 
-    public function restore(User $user, User $model): bool
+    public function restore(User $user): bool
     {
         return $user->hasPermissionTo(PermissionEnum::DELETE_USER);
     }
 
-    public function forceDelete(User $user, User $model): bool
+    public function forceDelete(User $user): bool
     {
         return $user->hasPermissionTo(PermissionEnum::DELETE_USER);
     }

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Enums\PermissionEnum;
 use App\Enums\UserRole;
 use App\Models\User;
 use App\Policies\UserPolicy;
@@ -151,10 +150,11 @@ it('does not allow admin to delete themselves', function (): void {
     expect($policy->delete($admin, $admin))->toBeFalse();
 });
 
-it('allows user with delete user permission to delete other users', function (): void {
+it('allows admin to delete other users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->givePermissionTo(PermissionEnum::DELETE_USER);
+    $admin->assignRole(UserRole::ADMIN);
+    // Admin role has DELETE_USER permission assigned in PermissionSeeder
 
     $otherUser = User::factory()->create();
 
@@ -177,10 +177,11 @@ it('does not allow user without delete user permission to delete other users', f
     expect($policy->delete($user, $otherUser))->toBeFalse();
 });
 
-it('allows user with delete user permission to restore users', function (): void {
+it('allows admin to restore users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->givePermissionTo(PermissionEnum::DELETE_USER);
+    $admin->assignRole(UserRole::ADMIN);
+    // Admin role has DELETE_USER permission assigned in PermissionSeeder
 
     $otherUser = User::factory()->create();
 
@@ -203,10 +204,11 @@ it('does not allow user without delete user permission to restore users', functi
     expect($policy->restore($user, $otherUser))->toBeFalse();
 });
 
-it('allows user with delete user permission to force delete users', function (): void {
+it('allows admin to force delete users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->givePermissionTo(PermissionEnum::DELETE_USER);
+    $admin->assignRole(UserRole::ADMIN);
+    // Admin role has DELETE_USER permission assigned in PermissionSeeder
 
     $otherUser = User::factory()->create();
 
