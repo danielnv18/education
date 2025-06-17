@@ -27,8 +27,8 @@ final class EnrollStudentAction
         }
 
         DB::transaction(function () use ($course, $students): void {
-            // Assign student role to all students who don't have it
-            $studentsWithoutRole = $students->reject(fn (User $student) => $student->hasRole(UserRole::STUDENT));
+            // Assign a student role to all students who don't have it
+            $studentsWithoutRole = $students->reject(fn (User $student): bool => $student->hasRole(UserRole::STUDENT));
 
             foreach ($studentsWithoutRole as $student) {
                 $student->assignRole(UserRole::STUDENT);

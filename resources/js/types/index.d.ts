@@ -4,6 +4,7 @@ import type { Config } from 'ziggy-js';
 export interface Auth {
     user: User;
     roles: string[];
+    permissions: string[];
 }
 
 export interface BreadcrumbItem {
@@ -28,6 +29,10 @@ export interface SharedData {
     auth: Auth;
     ziggy: Config & { location: string };
     sidebarOpen: boolean;
+    [key: string]: unknown;
+}
+
+export interface PageProps {
     [key: string]: unknown;
 }
 
