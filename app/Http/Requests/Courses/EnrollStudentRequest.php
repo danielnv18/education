@@ -13,11 +13,7 @@ final class EnrollStudentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if ($this->user()->hasRole('admin')) {
-            return true;
-        }
-
-        return $this->user()->hasRole('teacher') && $this->route('course')->teacher_id === $this->user()->id;
+        return true;
     }
 
     /**
