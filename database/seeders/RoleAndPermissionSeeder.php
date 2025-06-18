@@ -9,6 +9,7 @@ use App\Enums\UserRole;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission as PermissionModel;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 final class RoleAndPermissionSeeder extends Seeder
 {
@@ -17,6 +18,8 @@ final class RoleAndPermissionSeeder extends Seeder
      */
     public function run(): void
     {
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
         // Insert roles into the database
         foreach (UserRole::cases() as $role) {
             Role::create(['name' => $role->value]);
@@ -30,6 +33,8 @@ final class RoleAndPermissionSeeder extends Seeder
 
         // Assign permissions to roles
         $this->assignPermissionsToRoles($permissionModels);
+
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
     }
 
     /**
