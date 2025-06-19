@@ -11,6 +11,12 @@ use Illuminate\Support\Str;
 
 final class CreateUserAction
 {
+    /**
+     * Create a new user with the provided data.
+     *
+     * @param  array<string> $data
+     * @return User
+     */
     public function handle(array $data): User
     {
         return DB::transaction(function () use ($data): User {
