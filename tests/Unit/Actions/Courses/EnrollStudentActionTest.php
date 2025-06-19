@@ -23,11 +23,12 @@ it('enrolls a student in a course', function (): void {
     // Arrange
     $course = Course::factory()->create();
     $student = User::factory()->create();
+    $students = collect([$student]);
 
     $action = new EnrollStudentAction();
 
     // Act
-    $action->handle($course, $student);
+    $action->handle($course, $students);
 
     // Assert
     expect($student->hasRole(UserRole::STUDENT))->toBeTrue()
@@ -40,6 +41,7 @@ it('assigns student role if not already assigned', function (): void {
     // Arrange
     $course = Course::factory()->create();
     $student = User::factory()->create();
+    $students = collect([$student]);
 
     // Verify student doesn't have the role yet
     expect($student->hasRole(UserRole::STUDENT))->toBeFalse();
@@ -47,7 +49,7 @@ it('assigns student role if not already assigned', function (): void {
     $action = new EnrollStudentAction();
 
     // Act
-    $action->handle($course, $student);
+    $action->handle($course, $students);
 
     // Assert
     expect($student->hasRole(UserRole::STUDENT))->toBeTrue();
@@ -57,17 +59,18 @@ it('does not enroll a student twice', function (): void {
     // Arrange
     $course = Course::factory()->create();
     $student = User::factory()->create();
+    $students = collect([$student]);
 
     $action = new EnrollStudentAction();
 
     // Enroll once
-    $action->handle($course, $student);
+    $action->handle($course, $students);
 
     // Get the initial count of enrollments
     $initialCount = $course->students()->count();
 
     // Act - try to enroll again
-    $action->handle($course, $student);
+    $action->handle($course, $students);
 
     // Assert - count should remain the same
     expect($course->students()->count())->toBe($initialCount);
@@ -77,6 +80,7 @@ it('uses a database transaction', function (): void {
     // Arrange
     $course = Course::factory()->create();
     $student = User::factory()->create();
+    $students = collect([$student]);
 
     // Mock DB facade to verify transaction is used
     DB::shouldReceive('transaction')
@@ -88,7 +92,7 @@ it('uses a database transaction', function (): void {
     $action = new EnrollStudentAction();
 
     // Act
-    $action->handle($course, $student);
+    $action->handle($course, $students);
 
     // Assert is handled by the mock expectations
 });

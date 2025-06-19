@@ -8,7 +8,7 @@ use App\Enums\EnrollmentStatus;
 use App\Enums\UserRole;
 use App\Models\Course;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 final class EnrollStudentAction
@@ -17,15 +17,10 @@ final class EnrollStudentAction
      * Enroll students in a course.
      *
      * @param  Course  $course  The course to enroll students in
-     * @param  User|Collection<User>  $students  A single student or collection of students to enroll
+     * @param  Collection<User>  $students  A collection of students to enroll
      */
-    public function handle(Course $course, User|Collection $students): void
+    public function handle(Course $course, Collection $students): void
     {
-        // Convert single student to collection if needed
-        if ($students instanceof User) {
-            $students = new Collection([$students]);
-        }
-
         DB::transaction(function () use ($course, $students): void {
             // Assign a student role to all students who don't have it
             $studentsWithoutRole = $students->reject(fn (User $student): bool => $student->hasRole(UserRole::STUDENT));

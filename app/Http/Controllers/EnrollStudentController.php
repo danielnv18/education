@@ -9,6 +9,7 @@ use App\Http\Requests\Courses\EnrollStudentRequest;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 final class EnrollStudentController extends Controller
 {
@@ -17,6 +18,8 @@ final class EnrollStudentController extends Controller
      */
     public function __invoke(EnrollStudentRequest $request, Course $course, EnrollStudentAction $action): RedirectResponse
     {
+        Gate::authorize('manageContent', $course);
+
         $studentIds = $request->validated('student_ids');
         $students = User::whereIn('id', $studentIds)->get();
 
