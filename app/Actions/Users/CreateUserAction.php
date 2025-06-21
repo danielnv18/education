@@ -14,8 +14,7 @@ final class CreateUserAction
     /**
      * Create a new user with the provided data.
      *
-     * @param  array<string> $data
-     * @return User
+     * @param  array<string, mixed>  $data
      */
     public function handle(array $data): User
     {

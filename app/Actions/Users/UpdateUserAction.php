@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Hash;
 
 final class UpdateUserAction
 {
+    /**
+     * Update an existing user with the provided data.
+     *
+     * @param  User  $user  The user to update
+     * @param  array<string, mixed>  $data  The data to update the user with
+     */
     public function handle(User $user, array $data): User
     {
         return DB::transaction(function () use ($user, $data): User {

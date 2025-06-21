@@ -3,8 +3,8 @@
 declare(strict_types=1);
 
 use App\Http\Requests\Modules\UpdateModuleRequest;
-use App\Models\User;
 use App\Models\Course;
+use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 
 beforeEach(function (): void {

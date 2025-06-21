@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 use App\Enums\LessonType;
 use App\Http\Requests\Lessons\UpdateLessonRequest;
-use App\Models\User;
 use App\Models\Module;
+use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
-use Illuminate\Validation\Rules\Enum;
 
 beforeEach(function (): void {
     new DatabaseSeeder()->run();

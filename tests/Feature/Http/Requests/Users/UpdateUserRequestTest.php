@@ -6,7 +6,6 @@ use App\Enums\UserRole;
 use App\Http\Requests\Users\UpdateUserRequest;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
-use Illuminate\Validation\Rules\Password;
 
 beforeEach(function (): void {
     new DatabaseSeeder()->run();
