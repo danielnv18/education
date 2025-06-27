@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { type Course, type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
+import { Users as UsersIcon} from 'lucide-react';
 
 interface CourseLayoutProps extends PropsWithChildren {
     course: Course;
@@ -27,7 +28,7 @@ export default function CourseLayout({ children, course }: CourseLayoutProps) {
         {
             title: 'Students',
             href: route('courses.students', { course: course.id }),
-            icon: null,
+            icon: UsersIcon,
         },
     ];
 
