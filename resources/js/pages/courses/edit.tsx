@@ -1,6 +1,6 @@
 import CourseForm from '@/components/forms/course-form';
 import AppLayout from '@/layouts/app-layout';
-import CourseLayout from '@/layouts/course/layout';
+import CourseLayout from '@/layouts/course/course-layout';
 import { Course, User } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 

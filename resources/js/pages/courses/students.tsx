@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import AppLayout from '@/layouts/app-layout';
-import CourseLayout from '@/layouts/course/layout';
+import CourseLayout from '@/layouts/course/course-layout';
 import { Course, SharedData, User } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
