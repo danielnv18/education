@@ -25,36 +25,18 @@ final class EnrollStudentAction
             // Assign a student role to all students who don't have it
             $studentsWithoutRole = $students->reject(fn (User $student): bool => $student->hasRole(UserRole::STUDENT));
 
-            foreach ($studentsWithoutRole as $student) {
-                $student->assignRole(UserRole::STUDENT);
-            }
-
-            // Get existing student IDs to maintain their enrollment
-            $existingStudentIds = $course->students()->pluck('user_id')->toArray();
-
-            // Prepare enrollment data for all students
-            $now = now();
-            $enrollmentData = [];
-            foreach ($students as $student) {
-                $enrollmentData[$student->id] = [
-                    'status' => EnrollmentStatus::ACTIVE->value,
-                    'enrolled_at' => $now,
-                ];
-            }
-
-            // Merge with existing students to avoid removing them
-            foreach ($existingStudentIds as $id) {
-                if (! isset($enrollmentData[$id])) {
-                    $existingPivot = $course->students()->where('user_id', $id)->first()?->pivot;
-                    $enrollmentData[$id] = [
-                        'status' => $existingPivot->status,
-                        'enrolled_at' => $existingPivot->enrolled_at,
-                    ];
-                }
-            }
+            $studentsWithoutRole->each(fn (User $student) => $student->assignRole(UserRole::STUDENT));
 
             // Sync the enrollments
-            $course->students()->sync($enrollmentData);
+            $now = now();
+            $course->students()->sync(
+                $students->mapWithKeys(fn (User $student) => [
+                    $student->id => [
+                        'status' => EnrollmentStatus::ACTIVE,
+                        'enrolled_at' => $now,
+                    ],
+                ])->toArray()
+            );
         });
     }
 }

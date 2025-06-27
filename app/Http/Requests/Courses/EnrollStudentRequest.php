@@ -23,6 +23,7 @@ final class EnrollStudentRequest extends FormRequest
      */
     public function rules(): array
     {
+        // TODO: current user cannot add themselves as a student or be the teacher of the course
         return [
             'student_ids' => ['required', 'array', 'min:1'],
             'student_ids.*' => ['required', 'exists:users,id'],
