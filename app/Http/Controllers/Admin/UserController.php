@@ -10,6 +10,7 @@ use App\Actions\Users\UpdateUserAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\CreateUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -19,13 +20,12 @@ final class UserController extends Controller
 {
     public function index(): Response
     {
-        $users = User::query()
-            ->with('roles')
-            ->latest()
-            ->paginate(10);
+        $users = User::with(['roles'])->get();
+
+        //        dd($users);
 
         return Inertia::render('admin/users/index', [
-            'users' => $users,
+            'users' => UserResource::collection($users),
         ]);
     }
 

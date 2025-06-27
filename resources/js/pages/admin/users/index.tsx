@@ -9,10 +9,6 @@ import { PlusIcon } from 'lucide-react';
 interface UserIndexPageProps {
     users: {
         data: User[];
-        links: { url: string | null; label: string; active: boolean }[];
-        from: number;
-        to: number;
-        total: number;
     };
 }
 
@@ -42,8 +38,7 @@ export default function UserIndexPage({ users }: UserIndexPageProps) {
                         </Link>
                     </Button>
                 </div>
-
-                <UserTable users={users} />
+                <UserTable users={users.data} />
             </div>
         </AppLayout>
     );

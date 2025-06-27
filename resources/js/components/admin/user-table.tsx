@@ -1,4 +1,4 @@
-import Pagination from '@/components/pagination';
+// import Pagination from '@/components/pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -8,13 +8,7 @@ import { PencilIcon } from 'lucide-react';
 import DeleteUserModal from './delete-user-modal';
 
 interface UserTableProps {
-    users: {
-        data: User[];
-        links: { url: string | null; label: string; active: boolean }[];
-        from: number;
-        to: number;
-        total: number;
-    };
+    users: User[];
 }
 
 export default function UserTable({ users }: UserTableProps) {
@@ -31,7 +25,7 @@ export default function UserTable({ users }: UserTableProps) {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {users.data.map((user) => (
+                        {users.map((user) => (
                             <TableRow key={user.id}>
                                 <TableCell className="font-medium">
                                     <Link href={route('admin.users.show', user.id)} className="hover:underline">
@@ -64,7 +58,6 @@ export default function UserTable({ users }: UserTableProps) {
                     </TableBody>
                 </Table>
             </div>
-            <Pagination links={users.links} />
         </div>
     );
 }

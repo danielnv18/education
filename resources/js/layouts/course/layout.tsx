@@ -4,8 +4,8 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { type Course, type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
+import { Users as UsersIcon } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
-import { Users as UsersIcon} from 'lucide-react';
 
 interface CourseLayoutProps extends PropsWithChildren {
     course: Course;
