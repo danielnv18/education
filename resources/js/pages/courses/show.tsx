@@ -46,7 +46,7 @@ export default function CourseShowPage({ course }: CourseShowPageProps) {
                         <Link href={route('courses.edit', { course: course.id })}>
                             <Button variant="outline">Edit Course</Button>
                         </Link>
-                        <Link href={route('courses.students', { course: course.id })}>
+                        <Link href={route('courses.students.index', { course: course.id })}>
                             <Button variant="outline">Manage Students</Button>
                         </Link>
                         {isAdmin && (
@@ -189,7 +189,7 @@ export default function CourseShowPage({ course }: CourseShowPageProps) {
                                             ? `${course.students.length} student${course.students.length > 1 ? 's' : ''} enrolled`
                                             : 'No students enrolled yet'}
                                     </p>
-                                    <Link href={route('courses.students', { course: course.id })}>
+                                    <Link href={route('courses.students.index', { course: course.id })}>
                                         <Button variant="outline" size="sm">
                                             Manage Students
                                         </Button>

@@ -34,7 +34,7 @@ export default function CourseStudentsPage({ course, availableStudents }: Course
         },
         {
             title: 'Students',
-            href: route('courses.students', { course: course.id }),
+            href: route('courses.students.index', { course: course.id }),
         },
     ];
 
