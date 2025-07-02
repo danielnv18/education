@@ -4,7 +4,7 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { type Course, type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Users as UsersIcon } from 'lucide-react';
+import { PencilLine, Users as UsersIcon } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 
 interface CourseLayoutProps extends PropsWithChildren {
@@ -17,17 +17,17 @@ export default function CourseLayout({ children, course }: CourseLayoutProps) {
         return null;
     }
 
-    const currentPath = window.location.pathname;
+    const currentPath = window.location.href;
 
     const sidebarNavItems: NavItem[] = [
         {
             title: 'Edit',
             href: route('courses.edit', { course: course.id }),
-            icon: null,
+            icon: PencilLine,
         },
         {
             title: 'Students',
-            href: route('courses.students', { course: course.id }),
+            href: route('courses.students.index', { course: course.id }),
             icon: UsersIcon,
         },
     ];
@@ -50,6 +50,7 @@ export default function CourseLayout({ children, course }: CourseLayoutProps) {
                                 })}
                             >
                                 <Link href={item.href} prefetch>
+                                    {item.icon && <item.icon className="mr-2 h-4 w-4" />}
                                     {item.title}
                                 </Link>
                             </Button>
