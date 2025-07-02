@@ -1,6 +1,8 @@
+import StudentTable from '@/components/courses/student-table';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import AppLayout from '@/layouts/app-layout';
 import CourseLayout from '@/layouts/course/course-layout';
 import { Course, SharedData, User } from '@/types';
@@ -18,6 +20,7 @@ export default function CourseStudentsPage({ course, availableStudents }: Course
     const isTeacher = auth.roles?.includes('teacher');
     const canEnrollStudents = isAdmin || (isTeacher && course.teacher_id === auth.user?.id);
     const [selectedStudentIds, setSelectedStudentIds] = useState<Record<string, boolean>>({});
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     const breadcrumbs = [
         {
@@ -46,81 +49,77 @@ export default function CourseStudentsPage({ course, availableStudents }: Course
                 <div className="space-y-6">
                     {/* Enrolled Students Section */}
                     <Card>
-                        <CardHeader>
+                        <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle>Enrolled Students</CardTitle>
+                            {canEnrollStudents && availableStudents.length > 0 && (
+                                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button size="sm">Enroll Students</Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-lg">
+                                        <DialogHeader>
+                                            <DialogTitle>Enroll Students</DialogTitle>
+                                        </DialogHeader>
+                                        <form
+                                            onSubmit={async (e) => {
+                                                e.preventDefault();
+                                                const selectedIds = Object.entries(selectedStudentIds)
+                                                    .filter(([, isSelected]) => isSelected)
+                                                    .map(([id]) => id);
+                                                if (selectedIds.length === 0) {
+                                                    return;
+                                                }
+                                                router.post(
+                                                    route('courses.students.store', { course: course.id }),
+                                                    {
+                                                        student_ids: selectedIds,
+                                                    },
+                                                    {
+                                                        onSuccess: () => setDialogOpen(false),
+                                                    },
+                                                );
+                                            }}
+                                        >
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <label className="mb-2 block text-sm font-medium text-gray-700">Select Students</label>
+                                                    <div className="max-h-60 space-y-2 overflow-y-auto rounded-md border p-2">
+                                                        {availableStudents.map((student) => (
+                                                            <div key={student.id} className="flex items-center space-x-2">
+                                                                <Checkbox
+                                                                    id={`student-${student.id}`}
+                                                                    checked={selectedStudentIds[student.id] || false}
+                                                                    onCheckedChange={(checked) => {
+                                                                        setSelectedStudentIds({
+                                                                            ...selectedStudentIds,
+                                                                            [student.id]: !!checked,
+                                                                        });
+                                                                    }}
+                                                                />
+                                                                <label htmlFor={`student-${student.id}`} className="cursor-pointer text-sm">
+                                                                    {student.name} ({student.email})
+                                                                </label>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                <Button type="submit" disabled={Object.values(selectedStudentIds).filter(Boolean).length === 0}>
+                                                    Enroll Selected Students
+                                                </Button>
+                                            </div>
+                                        </form>
+                                    </DialogContent>
+                                </Dialog>
+                            )}
                         </CardHeader>
                         <CardContent>
                             {course.students && course.students.length > 0 ? (
-                                <ul className="space-y-2">
-                                    {course.students.map((student) => (
-                                        <li key={student.id} className="flex items-center justify-between">
-                                            <span>
-                                                {student.name} ({student.email})
-                                            </span>
-                                        </li>
-                                    ))}
-                                </ul>
+                                <StudentTable students={course.students} />
                             ) : (
                                 <p className="text-gray-500">No students enrolled in this course yet.</p>
                             )}
                         </CardContent>
                     </Card>
-
-                    {/* Enroll Student Form */}
-                    {canEnrollStudents && availableStudents.length > 0 && (
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Enroll Student</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <form
-                                    onSubmit={(e) => {
-                                        e.preventDefault();
-
-                                        const selectedIds = Object.entries(selectedStudentIds)
-                                            .filter(([, isSelected]) => isSelected)
-                                            .map(([id]) => id);
-
-                                        if (selectedIds.length === 0) {
-                                            return;
-                                        }
-
-                                        router.post(route('courses.enroll', { course: course.id }), {
-                                            student_ids: selectedIds,
-                                        });
-                                    }}
-                                >
-                                    <div className="space-y-4">
-                                        <div>
-                                            <label className="mb-2 block text-sm font-medium text-gray-700">Select Students</label>
-                                            <div className="max-h-60 space-y-2 overflow-y-auto rounded-md border p-2">
-                                                {availableStudents.map((student) => (
-                                                    <div key={student.id} className="flex items-center space-x-2">
-                                                        <Checkbox
-                                                            id={`student-${student.id}`}
-                                                            checked={selectedStudentIds[student.id] || false}
-                                                            onCheckedChange={(checked) => {
-                                                                setSelectedStudentIds({
-                                                                    ...selectedStudentIds,
-                                                                    [student.id]: !!checked,
-                                                                });
-                                                            }}
-                                                        />
-                                                        <label htmlFor={`student-${student.id}`} className="cursor-pointer text-sm">
-                                                            {student.name} ({student.email})
-                                                        </label>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                        <Button type="submit" disabled={Object.values(selectedStudentIds).filter(Boolean).length === 0}>
-                                            Enroll Selected Students
-                                        </Button>
-                                    </div>
-                                </form>
-                            </CardContent>
-                        </Card>
-                    )}
                 </div>
             </CourseLayout>
         </AppLayout>
