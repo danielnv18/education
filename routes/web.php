@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\CourseContentController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseStudentsController;
 use App\Http\Controllers\DashboardController;
@@ -17,6 +18,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('courses', CourseController::class);
     Route::resource('courses.students', CourseStudentsController::class)->only(['index', 'store']);
+
+    Route::resource('courses.content', CourseContentController::class)->only(['index', 'store']);
 });
 
 require __DIR__.'/settings.php';

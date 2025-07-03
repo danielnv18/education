@@ -4,7 +4,7 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { type Course, type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { PencilLine, Users as UsersIcon } from 'lucide-react';
+import { BookCheck, PencilLine, Users as UsersIcon } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 
 interface CourseLayoutProps extends PropsWithChildren {
@@ -29,6 +29,11 @@ export default function CourseLayout({ children, course }: CourseLayoutProps) {
             title: 'Students',
             href: route('courses.students.index', { course: course.id }),
             icon: UsersIcon,
+        },
+        {
+            title: 'Content',
+            href: route('courses.content.index', { course: course.id }),
+            icon: BookCheck,
         },
     ];
 
