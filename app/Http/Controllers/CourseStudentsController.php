@@ -30,6 +30,10 @@ final class CourseStudentsController extends Controller
             ->whereDoesntHave('enrolledCourses', function (Builder $query) use ($course): void {
                 $query->where('course_id', $course->id);
             })
+            ->where('id', '!=', $course->teacher_id) // Exclude the course teacher
+            ->where('id', '!=', auth()->id()) // Exclude the current user
+            ->where('email_verified_at', '!=', null) // Only include users with verified emails
+
             ->orderBy('name')
             ->get(['id', 'name', 'email']);
 
@@ -46,17 +50,11 @@ final class CourseStudentsController extends Controller
     {
         Gate::authorize('manageContent', $course);
 
-        $studentIds = $request->validated('student_ids');
-        $students = User::whereIn('id', $studentIds)->get();
+        $action->handle($course, $request->validated('student_ids'));
 
-        $action->handle($course, $students);
+        $message = 'students enrolled successfully.';
 
-        $count = $students->count();
-        $message = $count === 1
-            ? '1 student enrolled successfully.'
-            : "$count students enrolled successfully.";
-
-        return to_route('courses.students', $course)
+        return to_route('courses.students.index', $course)
             ->with('success', $message);
     }
 }
