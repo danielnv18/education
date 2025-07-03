@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Enums\UserRole;
+use App\Models\Course;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -15,6 +16,12 @@ final class LocalSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->localUsers();
+        $this->localCourse();
+    }
+
+    private function localUsers(): void
+    {
         User::factory()->create([
             'name' => 'Admin User',
             'email' => 'admin@lms.com',
@@ -23,7 +30,6 @@ final class LocalSeeder extends Seeder
         ])->assignRole(UserRole::ADMIN);
 
         User::factory()->count(5)->create([
-            'password' => bcrypt('password'),
             'email_verified_at' => now(),
         ])->each(function (User $user): void {
             $user->assignRole(UserRole::ADMIN, UserRole::TEACHER);
@@ -31,16 +37,19 @@ final class LocalSeeder extends Seeder
 
         // Teachers
         User::factory()->count(5)->create([
-            'password' => bcrypt('password'),
             'email_verified_at' => now(),
         ])->each(function (User $user): void {
             $user->assignRole(UserRole::TEACHER);
         });
 
         // Students
-        User::factory()->count(80)->create([
-            'password' => bcrypt('password'),
+        User::factory()->count(30)->create([
             'email_verified_at' => now(),
         ]);
+    }
+
+    private function localCourse(): void
+    {
+        Course::factory()->withModulesAndLessons()->create();
     }
 }

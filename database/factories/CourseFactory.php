@@ -101,4 +101,23 @@ final class CourseFactory extends Factory
             'teacher_id' => null,
         ]);
     }
+
+    /**
+     * Indicate that the course should have modules and lessons.
+     */
+    public function withModulesAndLessons(int $modulesCount = 3, int $lessonsPerModule = 5): self
+    {
+        return $this->afterCreating(function (Course $course) use ($modulesCount, $lessonsPerModule) {
+            ModuleFactory::new()
+                ->count($modulesCount)
+                ->for($course)
+                ->create()
+                ->each(function ($module) use ($lessonsPerModule) {
+                    LessonFactory::new()
+                        ->count($lessonsPerModule)
+                        ->for($module)
+                        ->create();
+                });
+        });
+    }
 }
