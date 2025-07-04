@@ -11,7 +11,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * @mixin User
  */
-final class UserResource extends JsonResource
+final class StudentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -24,11 +24,6 @@ final class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'roles' => $this->whenLoaded('roles', function () {
-                return RoleResource::collection($this->roles);
-
-            }),
-            'verified' => $this->hasVerifiedEmail(),
         ];
     }
 }

@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Models\Lesson;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin \App\Models\Course
+ * @mixin Lesson
  */
-final class CourseResource extends JsonResource
+final class LessonResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -22,11 +23,9 @@ final class CourseResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'description' => $this->description,
-            'status' => $this->status,
-            'instructor' => new UserResource($this->whenLoaded('instructor')),
-            'students' => StudentResource::collection($this->whenLoaded('students')),
-            'modules' => ModuleResource::collection($this->whenLoaded('modules')),
+            'content' => $this->content,
+            'order' => $this->order,
+            'type' => $this->type,
         ];
     }
 }

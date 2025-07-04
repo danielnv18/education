@@ -8,7 +8,6 @@ use App\Enums\LessonType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 final class Lesson extends Model
 {
@@ -38,11 +37,11 @@ final class Lesson extends Model
     }
 
     /**
-     * @return MorphMany<File, $this>
+     * @return BelongsTo<File, $this>
      */
-    public function files(): MorphMany
+    public function file(): BelongsTo
     {
-        return $this->morphMany(File::class, 'fileable');
+        return $this->belongsTo(File::class, 'fileable');
     }
 
     /**

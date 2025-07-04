@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CourseResource;
 use App\Models\Course;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,7 +17,7 @@ final class CourseContentController extends Controller
         $course->load('modules', 'modules.lessons', 'modules.lessons');
 
         return Inertia::render('courses/content', [
-            'course' => $course,
+            'course' => new CourseResource($course),
             'modules' => $course->modules,
         ]);
     }

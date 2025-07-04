@@ -42,15 +42,18 @@ final class UserController extends Controller
 
     public function show(User $user): Response
     {
+        $user->load('roles');
+
         return Inertia::render('admin/users/show', [
-            'user' => $user->load('roles'),
+            'user' => new UserResource($user),
         ]);
     }
 
     public function edit(User $user): Response
     {
+        $user->load('roles');
         return Inertia::render('admin/users/edit', [
-            'user' => $user->load('roles'),
+            'user' => new UserResource($user),
         ]);
     }
 
