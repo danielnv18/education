@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\CourseContentController;
-use App\Http\Controllers\CourseController;
-use App\Http\Controllers\CourseStudentsController;
+use App\Http\Controllers\Course\CourseContentController;
+use App\Http\Controllers\Course\CourseController;
+use App\Http\Controllers\Course\CourseStudentsController;
+use App\Http\Controllers\Course\ModuleController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;

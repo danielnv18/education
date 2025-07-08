@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Course;
 
 use App\Actions\Courses\EnrollStudentAction;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Courses\EnrollStudentRequest;
 use App\Models\Course;
 use App\Models\User;
