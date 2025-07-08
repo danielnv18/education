@@ -121,9 +121,3 @@ test('lesson factory can create a document lesson', function (): void {
 
     expect($lesson->type)->toBe(LessonType::DOCUMENT);
 });
-
-test('lesson factory can create an interactive lesson', function (): void {
-    $lesson = Lesson::factory()->asInteractive()->create();
-
-    expect($lesson->type)->toBe(LessonType::INTERACTIVE);
-});

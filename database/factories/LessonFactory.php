@@ -89,14 +89,4 @@ final class LessonFactory extends Factory
             'type' => LessonType::DOCUMENT,
         ]);
     }
-
-    /**
-     * Set the lesson type to interactive.
-     */
-    public function asInteractive(): self
-    {
-        return $this->state(fn (array $attributes): array => [
-            'type' => LessonType::INTERACTIVE,
-        ]);
-    }
 }

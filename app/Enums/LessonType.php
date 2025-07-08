@@ -6,6 +6,7 @@ namespace App\Enums;
 
 enum LessonType: string
 {
+    case TEXT = 'text';
     case VIDEO = 'video';
     case DOCUMENT = 'document';
     case LINK = 'link';
