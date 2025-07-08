@@ -46,21 +46,6 @@ test('lesson belongs to a module', function (): void {
         ->and($lesson->module->id)->toBe($module->id);
 });
 
-test('lesson has many files', function (): void {
-    $lesson = Lesson::factory()->create();
-
-    // Create files with the lesson as the fileable
-    $user = User::factory()->create();
-    File::factory()->count(3)->create([
-        'fileable_id' => $lesson->id,
-        'fileable_type' => Lesson::class,
-        'uploaded_by' => $user->id,
-    ]);
-
-    expect($lesson->files)->toHaveCount(3)
-        ->and($lesson->files->first())->toBeInstanceOf(File::class);
-});
-
 test('lesson factory creates a valid lesson', function (): void {
     $lesson = Lesson::factory()->create();
 

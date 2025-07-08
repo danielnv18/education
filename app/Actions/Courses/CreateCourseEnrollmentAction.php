@@ -9,7 +9,7 @@ use App\Models\Course;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
-final class EnrollStudentAction
+final class CreateCourseEnrollmentAction
 {
     /**
      * Enroll students in a course.
@@ -29,10 +29,12 @@ final class EnrollStudentAction
             // Assign a student role to all students who don't have it
             $studentsWithoutRole = $students->reject(fn (User $student): bool => $student->hasRole(UserRole::STUDENT));
 
+            // Assign the student role to those who don't have it
             $studentsWithoutRole->each(fn (User $student) => $student->assignRole(UserRole::STUDENT));
 
+//            dd($studentsWithoutRole->first()->roles);
             // Sync the enrollments
-            $course->students()->attach($students->pluck('id')->toArray());
+            $course->students()->syncWithoutDetaching($students->pluck('id')->toArray());
         });
     }
 }
