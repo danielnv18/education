@@ -107,12 +107,12 @@ final class CourseFactory extends Factory
      */
     public function withModulesAndLessons(int $modulesCount = 3, int $lessonsPerModule = 5): self
     {
-        return $this->afterCreating(function (Course $course) use ($modulesCount, $lessonsPerModule) {
+        return $this->afterCreating(function (Course $course) use ($modulesCount, $lessonsPerModule): void {
             ModuleFactory::new()
                 ->count($modulesCount)
                 ->for($course)
                 ->create()
-                ->each(function ($module) use ($lessonsPerModule) {
+                ->each(function ($module) use ($lessonsPerModule): void {
                     LessonFactory::new()
                         ->count($lessonsPerModule)
                         ->for($module)

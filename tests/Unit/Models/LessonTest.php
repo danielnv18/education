@@ -3,10 +3,8 @@
 declare(strict_types=1);
 
 use App\Enums\LessonType;
-use App\Models\File;
 use App\Models\Lesson;
 use App\Models\Module;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
