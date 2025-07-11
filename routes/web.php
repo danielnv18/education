@@ -9,7 +9,9 @@ use App\Http\Controllers\Course\ModuleController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
-Route::permanentRedirect('/', '/dashboard');
+Route::get('/', function () {
+    return redirect()->route('dashboard');
+})->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
