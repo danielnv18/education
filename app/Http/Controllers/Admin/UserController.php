@@ -52,6 +52,7 @@ final class UserController extends Controller
     public function edit(User $user): Response
     {
         $user->load('roles');
+
         return Inertia::render('admin/users/edit', [
             'user' => new UserResource($user),
         ]);
