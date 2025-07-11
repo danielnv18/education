@@ -12,7 +12,7 @@ final class CreateCourseAction
     /**
      * Handle the creation of a new course.
      *
-     * @param  array<string, mixed>  $data
+     * @param  array<string, string|bool|int>  $data
      */
     public function handle(array $data): Course
     {

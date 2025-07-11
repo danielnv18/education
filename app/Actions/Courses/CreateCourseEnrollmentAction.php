@@ -32,7 +32,6 @@ final class CreateCourseEnrollmentAction
             // Assign the student role to those who don't have it
             $studentsWithoutRole->each(fn (User $student) => $student->assignRole(UserRole::STUDENT));
 
-//            dd($studentsWithoutRole->first()->roles);
             // Sync the enrollments
             $course->students()->syncWithoutDetaching($students->pluck('id')->toArray());
         });

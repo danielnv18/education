@@ -24,10 +24,7 @@ final class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'roles' => $this->whenLoaded('roles', function () {
-                return RoleResource::collection($this->roles);
-
-            }),
+            'roles' => $this->whenLoaded('roles', fn () => RoleResource::collection($this->roles)),
             'verified' => $this->hasVerifiedEmail(),
         ];
     }

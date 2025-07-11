@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Course;
 
-use App\Actions\Courses\EnrollStudentAction;
+use App\Actions\Courses\CreateCourseEnrollmentAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Courses\EnrollStudentRequest;
 use App\Models\Course;
@@ -28,13 +28,9 @@ final class CourseStudentsController extends Controller
 
         // Get users who are not already enrolled in the course
         $availableStudents = User::query()
-            ->whereDoesntHave('enrolledCourses', function (Builder $query) use ($course): void {
-                $query->where('course_id', $course->id);
-            })
-            ->where('id', '!=', $course->teacher_id) // Exclude the course teacher
-            ->where('id', '!=', auth()->id()) // Exclude the current user
-            ->where('email_verified_at', '!=', null) // Only include users with verified emails
-
+            ->whereDoesntHave('enrolledCourses', fn (Builder $query) => $query->where('course_id', $course->id))
+            ->whereNotIn('id', [$course->teacher_id, auth()->id()]) // Exclude the course teacher and current user
+            ->whereNotNull('email_verified_at') // Only include users with verified emails
             ->orderBy('name')
             ->get(['id', 'name', 'email']);
 
@@ -47,7 +43,7 @@ final class CourseStudentsController extends Controller
     /**
      * Enroll students in the course.
      */
-    public function store(EnrollStudentRequest $request, Course $course, EnrollStudentAction $action): RedirectResponse
+    public function store(EnrollStudentRequest $request, Course $course, CreateCourseEnrollmentAction $action): RedirectResponse
     {
         Gate::authorize('manageContent', $course);
 
