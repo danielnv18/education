@@ -50,13 +50,13 @@ export default function CourseForm({ data, setData, errors, processing, teachers
                     <div className="space-y-2">
                         <Label htmlFor="title">Title</Label>
                         <Input id="title" value={data.title} onChange={(e) => setData('title', e.target.value)} required />
-                        {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
+                        {errors.title && <InputError message={errors.title} />}
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="description">Description</Label>
                         <Textarea id="description" value={data.description} onChange={(e) => setData('description', e.target.value)} rows={5} />
-                        {errors.description && <p className="text-sm text-red-500">{errors.description}</p>}
+                        {errors.description && <InputError message={errors.description} />}
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -72,7 +72,7 @@ export default function CourseForm({ data, setData, errors, processing, teachers
                                     <SelectItem value="archived">Archived</SelectItem>
                                 </SelectContent>
                             </Select>
-                            {errors.status && <p className="text-sm text-red-500">{errors.status}</p>}
+                            {errors.status && <InputError message={errors.status} />}
                         </div>
 
                         <div className="space-y-2">
@@ -104,13 +104,13 @@ export default function CourseForm({ data, setData, errors, processing, teachers
                         <div className="space-y-2">
                             <Label htmlFor="start_date">Start Date</Label>
                             <Input id="start_date" type="date" value={data.start_date} onChange={(e) => setData('start_date', e.target.value)} />
-                            {errors.start_date && <p className="text-sm text-red-500">{errors.start_date}</p>}
+                            {errors.start_date && <InputError message={errors.start_date} />}
                         </div>
 
                         <div className="space-y-2">
                             <Label htmlFor="end_date">End Date</Label>
                             <Input id="end_date" type="date" value={data.end_date} onChange={(e) => setData('end_date', e.target.value)} />
-                            {errors.end_date && <p className="text-sm text-red-500">{errors.end_date}</p>}
+                            {errors.end_date && <InputError message={errors.end_date} />}
                         </div>
                     </div>
 
