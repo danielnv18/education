@@ -10,6 +10,5 @@ enum LessonType: string
     case VIDEO = 'video';
     case DOCUMENT = 'document';
     case LINK = 'link';
-
     case EMBED = 'embed';
 }
