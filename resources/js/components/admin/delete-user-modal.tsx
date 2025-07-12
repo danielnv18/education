@@ -1,5 +1,15 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+    AlertDialog,
+    AlertDialogTrigger,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogCancel,
+    AlertDialogAction,
+} from '@/components/ui/alert-dialog';
 import { User } from '@/types';
 import { router } from '@inertiajs/react';
 import { TrashIcon } from 'lucide-react';
@@ -10,14 +20,12 @@ interface DeleteUserModalProps {
 }
 
 export default function DeleteUserModal({ user }: DeleteUserModalProps) {
-    const [open, setOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDelete = () => {
         setIsDeleting(true);
         router.delete(route('admin.users.destroy', user.id), {
             onSuccess: () => {
-                setOpen(false);
                 setIsDeleting(false);
             },
             onError: () => {
@@ -27,25 +35,35 @@ export default function DeleteUserModal({ user }: DeleteUserModalProps) {
     };
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
+        <AlertDialog>
+            <AlertDialogTrigger asChild>
                 <Button variant="ghost" size="icon">
                     <TrashIcon className="h-4 w-4" />
                     <span className="sr-only">Delete</span>
                 </Button>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogTitle>Delete User</DialogTitle>
-                <DialogDescription>Are you sure you want to delete the user "{user.name}"? This action cannot be undone.</DialogDescription>
-                <DialogFooter className="gap-2">
-                    <DialogClose asChild>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Delete User</AlertDialogTitle>
+                    <AlertDialogDescription>
+                        Are you sure you want to delete the user "{user.name}"? This action cannot be undone.
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel asChild>
                         <Button variant="secondary">Cancel</Button>
-                    </DialogClose>
-                    <Button variant="destructive" disabled={isDeleting} onClick={handleDelete}>
-                        {isDeleting ? 'Deleting...' : 'Delete User'}
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                    </AlertDialogCancel>
+                    <AlertDialogAction asChild>
+                        <Button
+                            variant="destructive"
+                            disabled={isDeleting}
+                            onClick={handleDelete}
+                        >
+                            {isDeleting ? 'Deleting...' : 'Delete User'}
+                        </Button>
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     );
 }
