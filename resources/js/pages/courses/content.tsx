@@ -1,10 +1,11 @@
+import DeleteConfirmationDialog from '@/components/modals/delete-confirmation-dialog';
 import LessonFormModal from '@/components/modals/lesson-form-modal';
 import ModuleFormModal from '@/components/modals/module-form-modal';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import CourseLayout from '@/layouts/course/course-layout';
-import { Course, Module } from '@/types';
+import { Course, Lesson, Module } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { PlusCircle } from 'lucide-react';
 import React, { useState } from 'react';
@@ -18,13 +19,15 @@ export default function CourseContentPage({ course, modules }: CourseContentPage
     const [moduleDialogOpen, setModuleDialogOpen] = useState(false);
     const [lessonDialogOpen, setLessonDialogOpen] = useState(false);
     const [selectedModuleId, setSelectedModuleId] = useState<number | null>(null);
+    const [editingModule, setEditingModule] = useState<Module | null>(null);
+    const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
 
     const moduleForm = useForm({
         title: '',
         description: '',
         course_id: course.id,
         order: modules.length + 1,
-        is_published: false,
+        is_published: false as boolean,
     });
 
     const lessonForm = useForm({
@@ -33,7 +36,7 @@ export default function CourseContentPage({ course, modules }: CourseContentPage
         module_id: selectedModuleId,
         order: 0,
         type: 'text',
-        is_published: false,
+        is_published: false as boolean,
     });
 
     const breadcrumbs = [
@@ -57,20 +60,84 @@ export default function CourseContentPage({ course, modules }: CourseContentPage
 
     const handleModuleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        moduleForm.post(route('courses.modules.store', { course: course.id }), {
-            onSuccess: () => {
-                setModuleDialogOpen(false);
-                moduleForm.reset();
+        if (editingModule) {
+            moduleForm.put(route('courses.modules.update', { course: course.id, module: editingModule.id }), {
+                onSuccess: () => {
+                    setModuleDialogOpen(false);
+                    setEditingModule(null);
+                    moduleForm.reset();
+                },
+            });
+        } else {
+            moduleForm.post(route('courses.modules.store', { course: course.id }), {
+                onSuccess: () => {
+                    setModuleDialogOpen(false);
+                    moduleForm.reset();
+                },
+            });
+        }
+    };
+
+    const openEditModuleDialog = (module: Module) => {
+        setEditingModule(module);
+        moduleForm.setData({
+            title: module.title,
+            description: module.description || '',
+            course_id: course.id,
+            order: module.order,
+            is_published: module.is_published,
+        });
+        setModuleDialogOpen(true);
+    };
+
+    const handleDeleteModule = (module: Module) => {
+        moduleForm.delete(route('courses.modules.destroy', { module: module.id, course: course.id }), {
+            onFinish: () => {
+                setEditingModule(null);
+                setSelectedModuleId(null);
             },
         });
     };
 
     const handleLessonSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        lessonForm.post(route('courses.lessons.store', { course: course.id }), {
-            onSuccess: () => {
-                setLessonDialogOpen(false);
-                lessonForm.reset();
+        if (editingLesson) {
+            lessonForm.put(route('courses.lessons.update', { course: course.id, lesson: editingLesson.id }), {
+                onSuccess: () => {
+                    setLessonDialogOpen(false);
+                    setEditingLesson(null);
+                    lessonForm.reset();
+                },
+            });
+        } else {
+            lessonForm.post(route('courses.lessons.store', { course: course.id }), {
+                onSuccess: () => {
+                    setLessonDialogOpen(false);
+                    lessonForm.reset();
+                },
+            });
+        }
+    };
+
+    const openEditLessonDialog = (lesson: Lesson) => {
+        setEditingLesson(lesson);
+        setSelectedModuleId(lesson.module_id);
+        lessonForm.setData({
+            title: lesson.title,
+            content: lesson.content || '',
+            module_id: lesson.module_id,
+            order: lesson.order,
+            type: lesson.type,
+            is_published: lesson.is_published,
+        });
+        setLessonDialogOpen(true);
+    };
+
+    const handleDeleteLesson = (lesson: Lesson) => {
+        lessonForm.delete(route('courses.modules.destroy', { lesson: lesson.id, course: course.id }), {
+            onFinish: () => {
+                setEditingModule(null);
+                setSelectedModuleId(null);
             },
         });
     };
@@ -96,6 +163,7 @@ export default function CourseContentPage({ course, modules }: CourseContentPage
                         errors={moduleForm.errors}
                         processing={moduleForm.processing}
                         onSubmit={handleModuleSubmit}
+                        isEditing={!!editingModule}
                     />
                 </div>
 
@@ -113,18 +181,42 @@ export default function CourseContentPage({ course, modules }: CourseContentPage
                     <div className="space-y-4">
                         {modules.map((module) => (
                             <Card key={module.id}>
-                                <CardHeader>
-                                    <CardTitle>{module.title}</CardTitle>
-                                    <CardDescription>{module.lessons.length} lessons</CardDescription>
+                                <CardHeader className="flex flex-row items-start justify-between space-y-0">
+                                    <div>
+                                        <CardTitle>{module.title}</CardTitle>
+                                        <CardDescription>{module.lessons.length} lessons</CardDescription>
+                                    </div>
+                                    <div className="flex space-x-2">
+                                        <Button variant="outline" size="sm" onClick={() => openEditModuleDialog(module)}>
+                                            Edit
+                                        </Button>
+                                        <DeleteConfirmationDialog
+                                            title="Delete Module"
+                                            description="Are you sure you want to delete this module? This action cannot be undone and will also delete all lessons in this module."
+                                            onDelete={() => handleDeleteModule(module)}
+                                        />
+                                    </div>
                                 </CardHeader>
                                 <CardContent>
                                     <ul className="space-y-2">
                                         {module.lessons.map((lesson) => (
-                                            <li key={lesson.id} className="flex items-center gap-2">
-                                                <span className="bg-primary/10 flex h-6 w-6 items-center justify-center rounded-full text-xs">
-                                                    {lesson.order}
-                                                </span>
-                                                <span>{lesson.title}</span>
+                                            <li key={lesson.id} className="flex items-center justify-between gap-2">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="bg-primary/10 flex h-6 w-6 items-center justify-center rounded-full text-xs">
+                                                        {lesson.order}
+                                                    </span>
+                                                    <span>{lesson.title}</span>
+                                                </div>
+                                                <div className="flex space-x-2">
+                                                    <Button variant="ghost" size="sm" onClick={() => openEditLessonDialog(lesson)}>
+                                                        Edit
+                                                    </Button>
+                                                    <DeleteConfirmationDialog
+                                                        title="Delete Lesson"
+                                                        description="Are you sure you want to delete this lesson? This action cannot be undone."
+                                                        onDelete={() => handleDeleteLesson(lesson)}
+                                                    />
+                                                </div>
                                             </li>
                                         ))}
                                     </ul>
