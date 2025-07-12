@@ -153,3 +153,31 @@ it('preserves existing enrollments when adding new students', function (): void 
         expect($course->students()->where('user_id', $student->id)->exists())->toBeTrue();
     }
 });
+
+it('handles empty student IDs array gracefully', function (): void {
+    // Arrange
+    $course = Course::factory()->create();
+    $emptyStudentIds = [];
+
+    $action = new CreateCourseEnrollmentAction();
+
+    // Act
+    $action->handle($course, $emptyStudentIds);
+
+    // Assert - no students should be enrolled
+    expect($course->students()->count())->toBe(0);
+});
+
+it('handles non-existent student IDs gracefully', function (): void {
+    // Arrange
+    $course = Course::factory()->create();
+    $nonExistentStudentIds = [999999, 999998]; // IDs that don't exist
+
+    $action = new CreateCourseEnrollmentAction();
+
+    // Act
+    $action->handle($course, $nonExistentStudentIds);
+
+    // Assert - no students should be enrolled
+    expect($course->students()->count())->toBe(0);
+});
