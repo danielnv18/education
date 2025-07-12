@@ -30,9 +30,10 @@ interface ModuleFormProps {
     errors: ModuleFormErrors;
     processing: boolean;
     onSubmit: (e: React.FormEvent) => void;
+    isEditing?: boolean;
 }
 
-export default function ModuleForm({ data, setData, errors, processing, onSubmit }: ModuleFormProps) {
+export default function ModuleForm({ data, setData, errors, processing, onSubmit, isEditing = false }: ModuleFormProps) {
     return (
         <form onSubmit={onSubmit}>
             <div className="space-y-4 py-4">
@@ -59,7 +60,7 @@ export default function ModuleForm({ data, setData, errors, processing, onSubmit
             </div>
             <DialogFooter>
                 <Button type="submit" disabled={processing}>
-                    Create Module
+                    {isEditing ? 'Update Module' : 'Create Module'}
                 </Button>
             </DialogFooter>
         </form>

@@ -1,15 +1,15 @@
-import { Button } from '@/components/ui/button';
 import {
     AlertDialog,
-    AlertDialogTrigger,
+    AlertDialogAction,
+    AlertDialogCancel,
     AlertDialogContent,
-    AlertDialogHeader,
-    AlertDialogTitle,
     AlertDialogDescription,
     AlertDialogFooter,
-    AlertDialogCancel,
-    AlertDialogAction,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import { User } from '@/types';
 import { router } from '@inertiajs/react';
 import { TrashIcon } from 'lucide-react';
@@ -54,11 +54,7 @@ export default function DeleteUserModal({ user }: DeleteUserModalProps) {
                         <Button variant="secondary">Cancel</Button>
                     </AlertDialogCancel>
                     <AlertDialogAction asChild>
-                        <Button
-                            variant="destructive"
-                            disabled={isDeleting}
-                            onClick={handleDelete}
-                        >
+                        <Button variant="destructive" disabled={isDeleting} onClick={handleDelete}>
                             {isDeleting ? 'Deleting...' : 'Delete User'}
                         </Button>
                     </AlertDialogAction>

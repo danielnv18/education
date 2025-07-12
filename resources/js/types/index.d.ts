@@ -81,6 +81,8 @@ export interface Lesson {
     content: string | null;
     module_id: number;
     order: number;
+    is_published: boolean;
+    type: 'video' | 'text' | 'document' | 'link' | 'embed';
 }
 
 export interface Module {
@@ -90,4 +92,5 @@ export interface Module {
     course_id: number;
     order: number;
     lessons: Lesson[];
+    is_published: boolean;
 }
