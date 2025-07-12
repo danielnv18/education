@@ -24,7 +24,6 @@ export interface LessonFormErrors {
     order?: string;
     type?: string;
     is_published?: string;
-    [key: string]: string | undefined;
 }
 
 interface LessonFormProps {
@@ -33,9 +32,10 @@ interface LessonFormProps {
     errors: LessonFormErrors;
     processing: boolean;
     onSubmit: (e: React.FormEvent) => void;
+    isEditing?: boolean;
 }
 
-export default function LessonForm({ data, setData, errors, processing, onSubmit }: LessonFormProps) {
+export default function LessonForm({ data, setData, errors, processing, onSubmit, isEditing = false }: LessonFormProps) {
     return (
         <form onSubmit={onSubmit}>
             <div className="space-y-4 py-4">
@@ -82,7 +82,7 @@ export default function LessonForm({ data, setData, errors, processing, onSubmit
             </div>
             <DialogFooter>
                 <Button type="submit" disabled={processing}>
-                    Create Lesson
+                    {isEditing ? 'Update Lesson' : 'Create Lesson'}
                 </Button>
             </DialogFooter>
         </form>

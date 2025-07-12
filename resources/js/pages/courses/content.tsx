@@ -175,6 +175,7 @@ export default function CourseContentPage({ course, modules }: CourseContentPage
                     errors={lessonForm.errors}
                     processing={lessonForm.processing}
                     onSubmit={handleLessonSubmit}
+                    isEditing={!!editingLesson}
                 />
 
                 {modules.length > 0 ? (
