@@ -134,7 +134,7 @@ export default function CourseContentPage({ course, modules }: CourseContentPage
     };
 
     const handleDeleteLesson = (lesson: Lesson) => {
-        lessonForm.delete(route('courses.modules.destroy', { lesson: lesson.id, course: course.id }), {
+        lessonForm.delete(route('courses.lessons.destroy', { lesson: lesson.id, course: course.id }), {
             onFinish: () => {
                 setEditingModule(null);
                 setSelectedModuleId(null);
