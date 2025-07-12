@@ -13,9 +13,20 @@ interface ModuleFormModalProps {
     processing: boolean;
     onSubmit: (e: React.FormEvent) => void;
     triggerButton?: React.ReactNode;
+    isEditing?: boolean;
 }
 
-export default function ModuleFormModal({ open, onOpenChange, data, setData, errors, processing, onSubmit, triggerButton }: ModuleFormModalProps) {
+export default function ModuleFormModal({
+    open,
+    onOpenChange,
+    data,
+    setData,
+    errors,
+    processing,
+    onSubmit,
+    triggerButton,
+    isEditing = false,
+}: ModuleFormModalProps) {
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             {triggerButton ? (
@@ -30,10 +41,14 @@ export default function ModuleFormModal({ open, onOpenChange, data, setData, err
             )}
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Create New Module</DialogTitle>
-                    <DialogDescription>Add a new module to your course. Modules help organize your course content.</DialogDescription>
+                    <DialogTitle>{isEditing ? 'Edit Module' : 'Create New Module'}</DialogTitle>
+                    <DialogDescription>
+                        {isEditing
+                            ? 'Edit your module details. Modules help organize your course content.'
+                            : 'Add a new module to your course. Modules help organize your course content.'}
+                    </DialogDescription>
                 </DialogHeader>
-                <ModuleForm data={data} setData={setData} errors={errors} processing={processing} onSubmit={onSubmit} />
+                <ModuleForm data={data} setData={setData} errors={errors} processing={processing} onSubmit={onSubmit} isEditing={isEditing} />
             </DialogContent>
         </Dialog>
     );
