@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Users;
 
+use App\Data\UserData;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,9 +17,9 @@ final class UpdateUserAction
      * @param  User  $user  The user to update
      * @param  array<string, mixed>  $data  The data to update the user with
      */
-    public function handle(User $user, array $data): User
+    public function handle(User $user, array $data): UserData
     {
-        return DB::transaction(function () use ($user, $data): User {
+        return DB::transaction(function () use ($user, $data): UserData {
             $userData = [
                 'name' => $data['name'],
                 'email' => $data['email'],
@@ -38,7 +39,9 @@ final class UpdateUserAction
                 $user->syncRoles($data['roles']);
             }
 
-            return $user;
+            $user->refresh();
+
+             return UserData::from($user);
         });
     }
 }

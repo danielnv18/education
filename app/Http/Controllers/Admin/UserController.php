@@ -7,10 +7,10 @@ namespace App\Http\Controllers\Admin;
 use App\Actions\Users\CreateUserAction;
 use App\Actions\Users\DeleteUserAction;
 use App\Actions\Users\UpdateUserAction;
+use App\Data\UserData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\CreateUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
-use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -20,10 +20,10 @@ final class UserController extends Controller
 {
     public function index(): Response
     {
-        $users = User::with(['roles'])->get();
+        $users = UserData::collect(User::with(['roles'])->get());
 
         return Inertia::render('admin/users/index', [
-            'users' => UserResource::collection($users),
+            'users' => $users,
         ]);
     }
 
@@ -45,7 +45,7 @@ final class UserController extends Controller
         $user->load('roles');
 
         return Inertia::render('admin/users/show', [
-            'user' => new UserResource($user),
+            'user' => UserData::from($user),
         ]);
     }
 
@@ -54,7 +54,7 @@ final class UserController extends Controller
         $user->load('roles');
 
         return Inertia::render('admin/users/edit', [
-            'user' => new UserResource($user),
+            'user' => UserData::from($user),
         ]);
     }
 

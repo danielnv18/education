@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Actions\Users;
 
+use App\Data\UserData;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,9 +17,9 @@ final class CreateUserAction
      *
      * @param  array<string, mixed>  $data
      */
-    public function handle(array $data): User
+    public function handle(array $data): UserData
     {
-        return DB::transaction(function () use ($data): User {
+        return DB::transaction(function () use ($data): UserData {
             $userData = [
                 'name' => $data['name'],
                 'email' => $data['email'],
@@ -29,13 +30,16 @@ final class CreateUserAction
                 $userData['email_verified_at'] = now();
             }
 
-            $user = User::create($userData);
+            $user = User::query()->create($userData);
 
             if (isset($data['roles'])) {
                 $user->syncRoles($data['roles']);
             }
 
-            return $user;
+            $user->refresh();
+            $user->load('roles');
+
+            return UserData::from($user);
         });
     }
 }

@@ -7,9 +7,7 @@ import { Head, Link } from '@inertiajs/react';
 import { PlusIcon } from 'lucide-react';
 
 interface UserIndexPageProps {
-    users: {
-        data: User[];
-    };
+    users: User[];
 }
 
 const breadcrumbs = [
@@ -38,7 +36,7 @@ export default function UserIndexPage({ users }: UserIndexPageProps) {
                         </Link>
                     </Button>
                 </div>
-                <UserTable users={users.data} />
+                <UserTable users={users} />
             </div>
         </AppLayout>
     );

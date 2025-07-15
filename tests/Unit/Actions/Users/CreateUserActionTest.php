@@ -31,6 +31,7 @@ it('creates a user with basic data', function (): void {
     $user = $action->handle($userData);
 
     // Assert
+    $user = User::findOrFail($user->id);
     expect($user)->toBeInstanceOf(User::class)
         ->and($user->name)->toBe('John Doe')
         ->and($user->email)->toBe('john@example.com')
@@ -53,6 +54,7 @@ it('creates a user with verified email when specified', function (): void {
     $user = $action->handle($userData);
 
     // Assert
+    $user = User::findOrFail($user->id);
     expect($user)->toBeInstanceOf(User::class)
         ->and($user->name)->toBe('Jane Doe')
         ->and($user->email)->toBe('jane@example.com')
@@ -74,6 +76,7 @@ it('assigns roles to a user when specified', function (): void {
     $user = $action->handle($userData);
 
     // Assert
+    $user = User::findOrFail($user->id);
     expect($user)->toBeInstanceOf(User::class)
         ->and($user->hasRole(UserRole::ADMIN))->toBeTrue();
 });
@@ -93,6 +96,7 @@ it('assigns multiple roles to a user when specified', function (): void {
     $user = $action->handle($userData);
 
     // Assert
+    $user = User::findOrFail($user->id);
     expect($user)->toBeInstanceOf(User::class)
         ->and($user->hasRole(UserRole::TEACHER))->toBeTrue()
         ->and($user->hasRole(UserRole::ADMIN))->toBeTrue();
@@ -111,6 +115,7 @@ it('generates a password when not provided', function (): void {
     $user = $action->handle($userData);
 
     // Assert
+    $user = User::findOrFail($user->id);
     expect($user)->toBeInstanceOf(User::class)
         ->and($user->password)->not->toBeEmpty();
 });
@@ -123,7 +128,7 @@ it('uses a database transaction', function (): void {
         'password' => 'password123',
     ];
 
-    // Mock DB facade to verify transaction is used
+    // Mock DB facade to verify the transaction is used
     DB::shouldReceive('transaction')
         ->once()
         ->andReturnUsing(function ($callback) {
