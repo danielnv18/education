@@ -15,7 +15,7 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 final class UserData extends Data
 {
     public function __construct(
-        public ?int $id,
+        public int $id,
         public string $name,
         public string $email,
         #[Date]
@@ -24,6 +24,5 @@ final class UserData extends Data
         public ?CarbonImmutable $emailVerifiedAt,
         /** @var Collection<int, RoleData> */
         public Collection $roles = new Collection([]),
-    ) {
-    }
+    ) {}
 }

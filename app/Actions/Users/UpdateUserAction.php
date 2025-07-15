@@ -41,7 +41,7 @@ final class UpdateUserAction
 
             $user->refresh();
 
-             return UserData::from($user);
+            return UserData::from($user);
         });
     }
 }

@@ -16,6 +16,8 @@
         "nunomaduro/essentials": "^0.1",
         "spatie/laravel-data": "^4.17",
         "spatie/laravel-permission": "^6.18",
+        "spatie/laravel-typescript-transformer": "^2.5",
+        "spatie/typescript-transformer": "^2.5",
         "tightenco/ziggy": "^2.4"
     },
     "require-dev": {
