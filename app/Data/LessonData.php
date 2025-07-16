@@ -10,6 +10,7 @@ use Spatie\LaravelData\Data;
 final class LessonData extends Data
 {
     public function __construct(
+        public int $id,
         public string $title,
         public string $content,
         public LessonType $type,

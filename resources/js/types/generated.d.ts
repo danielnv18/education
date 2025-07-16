@@ -1,15 +1,19 @@
 declare namespace App.Data {
     export type CourseData = {
+        id: number;
         title: string;
         description: string | null;
+        isPublished: boolean;
         status: App.Enums.CourseStatus;
         modules: Array<App.Data.ModuleData>;
+        thumbnail: string;
         endDate: string | null;
         startDate: string | null;
-        instructor: App.Data.UserData | null;
+        teacher: App.Data.UserData | null;
         students: Array<App.Data.UserData>;
     };
     export type LessonData = {
+        id: number;
         title: string;
         content: string;
         type: App.Enums.LessonType;

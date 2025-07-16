@@ -43,9 +43,9 @@ final class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user() ? [
-                    ...$request->user()->toArray(),
+                    ...$request->user()->getData()->toArray(),
                 ] : null,
-                'roles' => $request->user()?->getRoleNames() ?? [],
+                'roles' => $request->user()?->getData()->roles->toArray() ?? [],
                 'permissions' => $request->user()
                     ? $request->user()->getAllPermissions()->pluck('name')->toArray()
                     : [],
