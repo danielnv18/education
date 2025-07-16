@@ -4,16 +4,23 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Data\ModuleData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\LaravelData\WithData;
 
 final class Module extends Model
 {
     /** @use HasFactory<\Database\Factories\ModuleFactory> */
     use HasFactory;
+
+    /** @use WithData<ModuleData> */
+    use WithData;
+
+    protected string $dataClass = ModuleData::class;
 
     /**
      * The attributes that are mass assignable.

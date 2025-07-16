@@ -4,15 +4,22 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Data\LessonData;
 use App\Enums\LessonType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\LaravelData\WithData;
 
 final class Lesson extends Model
 {
     /** @use HasFactory<\Database\Factories\LessonFactory> */
     use HasFactory;
+
+    /** @use WithData<LessonData> */
+    use WithData;
+
+    protected string $dataClass = LessonData::class;
 
     /**
      * The attributes that are mass assignable.

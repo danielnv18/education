@@ -4,18 +4,25 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Data\UserData;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\LaravelData\WithData;
 use Spatie\Permission\Traits\HasRoles;
 
 final class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, hasRoles, Notifiable;
+
+    /** @use WithData<UserData> */
+    use WithData;
+
+    protected string $dataClass = UserData::class;
 
     /**
      * The attributes that are mass assignable.

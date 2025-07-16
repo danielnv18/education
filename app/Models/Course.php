@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Data\CourseData;
 use App\Enums\CourseStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,11 +12,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\LaravelData\WithData;
 
 final class Course extends Model
 {
     /** @use HasFactory<\Database\Factories\CourseFactory> */
     use HasFactory;
+
+    /** @use WithData<CourseData> */
+    use WithData;
+
+    protected string $dataClass = CourseData::class;
 
     /**
      * The attributes that are mass assignable.
