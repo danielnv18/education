@@ -11,6 +11,7 @@ uses(TestCase::class);
 it('can be instantiated with required properties', function (): void {
     // Arrange & Act
     $lessonData = new LessonData(
+        id: null,
         title: 'Introduction to PHP',
         content: 'PHP is a server-side scripting language.',
         type: LessonType::TEXT,
@@ -18,6 +19,7 @@ it('can be instantiated with required properties', function (): void {
 
     // Assert
     expect($lessonData)->toBeInstanceOf(LessonData::class)
+        ->and($lessonData->id)->toBeNull()
         ->and($lessonData->title)->toBe('Introduction to PHP')
         ->and($lessonData->content)->toBe('PHP is a server-side scripting language.')
         ->and($lessonData->type)->toBe(LessonType::TEXT)
@@ -27,6 +29,7 @@ it('can be instantiated with required properties', function (): void {
 it('can be instantiated with all properties', function (): void {
     // Arrange & Act
     $lessonData = new LessonData(
+        id: 1,
         title: 'Advanced PHP',
         content: 'Learn advanced PHP concepts.',
         type: LessonType::VIDEO,
@@ -35,6 +38,7 @@ it('can be instantiated with all properties', function (): void {
 
     // Assert
     expect($lessonData)->toBeInstanceOf(LessonData::class)
+        ->and($lessonData->id)->toBe(1)
         ->and($lessonData->title)->toBe('Advanced PHP')
         ->and($lessonData->content)->toBe('Learn advanced PHP concepts.')
         ->and($lessonData->type)->toBe(LessonType::VIDEO)
@@ -44,6 +48,7 @@ it('can be instantiated with all properties', function (): void {
 it('can be converted to array', function (): void {
     // Arrange
     $lessonData = new LessonData(
+        id: 1,
         title: 'PHP Testing',
         content: 'Learn how to test PHP applications.',
         type: LessonType::DOCUMENT,
@@ -55,7 +60,8 @@ it('can be converted to array', function (): void {
 
     // Assert
     expect($array)->toBeArray()
-        ->and($array)->toHaveKeys(['title', 'content', 'type', 'order'])
+        ->and($array)->toHaveKeys(['id', 'title', 'content', 'type', 'order'])
+        ->and($array['id'])->toBe(1)
         ->and($array['title'])->toBe('PHP Testing')
         ->and($array['content'])->toBe('Learn how to test PHP applications.')
         ->and($array['type'])->toBe(LessonType::DOCUMENT->value)
@@ -76,6 +82,7 @@ it('can be created from an array using from method', function (): void {
 
     // Assert
     expect($lesson)->toBeInstanceOf(LessonData::class)
+        ->and($lesson->id)->toBeNull()
         ->and($lesson->title)->toBe('Laravel Basics')
         ->and($lesson->content)->toBe('Introduction to Laravel framework')
         ->and($lesson->type)->toBe(LessonType::VIDEO)

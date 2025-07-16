@@ -1,26 +1,26 @@
 declare namespace App.Data {
     export type CourseData = {
-        id: number;
+        id: number | null;
         title: string;
         description: string | null;
-        isPublished: boolean;
         status: App.Enums.CourseStatus;
         modules: Array<App.Data.ModuleData>;
-        thumbnail: string;
+        thumbnail: string | null;
         endDate: string | null;
         startDate: string | null;
         teacher: App.Data.UserData | null;
+        isPublished: boolean;
         students: Array<App.Data.UserData>;
     };
     export type LessonData = {
-        id: number;
+        id: number | null;
         title: string;
         content: string;
         type: App.Enums.LessonType;
         order: number;
     };
     export type ModuleData = {
-        id: number;
+        id: number | null;
         title: string;
         description: string | null;
         order: number;
@@ -30,7 +30,7 @@ declare namespace App.Data {
         name: string;
     };
     export type UserData = {
-        id: number;
+        id: number | null;
         name: string;
         email: string;
         createdAt: string;

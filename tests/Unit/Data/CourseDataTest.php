@@ -15,25 +15,29 @@ uses(TestCase::class);
 it('can be instantiated with required properties', function (): void {
     // Arrange & Act
     $courseData = new CourseData(
+        id: null,
         title: 'PHP Fundamentals',
         description: null,
         status: CourseStatus::DRAFT,
         modules: new Collection(),
+        thumbnail: null,
         endDate: null,
         startDate: null,
-        instructor: null,
+        teacher: null,
     );
 
     // Assert
     expect($courseData)->toBeInstanceOf(CourseData::class)
+        ->and($courseData->id)->toBeNull()
         ->and($courseData->title)->toBe('PHP Fundamentals')
         ->and($courseData->description)->toBeNull()
         ->and($courseData->status)->toBe(CourseStatus::DRAFT)
         ->and($courseData->modules)->toBeInstanceOf(Collection::class)
         ->and($courseData->modules)->toBeEmpty()
         ->and($courseData->endDate)->toBeNull()
+        ->and($courseData->thumbnail)->toBeNull()
         ->and($courseData->startDate)->toBeNull()
-        ->and($courseData->instructor)->toBeNull()
+        ->and($courseData->teacher)->toBeNull()
         ->and($courseData->students)->toBeInstanceOf(Collection::class)
         ->and($courseData->students)->toBeEmpty();
 });
@@ -44,7 +48,7 @@ it('can be instantiated with all properties', function (): void {
     $startDate = $now->addDays(1);
     $endDate = $now->addDays(30);
 
-    $instructor = new UserData(
+    $teacher = new UserData(
         id: 1,
         name: 'John Doe',
         email: 'john@example.com',
@@ -86,18 +90,22 @@ it('can be instantiated with all properties', function (): void {
 
     // Act
     $courseData = new CourseData(
+        id: 1,
         title: 'Advanced PHP',
         description: 'Learn advanced PHP concepts',
         status: CourseStatus::ACTIVE,
         modules: $modules,
+        thumbnail: 'path/to/thumbnail.jpg',
         endDate: $endDate,
         startDate: $startDate,
-        instructor: $instructor,
+        teacher: $teacher,
+        isPublished: true,
         students: $students,
     );
 
     // Assert
     expect($courseData)->toBeInstanceOf(CourseData::class)
+        ->and($courseData->id)->toBe(1)
         ->and($courseData->title)->toBe('Advanced PHP')
         ->and($courseData->description)->toBe('Learn advanced PHP concepts')
         ->and($courseData->status)->toBe(CourseStatus::ACTIVE)
@@ -107,8 +115,10 @@ it('can be instantiated with all properties', function (): void {
         ->and($courseData->modules->last()->title)->toBe('Advanced Topics')
         ->and($courseData->endDate)->toBe($endDate)
         ->and($courseData->startDate)->toBe($startDate)
-        ->and($courseData->instructor)->toBeInstanceOf(UserData::class)
-        ->and($courseData->instructor->name)->toBe('John Doe')
+        ->and($courseData->isPublished)->toBeTrue()
+        ->and($courseData->thumbnail)->toBe('path/to/thumbnail.jpg')
+        ->and($courseData->teacher)->toBeInstanceOf(UserData::class)
+        ->and($courseData->teacher->name)->toBe('John Doe')
         ->and($courseData->students)->toBeInstanceOf(Collection::class)
         ->and($courseData->students)->toHaveCount(2)
         ->and($courseData->students->first()->name)->toBe('Jane Doe')
@@ -122,13 +132,16 @@ it('can be converted to array', function (): void {
     $endDate = $now->addDays(30);
 
     $courseData = new CourseData(
+        id: null,
         title: 'PHP Testing',
         description: 'Learn how to test PHP applications',
         status: CourseStatus::DRAFT,
         modules: new Collection(),
+        thumbnail: null,
         endDate: $endDate,
         startDate: $startDate,
-        instructor: null,
+        teacher: null,
+        isPublished: false,
     );
 
     // Act
@@ -136,7 +149,8 @@ it('can be converted to array', function (): void {
 
     // Assert
     expect($array)->toBeArray()
-        ->and($array)->toHaveKeys(['title', 'description', 'status', 'modules', 'endDate', 'startDate', 'instructor', 'students'])
+        ->and($array)->toHaveKeys(['id', 'title', 'description', 'status', 'modules', 'endDate', 'startDate', 'thumbnail', 'teacher', 'students', 'isPublished'])
+        ->and($array['id'])->toBeNull()
         ->and($array['title'])->toBe('PHP Testing')
         ->and($array['description'])->toBe('Learn how to test PHP applications')
         ->and($array['status'])->toBe(CourseStatus::DRAFT->value)
@@ -144,9 +158,10 @@ it('can be converted to array', function (): void {
         ->and($array['modules'])->toBeEmpty()
         ->and(new CarbonImmutable($array['endDate']))->equalTo($endDate)
         ->and(new CarbonImmutable($array['startDate']))->equalTo($startDate)
-        ->and($array['instructor'])->toBeNull()
+        ->and($array['teacher'])->toBeNull()
         ->and($array['students'])->toBeArray()
-        ->and($array['students'])->toBeEmpty();
+        ->and($array['students'])->toBeEmpty()
+        ->and($array['isPublished'])->toBeFalse();
 });
 
 it('can be created from an array using from method', function (): void {
@@ -155,7 +170,7 @@ it('can be created from an array using from method', function (): void {
     $startDate = $now->addDays(1);
     $endDate = $now->addDays(30);
 
-    $instructor = [
+    $teacher = [
         'id' => 1,
         'name' => 'John Doe',
         'email' => 'john@example.com',
@@ -203,7 +218,7 @@ it('can be created from an array using from method', function (): void {
         'modules' => $modules,
         'end_date' => $endDate,
         'start_date' => $startDate,
-        'instructor' => $instructor,
+        'teacher' => $teacher,
         'students' => $students,
     ]);
 
@@ -219,8 +234,8 @@ it('can be created from an array using from method', function (): void {
         ->and($courseData->modules->last()->title)->toBe('Advanced Topics')
         ->and($courseData->endDate)->toEqual($endDate)
         ->and($courseData->startDate)->toEqual($startDate)
-        ->and($courseData->instructor)->toBeInstanceOf(UserData::class)
-        ->and($courseData->instructor->name)->toBe('John Doe')
+        ->and($courseData->teacher)->toBeInstanceOf(UserData::class)
+        ->and($courseData->teacher->name)->toBe('John Doe')
         ->and($courseData->students)->toBeInstanceOf(Collection::class)
         ->and($courseData->students)->toHaveCount(2)
         ->and($courseData->students->first())->toBeInstanceOf(UserData::class)

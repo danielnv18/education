@@ -32,12 +32,14 @@ it('can be instantiated with all properties', function (): void {
     // Arrange
     $lessons = new Collection([
         new LessonData(
+            id: 1,
             title: 'Laravel Basics',
             content: 'Learn the basics of Laravel.',
             type: LessonType::TEXT,
             order: 1,
         ),
         new LessonData(
+            id: 2,
             title: 'Laravel Routing',
             content: 'Learn about Laravel routing.',
             type: LessonType::VIDEO,

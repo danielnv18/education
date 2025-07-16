@@ -16,19 +16,19 @@ use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 final class CourseData extends Data
 {
     public function __construct(
-        public int $id,
+        public ?int $id,
         public string $title,
         public ?string $description,
-        public bool $isPublished,
         public CourseStatus $status,
         /** @var Collection<int, ModuleData> */
         public Collection $modules,
-        public string $thumbnail,
+        public ?string $thumbnail,
         #[Date]
         public ?CarbonImmutable $endDate,
         #[Date]
         public ?CarbonImmutable $startDate,
         public ?UserData $teacher,
+        public bool $isPublished = false,
         /** @var Collection<int, UserData> */
         public Collection $students = new Collection(),
     ) {}
