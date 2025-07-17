@@ -45,7 +45,7 @@ test('index method returns course content for authorized users', function (): vo
     );
 });
 
-test('any user can access course content', function (): void {
+test('only users with permissions can manage course content', function (): void {
     // Arrange
     $user = User::factory()->create();
     // No role assigned, but the controller doesn't check permissions
@@ -56,14 +56,10 @@ test('any user can access course content', function (): void {
     $response = $this->actingAs($user)->get(route('courses.content.index', $course));
 
     // The controller doesn't check authorization, so it should return 200
-    $response->assertStatus(200);
-    $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('courses/content')
-        ->has('course')
-    );
+    $response->assertStatus(403);
 });
 
-test('student can view course content they are enrolled in', function (): void {
+test('student cannot manage course content they are enrolled in', function (): void {
     // Arrange
     $student = User::factory()->create();
     $student->assignRole(UserRole::STUDENT);
@@ -85,15 +81,10 @@ test('student can view course content they are enrolled in', function (): void {
     $response = $this->actingAs($student)->get(route('courses.content.index', $course));
 
     // Assert
-    $response->assertStatus(200);
-    $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('courses/content')
-        ->has('course')
-        ->has('modules', 2)
-    );
+    $response->assertStatus(403);
 });
 
-test('student can view content of courses they are not enrolled in', function (): void {
+test('student cannot view content of courses they are not enrolled in', function (): void {
     // Arrange
     $student = User::factory()->create();
     $student->assignRole(UserRole::STUDENT);
@@ -103,11 +94,5 @@ test('student can view content of courses they are not enrolled in', function ()
 
     // Act & Assert
     $response = $this->actingAs($student)->get(route('courses.content.index', $course));
-
-    // The controller doesn't check enrollment, so it should return 200
-    $response->assertStatus(200);
-    $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('courses/content')
-        ->has('course')
-    );
+    $response->assertStatus(403);
 });

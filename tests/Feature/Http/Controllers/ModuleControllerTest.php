@@ -159,10 +159,10 @@ test('unauthenticated users are redirected to login', function (): void {
         ->assertRedirect(route('login'));
 });
 
-test('authenticated users without permission are redirected', function (): void {
+test('authenticated users without permission cannot access', function (): void {
     // Arrange
     $user = User::factory()->create();
-    // No role assigned, so user has no permissions
+    // No role assigned, so the user has no permissions
 
     $course = Course::factory()->create();
     $module = Module::factory()->create([
@@ -181,7 +181,7 @@ test('authenticated users without permission are redirected', function (): void 
     // Act & Assert
     $this->actingAs($user)
         ->post(route('courses.modules.store', $course), $storeData)
-        ->assertStatus(302);
+        ->assertStatus(403);
 
     // For update, we need to provide valid data
     $updateData = [
@@ -194,9 +194,9 @@ test('authenticated users without permission are redirected', function (): void 
 
     $this->actingAs($user)
         ->put(route('courses.modules.update', [$course, $module]), $updateData)
-        ->assertStatus(302);
+        ->assertStatus(403);
 
     $this->actingAs($user)
         ->delete(route('courses.modules.destroy', [$course, $module]))
-        ->assertStatus(302);
+        ->assertStatus(403);
 });

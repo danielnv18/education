@@ -44,7 +44,7 @@ final class UserController extends Controller
 
         $user = $action->handle($request->validated());
 
-        return to_route('admin.users.show', $user)
+        return to_route('admin.users.show', $user->id)
             ->with('success', 'User created successfully.');
     }
 
