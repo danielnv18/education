@@ -23,4 +23,5 @@ enum PermissionEnum: string
     case CREATE_USER = 'create user';
     case UPDATE_USER = 'update user';
     case DELETE_USER = 'delete user';
+    case MANAGE_USERS = 'manage users';
 }

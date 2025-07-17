@@ -58,4 +58,9 @@ final class UserPolicy
     {
         return $user->hasPermissionTo(PermissionEnum::DELETE_USER);
     }
+
+    public function manageUsers(User $user): bool
+    {
+        return $user->hasPermissionTo(PermissionEnum::MANAGE_USERS);
+    }
 }

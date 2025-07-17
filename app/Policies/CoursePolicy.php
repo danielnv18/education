@@ -98,12 +98,12 @@ final class CoursePolicy
      */
     public function manageContent(User $user, Course $course): bool
     {
-        // If user has general permission to view any courses (admin)
+        // If the user has general permission to view any courses (admin)
         if ($user->hasPermissionTo(PermissionEnum::VIEW_ANY_COURSES)) {
             return true;
         }
 
-        // If user has permission to manage course content
+        // If the user has permission to manage course content
         if ($user->hasPermissionTo(PermissionEnum::MANAGE_COURSE_CONTENT)) {
             // Teacher can only manage their own course content
             return $course->teacher_id === $user->id;
