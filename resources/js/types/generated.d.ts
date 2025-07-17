@@ -26,6 +26,9 @@ declare namespace App.Data {
         order: number;
         lessons: Array<App.Data.LessonData>;
     };
+    export type PermissionData = {
+        name: string;
+    };
     export type RoleData = {
         name: string;
     };
@@ -56,6 +59,7 @@ declare namespace App.Enums {
         | 'view user'
         | 'create user'
         | 'update user'
-        | 'delete user';
+        | 'delete user'
+        | 'manage users';
     export type UserRole = 'admin' | 'teacher' | 'student';
 }

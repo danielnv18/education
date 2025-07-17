@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Data\PermissionData;
+use App\Data\RoleData;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
@@ -45,9 +47,9 @@ final class HandleInertiaRequests extends Middleware
                 'user' => $request->user() ? [
                     ...$request->user()->getData()->toArray(),
                 ] : null,
-                'roles' => $request->user()?->getData()->roles->toArray() ?? [],
+                'roles' => $request->user() ? RoleData::collect($request->user()->roles)->toArray() : [],
                 'permissions' => $request->user()
-                    ? $request->user()->getAllPermissions()->pluck('name')->toArray()
+                    ? PermissionData::collect($request->user()->getAllPermissions())->toArray()
                     : [],
             ],
             'ziggy' => fn (): array => [

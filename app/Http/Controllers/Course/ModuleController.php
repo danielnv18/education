@@ -13,6 +13,7 @@ use App\Http\Requests\Modules\UpdateModuleRequest;
 use App\Models\Course;
 use App\Models\Module;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 final class ModuleController extends Controller
 {
@@ -21,6 +22,8 @@ final class ModuleController extends Controller
      */
     public function store(CreateModuleRequest $request, Course $course, CreateModuleAction $action): RedirectResponse
     {
+        Gate::authorize('manageContent', $course);
+
         $data = $request->validated();
         $action->handle($data);
 
@@ -32,6 +35,8 @@ final class ModuleController extends Controller
      */
     public function update(UpdateModuleRequest $request, Course $course, Module $module, UpdateModuleAction $action): RedirectResponse
     {
+        Gate::authorize('manageContent', $course);
+
         $data = $request->validated();
         $action->handle($module, $data);
 
@@ -43,6 +48,8 @@ final class ModuleController extends Controller
      */
     public function destroy(Course $course, Module $module, DeleteModuleAction $action): RedirectResponse
     {
+        Gate::authorize('manageContent', $course);
+
         $action->handle($module);
 
         return to_route('courses.content.index', $course)->with('success', 'Module delete successfully');

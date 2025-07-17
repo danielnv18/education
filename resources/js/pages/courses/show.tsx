@@ -1,9 +1,10 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useHasRole } from '@/hooks/use-auth';
 import AppLayout from '@/layouts/app-layout';
-import { Course, Module, SharedData } from '@/types';
-import { Head, Link, router, usePage } from '@inertiajs/react';
+import { Course, Module } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
 import { format } from 'date-fns';
 
 interface CourseShowPageProps {
@@ -13,8 +14,7 @@ interface CourseShowPageProps {
 }
 
 export default function CourseShowPage({ course }: CourseShowPageProps) {
-    const { auth } = usePage<SharedData>().props;
-    const isAdmin = auth.roles?.includes('admin');
+    const isAdmin = useHasRole('admin');
 
     const handleDelete = () => {
         router.delete(route('courses.destroy', { course: course.id }));

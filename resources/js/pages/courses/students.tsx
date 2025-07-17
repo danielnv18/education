@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { useHasRole } from '@/hooks/use-auth';
 import AppLayout from '@/layouts/app-layout';
 import CourseLayout from '@/layouts/course/course-layout';
 import { Course, SharedData, User } from '@/types';
@@ -16,8 +17,8 @@ interface CourseStudentsPageProps {
 
 export default function CourseStudentsPage({ course, availableStudents }: CourseStudentsPageProps) {
     const { auth } = usePage<SharedData>().props;
-    const isAdmin = auth.roles?.includes('admin');
-    const isTeacher = auth.roles?.includes('teacher');
+    const isAdmin = useHasRole('admin');
+    const isTeacher = useHasRole('teacher');
     const canEnrollStudents = isAdmin || (isTeacher && course.teacher_id === auth.user?.id);
     const [selectedStudentIds, setSelectedStudentIds] = useState<Record<string, boolean>>({});
     const [dialogOpen, setDialogOpen] = useState(false);

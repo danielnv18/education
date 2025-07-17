@@ -13,6 +13,7 @@ use App\Http\Requests\Lessons\UpdateLessonRequest;
 use App\Models\Course;
 use App\Models\Lesson;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 final class LessonController extends Controller
 {
@@ -21,6 +22,8 @@ final class LessonController extends Controller
      */
     public function store(CreateLessonRequest $request, Course $course, CreateLessonAction $action): RedirectResponse
     {
+        Gate::authorize('manageContent', $course);
+
         $data = $request->validated();
         $action->handle($data);
 
@@ -33,6 +36,8 @@ final class LessonController extends Controller
      */
     public function update(UpdateLessonRequest $request, Course $course, Lesson $lesson, UpdateLessonAction $action): RedirectResponse
     {
+        Gate::authorize('manageContent', $course);
+
         $data = $request->validated();
         $action->handle($lesson, $data);
 
@@ -45,6 +50,8 @@ final class LessonController extends Controller
      */
     public function destroy(Course $course, Lesson $lesson, DeleteLessonAction $action): RedirectResponse
     {
+        Gate::authorize('manageContent', $course);
+
         $action->handle($lesson);
 
         return to_route('courses.content.index', ['course' => $course->id])
