@@ -52,6 +52,7 @@ it('can be instantiated with all properties', function (): void {
         id: 1,
         name: 'John Doe',
         email: 'john@example.com',
+        avatar: 'path/to/avatar.jpg',
         createdAt: $now,
         emailVerifiedAt: $now,
     );
@@ -61,6 +62,7 @@ it('can be instantiated with all properties', function (): void {
             id: 2,
             name: 'Jane Doe',
             email: 'jane@example.com',
+            avatar: 'path/to/avatar.jpg',
             createdAt: $now,
             emailVerifiedAt: $now,
         ),
@@ -68,6 +70,7 @@ it('can be instantiated with all properties', function (): void {
             id: 3,
             name: 'Bob Smith',
             email: 'bob@example.com',
+            avatar: 'path/to/avatar.jpg',
             createdAt: $now,
             emailVerifiedAt: null,
         ),

@@ -4,12 +4,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
-import { User } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeftIcon, PencilIcon } from 'lucide-react';
 
 interface UserShowPageProps {
-    user: User;
+    user: App.Data.UserData;
 }
 
 export default function UserShowPage({ user }: UserShowPageProps) {
@@ -24,7 +23,7 @@ export default function UserShowPage({ user }: UserShowPageProps) {
         },
         {
             title: user.name,
-            href: route('admin.users.show', user.id),
+            href: route('admin.users.show', { user: user.id }),
         },
     ];
 
@@ -44,7 +43,7 @@ export default function UserShowPage({ user }: UserShowPageProps) {
                         </Button>
                         <ResetPasswordButton user={user} />
                         <Button asChild>
-                            <Link href={route('admin.users.edit', user.id)}>
+                            <Link href={route('admin.users.edit', { user: user.id })}>
                                 <PencilIcon className="mr-2 h-4 w-4" />
                                 Edit User
                             </Link>
@@ -75,12 +74,12 @@ export default function UserShowPage({ user }: UserShowPageProps) {
 
                         <div>
                             <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Account Created</h3>
-                            <p>{new Date(user.created_at).toLocaleDateString()}</p>
+                            <p>{new Date(user.createdAt).toLocaleDateString()}</p>
                         </div>
 
                         <div>
                             <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">Email Verification</h3>
-                            <p>{user.email_verified_at ? 'Verified' : 'Not verified'}</p>
+                            <p>{user.emailVerifiedAt ? 'Verified' : 'Not verified'}</p>
                         </div>
                     </CardContent>
                 </Card>

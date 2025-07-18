@@ -4,12 +4,12 @@ declare namespace App.Data {
         title: string;
         description: string | null;
         status: App.Enums.CourseStatus;
-        modules: Array<App.Data.ModuleData>;
         thumbnail: string | null;
         endDate: string | null;
         startDate: string | null;
         teacher: App.Data.UserData | null;
         isPublished: boolean;
+        modules: Array<App.Data.ModuleData>;
         students: Array<App.Data.UserData>;
     };
     export type LessonData = {
@@ -17,7 +17,6 @@ declare namespace App.Data {
         title: string;
         content: string;
         type: App.Enums.LessonType;
-        module: App.Data.ModuleData;
         order: number;
         isPublished: boolean;
     };

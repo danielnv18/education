@@ -17,7 +17,6 @@ final class LessonData extends Data
         public string $title,
         public string $content,
         public LessonType $type,
-        public ModuleData $module,
         public int $order = 0,
         public bool $isPublished = false,
     ) {}

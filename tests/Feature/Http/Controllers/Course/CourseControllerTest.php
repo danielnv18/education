@@ -26,7 +26,7 @@ test('index method returns courses list for authorized users', function (): void
     // Assert
     $response->assertStatus(200);
     $response->assertInertia(fn (AssertableInertia $page) => $page->component('courses/index')
-        ->has('courses.data', 3)
+        ->has('courses', 3)
     );
 });
 

@@ -27,7 +27,7 @@ final class UserController extends Controller
         $users = UserData::collect(User::with(['roles'])->get());
 
         return Inertia::render('admin/users/index', [
-            'users' => $users,
+            'users' => UserData::collect($users),
         ]);
     }
 

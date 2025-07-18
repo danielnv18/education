@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Data\CourseData;
 use App\Models\Course;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
@@ -40,8 +41,8 @@ final class DashboardController extends Controller
             ->get();
 
         return Inertia::render('dashboard', [
-            'teachingCourses' => $teachingCourses,
-            'enrolledCourses' => $enrolledCourses,
+            'teachingCourses' => CourseData::collect($teachingCourses),
+            'enrolledCourses' => CourseData::collect($enrolledCourses),
         ]);
     }
 }

@@ -20,8 +20,6 @@ final class CourseData extends Data
         public string $title,
         public ?string $description,
         public CourseStatus $status,
-        /** @var Collection<int, ModuleData> */
-        public Collection $modules,
         public ?string $thumbnail,
         #[Date]
         public ?CarbonImmutable $endDate,
@@ -29,6 +27,8 @@ final class CourseData extends Data
         public ?CarbonImmutable $startDate,
         public ?UserData $teacher,
         public bool $isPublished = false,
+        /** @var Collection<int, ModuleData> */
+        public Collection $modules = new Collection(),
         /** @var Collection<int, UserData> */
         public Collection $students = new Collection(),
     ) {}

@@ -1,8 +1,7 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { User } from '@/types';
 
 interface StudentTableProps {
-    students: User[];
+    students: App.Data.UserData[];
 }
 
 export default function StudentTable({ students }: StudentTableProps) {

@@ -6,20 +6,20 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useHasRole } from '@/hooks/use-auth';
 import AppLayout from '@/layouts/app-layout';
 import CourseLayout from '@/layouts/course/course-layout';
-import { Course, SharedData, User } from '@/types';
+import { SharedData } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 interface CourseStudentsPageProps {
-    course: Course;
-    availableStudents: User[];
+    course: App.Data.CourseData;
+    availableStudents: App.Data.UserData[];
 }
 
 export default function CourseStudentsPage({ course, availableStudents }: CourseStudentsPageProps) {
     const { auth } = usePage<SharedData>().props;
     const isAdmin = useHasRole('admin');
     const isTeacher = useHasRole('teacher');
-    const canEnrollStudents = isAdmin || (isTeacher && course.teacher_id === auth.user?.id);
+    const canEnrollStudents = isAdmin || (isTeacher && course.teacher?.id === auth.user?.id);
     const [selectedStudentIds, setSelectedStudentIds] = useState<Record<string, boolean>>({});
     const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -89,11 +89,11 @@ export default function CourseStudentsPage({ course, availableStudents }: Course
                                                             <div key={student.id} className="flex items-center space-x-2">
                                                                 <Checkbox
                                                                     id={`student-${student.id}`}
-                                                                    checked={selectedStudentIds[student.id] || false}
+                                                                    checked={selectedStudentIds[student.id || 0] || false}
                                                                     onCheckedChange={(checked) => {
                                                                         setSelectedStudentIds({
                                                                             ...selectedStudentIds,
-                                                                            [student.id]: !!checked,
+                                                                            [student.id || 0]: !!checked,
                                                                         });
                                                                     }}
                                                                 />

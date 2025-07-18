@@ -2,7 +2,6 @@ import AppPagination from '@/components/app-pagination';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { User } from '@/types';
 import { Link } from '@inertiajs/react';
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { PencilIcon } from 'lucide-react';
@@ -10,10 +9,10 @@ import * as React from 'react';
 import DeleteUserModal from './delete-user-modal';
 
 interface UserTableProps {
-    users: User[];
+    users: App.Data.UserData[];
 }
 
-const columnHelper = createColumnHelper<User>();
+const columnHelper = createColumnHelper<App.Data.UserData>();
 
 export default function UserTable({ users }: UserTableProps) {
     const [page, setPage] = React.useState(0);
@@ -26,7 +25,7 @@ export default function UserTable({ users }: UserTableProps) {
             columnHelper.accessor('name', {
                 header: 'Name',
                 cell: (info) => (
-                    <Link href={route('admin.users.show', info.row.original.id)} className="hover:underline">
+                    <Link href={route('admin.users.show', { user: info.row.original.id })} className="hover:underline">
                         {info.getValue()}
                     </Link>
                 ),
@@ -52,7 +51,7 @@ export default function UserTable({ users }: UserTableProps) {
                 cell: (info) => (
                     <div className="flex space-x-2">
                         <Button variant="ghost" size="icon" asChild>
-                            <Link href={route('admin.users.edit', info.row.original.id)}>
+                            <Link href={route('admin.users.edit', { user: info.row.original.id })}>
                                 <PencilIcon className="h-4 w-4" />
                                 <span className="sr-only">Edit</span>
                             </Link>

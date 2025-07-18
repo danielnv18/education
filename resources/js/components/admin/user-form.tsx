@@ -3,12 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { User } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 interface UserFormProps {
-    user?: User;
+    user?: App.Data.UserData;
     action: string;
 }
 
@@ -19,7 +18,7 @@ export default function UserForm({ user, action }: UserFormProps) {
         password: '',
         password_confirmation: '',
         roles: user?.roles.map((r) => r.name) || [],
-        email_verified: user ? !!user.email_verified_at : false,
+        email_verified: user ? !!user.emailVerifiedAt : false,
     });
 
     const handleSubmit: FormEventHandler = (e) => {

@@ -1,11 +1,10 @@
 import { Button } from '@/components/ui/button';
-import { User } from '@/types';
 import { router } from '@inertiajs/react';
 import { KeyIcon } from 'lucide-react';
 import { useState } from 'react';
 
 interface ResetPasswordButtonProps {
-    user: User;
+    user: App.Data.UserData;
 }
 
 export default function ResetPasswordButton({ user }: ResetPasswordButtonProps) {
@@ -14,13 +13,10 @@ export default function ResetPasswordButton({ user }: ResetPasswordButtonProps) 
     const handleResetPassword = () => {
         setIsSending(true);
         router.post(
-            route('admin.users.send-password-reset-link', user.id),
+            route('admin.users.send-password-reset-link', { user: user.id }),
             {},
             {
-                onSuccess: () => {
-                    setIsSending(false);
-                },
-                onError: () => {
+                onFinish: () => {
                     setIsSending(false);
                 },
             },

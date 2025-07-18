@@ -3,12 +3,11 @@ import UserForm from '@/components/admin/user-form';
 import HeadingLarge from '@/components/heading-large';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { User } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeftIcon } from 'lucide-react';
 
 interface UserEditPageProps {
-    user: User;
+    user: App.Data.UserData;
 }
 
 export default function UserEditPage({ user }: UserEditPageProps) {
@@ -23,7 +22,7 @@ export default function UserEditPage({ user }: UserEditPageProps) {
         },
         {
             title: 'Edit',
-            href: route('admin.users.edit', user.id),
+            href: route('admin.users.edit', { user: user.id }),
         },
     ];
 
@@ -46,7 +45,7 @@ export default function UserEditPage({ user }: UserEditPageProps) {
                 </div>
 
                 <div className="rounded-lg border p-6">
-                    <UserForm user={user} action={route('admin.users.update', user.id)} />
+                    <UserForm user={user} action={route('admin.users.update', { user: user.id })} />
                 </div>
             </div>
         </AppLayout>
