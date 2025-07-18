@@ -5,22 +5,21 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import CourseLayout from '@/layouts/course/course-layout';
-import { Course, Lesson, Module } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { PlusCircle } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface CourseContentPageProps {
-    course: Course;
-    modules: Module[];
+    course: App.Data.CourseData;
+    modules: App.Data.ModuleData[];
 }
 
 export default function CourseContentPage({ course, modules }: CourseContentPageProps) {
     const [moduleDialogOpen, setModuleDialogOpen] = useState(false);
     const [lessonDialogOpen, setLessonDialogOpen] = useState(false);
     const [selectedModuleId, setSelectedModuleId] = useState<number | null>(null);
-    const [editingModule, setEditingModule] = useState<Module | null>(null);
-    const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
+    const [editingModule, setEditingModule] = useState<App.Data.ModuleData | null>(null);
+    const [editingLesson, setEditingLesson] = useState<App.Data.LessonData | null>(null);
 
     const moduleForm = useForm({
         title: '',
@@ -78,19 +77,19 @@ export default function CourseContentPage({ course, modules }: CourseContentPage
         }
     };
 
-    const openEditModuleDialog = (module: Module) => {
+    const openEditModuleDialog = (module: App.Data.ModuleData) => {
         setEditingModule(module);
         moduleForm.setData({
             title: module.title,
             description: module.description || '',
             course_id: course.id,
             order: module.order,
-            is_published: module.is_published,
+            is_published: module.isPublished,
         });
         setModuleDialogOpen(true);
     };
 
-    const handleDeleteModule = (module: Module) => {
+    const handleDeleteModule = (module: App.Data.ModuleData) => {
         moduleForm.delete(route('courses.modules.destroy', { module: module.id, course: course.id }), {
             onFinish: () => {
                 setEditingModule(null);
@@ -119,21 +118,21 @@ export default function CourseContentPage({ course, modules }: CourseContentPage
         }
     };
 
-    const openEditLessonDialog = (lesson: Lesson) => {
+    const openEditLessonDialog = (module: App.Data.ModuleData, lesson: App.Data.LessonData) => {
         setEditingLesson(lesson);
-        setSelectedModuleId(lesson.module_id);
+        setSelectedModuleId(module.id);
         lessonForm.setData({
             title: lesson.title,
             content: lesson.content || '',
-            module_id: lesson.module_id,
+            module_id: module.id,
             order: lesson.order,
             type: lesson.type,
-            is_published: lesson.is_published,
+            is_published: lesson.isPublished,
         });
         setLessonDialogOpen(true);
     };
 
-    const handleDeleteLesson = (lesson: Lesson) => {
+    const handleDeleteLesson = (lesson: App.Data.LessonData) => {
         lessonForm.delete(route('courses.lessons.destroy', { lesson: lesson.id, course: course.id }), {
             onFinish: () => {
                 setEditingModule(null);
@@ -142,7 +141,7 @@ export default function CourseContentPage({ course, modules }: CourseContentPage
         });
     };
 
-    const openLessonDialog = (moduleId: number, lessonCount: number) => {
+    const openLessonDialog = (moduleId: number | null, lessonCount: number) => {
         setSelectedModuleId(moduleId);
         lessonForm.setData('module_id', moduleId);
         lessonForm.setData('order', lessonCount);
@@ -209,7 +208,7 @@ export default function CourseContentPage({ course, modules }: CourseContentPage
                                                     <span>{lesson.title}</span>
                                                 </div>
                                                 <div className="flex space-x-2">
-                                                    <Button variant="ghost" size="sm" onClick={() => openEditLessonDialog(lesson)}>
+                                                    <Button variant="ghost" size="sm" onClick={() => openEditLessonDialog(module, lesson)}>
                                                         Edit
                                                     </Button>
                                                     <DeleteConfirmationDialog

@@ -1,12 +1,11 @@
 import CourseForm from '@/components/forms/course-form';
 import AppLayout from '@/layouts/app-layout';
 import CourseLayout from '@/layouts/course/course-layout';
-import { Course, User } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 
 interface CourseEditPageProps {
-    course: Course;
-    teachers?: User[];
+    course: App.Data.CourseData;
+    teachers?: App.Data.UserData[];
 }
 
 export default function CourseEditPage({ course, teachers = [] }: CourseEditPageProps) {
@@ -14,10 +13,10 @@ export default function CourseEditPage({ course, teachers = [] }: CourseEditPage
         title: course.title,
         description: course.description || '',
         status: course.status,
-        is_published: course.is_published,
-        teacher_id: course.teacher_id ? String(course.teacher_id) : '',
-        start_date: course.start_date ? new Date(course.start_date).toISOString().split('T')[0] : '',
-        end_date: course.end_date ? new Date(course.end_date).toISOString().split('T')[0] : '',
+        is_published: course.isPublished,
+        teacher_id: course.teacher?.id ? String(course.teacher.id) : '',
+        start_date: course.startDate ? new Date(course.startDate).toISOString().split('T')[0] : '',
+        end_date: course.endDate ? new Date(course.endDate).toISOString().split('T')[0] : '',
     });
 
     const breadcrumbs = [

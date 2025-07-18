@@ -2,12 +2,11 @@ import UserTable from '@/components/admin/user-table';
 import HeadingLarge from '@/components/heading-large';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { User } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { PlusIcon } from 'lucide-react';
 
 interface UserIndexPageProps {
-    users: User[];
+    users: App.Data.UserData[];
 }
 
 const breadcrumbs = [

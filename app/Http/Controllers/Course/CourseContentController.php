@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Course;
 
+use App\Data\CourseData;
+use App\Data\ModuleData;
 use App\Http\Controllers\Controller;
 use App\Models\Course;
 use Illuminate\Support\Facades\Gate;
@@ -19,8 +21,8 @@ final class CourseContentController extends Controller
         $course->load('modules', 'modules.lessons');
 
         return Inertia::render('courses/content', [
-            'course' => $course,
-            'modules' => $course->modules,
+            'course' => CourseData::from($course),
+            'modules' => ModuleData::collect($course->modules),
         ]);
     }
 }

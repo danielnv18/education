@@ -2,13 +2,13 @@ import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { type Course, type NavItem } from '@/types';
+import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { BookCheck, PencilLine, Users as UsersIcon } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 
 interface CourseLayoutProps extends PropsWithChildren {
-    course: Course;
+    course: App.Data.CourseData;
 }
 
 export default function CourseLayout({ children, course }: CourseLayoutProps) {

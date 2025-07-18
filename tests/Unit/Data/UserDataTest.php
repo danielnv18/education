@@ -19,6 +19,7 @@ it('can be instantiated with required properties', function (): void {
         id: 1,
         name: 'John Doe',
         email: 'john@example.com',
+        avatar: null,
         createdAt: $now,
         emailVerifiedAt: null,
     );
@@ -47,6 +48,7 @@ it('can be instantiated with all properties including roles', function (): void 
         id: 2,
         name: 'Jane Doe',
         email: 'jane@example.com',
+        avatar: '/avatars/jane.jpg',
         createdAt: $now,
         emailVerifiedAt: $now,
         roles: $roles,
@@ -74,6 +76,7 @@ it('can be converted to array', function (): void {
         id: 3,
         name: 'Bob Smith',
         email: 'bob@example.com',
+        avatar: '/bob.jpg',
         createdAt: $now,
         emailVerifiedAt: $now,
     );

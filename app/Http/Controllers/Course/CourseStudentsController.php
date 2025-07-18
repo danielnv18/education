@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Course;
 
 use App\Actions\Courses\CreateCourseEnrollmentAction;
+use App\Data\CourseData;
+use App\Data\UserData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Courses\EnrollStudentRequest;
 use App\Models\Course;
@@ -32,11 +34,11 @@ final class CourseStudentsController extends Controller
             ->whereNotIn('id', [$course->teacher_id, auth()->id()]) // Exclude the course teacher and current user
             ->whereNotNull('email_verified_at') // Only include users with verified emails
             ->orderBy('name')
-            ->get(['id', 'name', 'email']);
+            ->get();
 
         return Inertia::render('courses/students', [
-            'course' => $course,
-            'availableStudents' => $availableStudents,
+            'course' => CourseData::from($course),
+            'availableStudents' => UserData::collect($availableStudents),
         ]);
     }
 

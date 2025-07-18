@@ -10,7 +10,7 @@ import React from 'react';
 export interface ModuleFormData {
     title: string;
     description: string;
-    course_id: number;
+    course_id: number | null;
     order: number;
     is_published: boolean;
 }

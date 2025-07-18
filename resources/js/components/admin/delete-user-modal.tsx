@@ -10,13 +10,12 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { User } from '@/types';
 import { router } from '@inertiajs/react';
 import { TrashIcon } from 'lucide-react';
 import { useState } from 'react';
 
 interface DeleteUserModalProps {
-    user: User;
+    user: App.Data.UserData;
 }
 
 export default function DeleteUserModal({ user }: DeleteUserModalProps) {
@@ -24,11 +23,8 @@ export default function DeleteUserModal({ user }: DeleteUserModalProps) {
 
     const handleDelete = () => {
         setIsDeleting(true);
-        router.delete(route('admin.users.destroy', user.id), {
-            onSuccess: () => {
-                setIsDeleting(false);
-            },
-            onError: () => {
+        router.delete(route('admin.users.destroy', { user: user.id }), {
+            onFinish: () => {
                 setIsDeleting(false);
             },
         });

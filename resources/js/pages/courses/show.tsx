@@ -3,14 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useHasRole } from '@/hooks/use-auth';
 import AppLayout from '@/layouts/app-layout';
-import { Course, Module } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { format } from 'date-fns';
 
 interface CourseShowPageProps {
-    course: Course & {
-        modules: Module[];
-    };
+    course: App.Data.CourseData;
 }
 
 export default function CourseShowPage({ course }: CourseShowPageProps) {
@@ -80,7 +77,7 @@ export default function CourseShowPage({ course }: CourseShowPageProps) {
                         <Card>
                             {course.thumbnail && (
                                 <div className="aspect-video overflow-hidden">
-                                    <img src={course.thumbnail.url} alt={course.title} className="h-full w-full object-cover" />
+                                    <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover" />
                                 </div>
                             )}
                             <CardHeader>
@@ -155,23 +152,23 @@ export default function CourseShowPage({ course }: CourseShowPageProps) {
                                         <p className="mt-1">{course.teacher ? course.teacher.name : 'No instructor assigned'}</p>
                                     </div>
 
-                                    {course.start_date && (
+                                    {course.startDate && (
                                         <div>
                                             <h3 className="text-sm font-medium text-gray-500">Start Date</h3>
-                                            <p className="mt-1">{format(new Date(course.start_date), 'MMMM d, yyyy')}</p>
+                                            <p className="mt-1">{format(new Date(course.startDate), 'MMMM d, yyyy')}</p>
                                         </div>
                                     )}
 
-                                    {course.end_date && (
+                                    {course.endDate && (
                                         <div>
                                             <h3 className="text-sm font-medium text-gray-500">End Date</h3>
-                                            <p className="mt-1">{format(new Date(course.end_date), 'MMMM d, yyyy')}</p>
+                                            <p className="mt-1">{format(new Date(course.endDate), 'MMMM d, yyyy')}</p>
                                         </div>
                                     )}
 
                                     <div>
                                         <h3 className="text-sm font-medium text-gray-500">Published</h3>
-                                        <p className="mt-1">{course.is_published ? 'Yes' : 'No'}</p>
+                                        <p className="mt-1">{course.isPublished ? 'Yes' : 'No'}</p>
                                     </div>
                                 </div>
                             </CardContent>

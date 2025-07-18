@@ -1,34 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
-import { Course } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { format } from 'date-fns';
 
 interface CourseIndexPageProps {
-    courses: {
-        data: Course[];
-        links: {
-            first: string | null;
-            last: string | null;
-            prev: string | null;
-            next: string | null;
-        };
-        meta: {
-            current_page: number;
-            from: number;
-            last_page: number;
-            links: Array<{
-                url: string | null;
-                label: string;
-                active: boolean;
-            }>;
-            path: string;
-            per_page: number;
-            to: number;
-            total: number;
-        };
-    };
+    courses: App.Data.CourseData[];
 }
 
 const breadcrumbs = [
@@ -56,11 +33,11 @@ export default function CourseIndexPage({ courses }: CourseIndexPageProps) {
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {courses.data.map((course) => (
+                    {courses.map((course) => (
                         <Card key={course.id} className="overflow-hidden">
                             {course.thumbnail && (
                                 <div className="aspect-video overflow-hidden">
-                                    <img src={course.thumbnail.url} alt={course.title} className="h-full w-full object-cover" />
+                                    <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover" />
                                 </div>
                             )}
                             <CardHeader>
@@ -81,8 +58,8 @@ export default function CourseIndexPage({ courses }: CourseIndexPageProps) {
                                     >
                                         {course.status.toUpperCase()}
                                     </span>
-                                    {course.start_date && (
-                                        <span className="text-xs text-gray-500">Starts: {format(new Date(course.start_date), 'MMM d, yyyy')}</span>
+                                    {course.startDate && (
+                                        <span className="text-xs text-gray-500">Starts: {format(new Date(course.startDate), 'MMM d, yyyy')}</span>
                                     )}
                                 </div>
                             </CardContent>
@@ -97,7 +74,7 @@ export default function CourseIndexPage({ courses }: CourseIndexPageProps) {
                     ))}
                 </div>
 
-                {courses.data.length === 0 && (
+                {courses.length === 0 && (
                     <div className="py-12 text-center">
                         <p className="text-gray-500">No courses found.</p>
                     </div>

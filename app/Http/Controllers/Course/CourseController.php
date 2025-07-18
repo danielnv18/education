@@ -7,6 +7,9 @@ namespace App\Http\Controllers\Course;
 use App\Actions\Courses\CreateCourseAction;
 use App\Actions\Courses\DeleteCourseAction;
 use App\Actions\Courses\UpdateCourseAction;
+use App\Data\CourseData;
+use App\Data\UserData;
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Courses\CreateCourseRequest;
 use App\Http\Requests\Courses\UpdateCourseRequest;
@@ -29,11 +32,10 @@ final class CourseController extends Controller
 
         $courses = Course::query()
             ->with(['teacher', 'thumbnail'])
-            ->latest()
-            ->paginate(10);
+            ->latest()->get();
 
         return Inertia::render('courses/index', [
-            'courses' => $courses,
+            'courses' => CourseData::collect($courses),
         ]);
     }
 
@@ -46,13 +48,13 @@ final class CourseController extends Controller
 
         $teachers = User::query()
             ->whereHas('roles', function (Builder $query): void {
-                $query->where('name', 'teacher');
+                $query->where('name', UserRole::TEACHER);
             })
             ->orderBy('name')
-            ->get(['id', 'name']);
+            ->get();
 
         return Inertia::render('courses/create', [
-            'teachers' => $teachers,
+            'teachers' => UserData::collect($teachers),
         ]);
     }
 
@@ -76,10 +78,10 @@ final class CourseController extends Controller
     {
         Gate::authorize('view', $course);
 
-        $course->load(['teacher', 'thumbnail', 'modules.lessons', 'students']);
+        $course->load(['teacher', 'thumbnail', 'modules', 'modules.lessons', 'students']);
 
         return Inertia::render('courses/show', [
-            'course' => $course,
+            'course' => CourseData::from($course),
         ]);
     }
 
@@ -94,14 +96,14 @@ final class CourseController extends Controller
 
         $teachers = User::query()
             ->whereHas('roles', function (Builder $query): void {
-                $query->where('name', 'teacher');
+                $query->where('name', UserRole::TEACHER);
             })
             ->orderBy('name')
-            ->get(['id', 'name']);
+            ->get();
 
         return Inertia::render('courses/edit', [
-            'course' => $course,
-            'teachers' => $teachers,
+            'course' => CourseData::from($course),
+            'teachers' => UserData::collect($teachers),
         ]);
     }
 

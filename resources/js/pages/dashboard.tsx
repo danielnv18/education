@@ -2,13 +2,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import AppLayout from '@/layouts/app-layout';
-import { Course, type BreadcrumbItem } from '@/types';
+import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { format } from 'date-fns';
 
 interface DashboardIndexPageProps {
-    teachingCourses: Course[];
-    enrolledCourses: Course[];
+    teachingCourses: App.Data.CourseData[];
+    enrolledCourses: App.Data.CourseData[];
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -62,7 +62,7 @@ export default function DashboardIndexPage({ teachingCourses, enrolledCourses }:
 }
 
 interface CourseCardProps {
-    course: Course;
+    course: App.Data.CourseData;
 }
 
 function CourseCard({ course }: CourseCardProps) {
@@ -70,7 +70,7 @@ function CourseCard({ course }: CourseCardProps) {
         <Card className="overflow-hidden">
             {course.thumbnail ? (
                 <div className="aspect-video overflow-hidden">
-                    <img src={course.thumbnail.url} alt={course.title} className="h-full w-full object-cover" />
+                    <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover" />
                 </div>
             ) : (
                 <div className="relative aspect-video overflow-hidden">
@@ -83,7 +83,7 @@ function CourseCard({ course }: CourseCardProps) {
             </CardHeader>
             <CardContent>
                 <p className="line-clamp-2">{course.description}</p>
-                {course.start_date && <p className="mt-2 text-xs text-gray-500">Starts: {format(new Date(course.start_date), 'MMM d, yyyy')}</p>}
+                {course.startDate && <p className="mt-2 text-xs text-gray-500">Starts: {format(new Date(course.startDate), 'MMM d, yyyy')}</p>}
             </CardContent>
             <CardFooter>
                 <Link href={route('courses.show', { course: course.id })} className="w-full">

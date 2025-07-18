@@ -5,7 +5,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { User } from '@/types';
 import React from 'react';
 
 export interface CourseFormData {
@@ -26,7 +25,6 @@ export interface CourseFormErrors {
     teacher_id?: string;
     start_date?: string;
     end_date?: string;
-    [key: string]: string | undefined;
 }
 
 interface CourseFormProps {
@@ -34,7 +32,7 @@ interface CourseFormProps {
     setData: (key: string, value: string | boolean) => void;
     errors: CourseFormErrors;
     processing: boolean;
-    teachers: User[];
+    teachers: App.Data.UserData[];
     onSubmit: (e: React.FormEvent) => void;
     submitButtonText: string;
 }

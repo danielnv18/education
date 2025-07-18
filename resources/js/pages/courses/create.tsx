@@ -1,11 +1,10 @@
 import CourseForm from '@/components/forms/course-form';
 import AppLayout from '@/layouts/app-layout';
-import { User } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import React from 'react';
 
 interface CourseCreatePageProps {
-    teachers?: User[];
+    teachers?: App.Data.UserData[];
 }
 
 export default function CourseCreatePage({ teachers = [] }: CourseCreatePageProps) {
