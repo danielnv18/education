@@ -12,12 +12,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\LaravelData\WithData;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 
-final class User extends Authenticatable implements MustVerifyEmail
+final class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, hasRoles, Notifiable;
+    use HasFactory, hasRoles, InteractsWithMedia, Notifiable;
 
     /** @use WithData<UserData> */
     use WithData;
@@ -70,6 +72,14 @@ final class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Course::class, 'course_enrollments')
             ->withPivot(['enrolled_at', 'status'])
             ->withTimestamps();
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp'])
+            ->singleFile();
+
     }
 
     /**
