@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Models\Course;
-use App\Models\File;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -37,21 +36,6 @@ test('user has correct casts', function (): void {
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ]);
-});
-
-test('user has many files', function (): void {
-    $user = User::factory()->create();
-    $course = Course::factory()->create();
-
-    // Create files uploaded by the user
-    File::factory()->count(3)->create([
-        'uploaded_by' => $user->id,
-        'fileable_id' => $course->id,
-        'fileable_type' => Course::class,
-    ]);
-
-    expect($user->files)->toHaveCount(3)
-        ->and($user->files->first())->toBeInstanceOf(File::class);
 });
 
 test('user has many teaching courses', function (): void {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use App\Enums\CourseStatus;
 use App\Models\Course;
-use App\Models\File;
 use App\Models\Module;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,7 +20,6 @@ test('course has correct fillable attributes', function (): void {
         'status',
         'is_published',
         'teacher_id',
-        'thumbnail_id',
         'start_date',
         'end_date',
     ]);
@@ -76,38 +74,6 @@ test('course belongs to many students', function (): void {
 
     expect($course->students)->toHaveCount(3)
         ->and($course->students->first())->toBeInstanceOf(User::class);
-});
-
-test('course has a thumbnail', function (): void {
-    $course = Course::factory()->create();
-    $user = User::factory()->create();
-    $thumbnail = File::factory()->create([
-        'fileable_id' => $course->id,
-        'fileable_type' => Course::class,
-        'uploaded_by' => $user->id,
-    ]);
-
-    $course->update([
-        'thumbnail_id' => $thumbnail->id,
-    ]);
-
-    expect($course->thumbnail)->toBeInstanceOf(File::class)
-        ->and($course->thumbnail->id)->toBe($thumbnail->id);
-});
-
-test('course has many files', function (): void {
-    $course = Course::factory()->create();
-
-    // Create files with the course as the fileable
-    $user = User::factory()->create();
-    File::factory()->count(3)->create([
-        'fileable_id' => $course->id,
-        'fileable_type' => Course::class,
-        'uploaded_by' => $user->id,
-    ]);
-
-    expect($course->files)->toHaveCount(4)
-        ->and($course->files->first())->toBeInstanceOf(File::class);
 });
 
 test('course factory creates a valid course', function (): void {

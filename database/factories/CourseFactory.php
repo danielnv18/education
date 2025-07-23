@@ -6,7 +6,6 @@ namespace Database\Factories;
 
 use App\Enums\CourseStatus;
 use App\Models\Course;
-use App\Models\File;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -28,26 +27,9 @@ final class CourseFactory extends Factory
             'status' => fake()->randomElement(CourseStatus::cases()),
             'is_published' => fake()->boolean(),
             'teacher_id' => User::factory()->create(),
-            'thumbnail_id' => null,
             'start_date' => fake()->dateTimeBetween('now', '+1 month'),
             'end_date' => fake()->dateTimeBetween('+2 months', '+6 months'),
         ];
-    }
-
-    /**
-     * Configure the model factory.
-     */
-    public function configure(): self
-    {
-        return $this->afterCreating(function (Course $course): void {
-            // Create and associate a thumbnail file
-            $thumbnail = File::factory()->create([
-                'fileable_id' => $course->id,
-                'fileable_type' => Course::class,
-            ]);
-
-            $course->update(['thumbnail_id' => $thumbnail->id]);
-        });
     }
 
     /**

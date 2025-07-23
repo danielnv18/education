@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\LaravelData\WithData;
 
 final class Course extends Model
@@ -35,7 +34,6 @@ final class Course extends Model
         'status',
         'is_published',
         'teacher_id',
-        'thumbnail_id',
         'start_date',
         'end_date',
     ];
@@ -64,22 +62,6 @@ final class Course extends Model
     public function modules(): HasMany
     {
         return $this->hasMany(Module::class)->orderBy('order');
-    }
-
-    /**
-     * @return MorphMany<File, $this>
-     */
-    public function files(): MorphMany
-    {
-        return $this->morphMany(File::class, 'fileable');
-    }
-
-    /**
-     * @return BelongsTo<File, $this>
-     */
-    public function thumbnail(): BelongsTo
-    {
-        return $this->belongsTo(File::class, 'thumbnail_id');
     }
 
     /**

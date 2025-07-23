@@ -30,13 +30,12 @@ final class DashboardController extends Controller
         // Get courses where the user is a teacher
         $teachingCourses = Course::query()
             ->where('teacher_id', $user->id)
-            ->with(['thumbnail'])
             ->latest()
             ->get();
 
         // Get courses where the user is enrolled as a student
         $enrolledCourses = $user->enrolledCourses()
-            ->with(['teacher', 'thumbnail'])
+            ->with(['teacher'])
             ->latest()
             ->get();
 

@@ -49,14 +49,6 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
     ];
 
     /**
-     * @return HasMany<File, $this>
-     */
-    public function files(): HasMany
-    {
-        return $this->hasMany(File::class, 'uploaded_by');
-    }
-
-    /**
      * @return HasMany<Course, $this>
      */
     public function teachingCourses(): HasMany
