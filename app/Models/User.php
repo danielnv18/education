@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Data\UserData;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -71,6 +72,15 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
         $this->addMediaCollection('avatar')
             ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp'])
             ->singleFile();
+
+    }
+
+    /** @return Attribute<string, void> */
+    protected function avatar(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->getFirstMediaUrl('avatar'),
+        );
 
     }
 

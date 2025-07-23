@@ -31,7 +31,7 @@ final class CourseController extends Controller
         Gate::authorize('viewAny', Course::class);
 
         $courses = Course::query()
-            ->with(['teacher',])
+            ->with(['teacher'])
             ->latest()->get();
 
         return Inertia::render('courses/index', [
@@ -92,7 +92,7 @@ final class CourseController extends Controller
     {
         Gate::authorize('update', $course);
 
-        $course->load(['teacher',]);
+        $course->load(['teacher']);
 
         $teachers = User::query()
             ->whereHas('roles', function (Builder $query): void {

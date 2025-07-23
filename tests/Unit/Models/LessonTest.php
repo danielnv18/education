@@ -104,4 +104,3 @@ test('lesson factory can create a document lesson', function (): void {
 
     expect($lesson->type)->toBe(LessonType::DOCUMENT);
 });
-
