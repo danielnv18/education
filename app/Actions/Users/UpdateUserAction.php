@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-final class UpdateUserAction
+final readonly class UpdateUserAction
 {
     /**
      * Update an existing user with the provided data.

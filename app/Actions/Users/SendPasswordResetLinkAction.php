@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
 
-final class SendPasswordResetLinkAction
+final readonly class SendPasswordResetLinkAction
 {
     /**
      * Send a password reset link to the user.

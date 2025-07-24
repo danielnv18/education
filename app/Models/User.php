@@ -76,10 +76,10 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
     }
 
     /** @return Attribute<string, void> */
-    protected function avatar(): Attribute
+    public function avatar(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->getFirstMediaUrl('avatar'),
+            get: fn (): string => $this->getFirstMediaUrl('avatar'),
         );
 
     }

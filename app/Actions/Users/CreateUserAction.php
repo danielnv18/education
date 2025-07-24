@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
-final class CreateUserAction
+final readonly class CreateUserAction
 {
     /**
      * Create a new user with the provided data.

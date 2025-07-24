@@ -9,6 +9,7 @@ use App\Actions\Users\UpdateAvatarAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\AvatarUploadRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 
 final class AvatarController extends Controller
 {
@@ -17,6 +18,8 @@ final class AvatarController extends Controller
      */
     public function update(AvatarUploadRequest $request, UpdateAvatarAction $action): RedirectResponse
     {
+        Gate::authorize('update', $request->user());
+        /** @phpstan-ignore-next-line  */
         $action->handle($request->user(), $request->file('avatar'));
 
         return to_route('profile.edit')->with('status', 'avatar-updated');
@@ -27,6 +30,8 @@ final class AvatarController extends Controller
      */
     public function destroy(AvatarUploadRequest $request, DeleteAvatarAction $action): RedirectResponse
     {
+        Gate::authorize('update', $request->user());
+        /** @phpstan-ignore-next-line  */
         $action->handle($request->user());
 
         return to_route('profile.edit')->with('status', 'avatar-removed');
