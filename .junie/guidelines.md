@@ -1,6 +1,7 @@
 # Education LMS Development Guidelines
 
-This document provides essential information for developers working on the Education LMS project.
+## Core Principles
+**Follow Laravel conventions first.** If Laravel has a documented way to do something, use it. Only deviate when you have a clear justification.
 
 ## Build/Configuration Instructions
 
@@ -48,53 +49,40 @@ For server-side rendering, use:
 composer dev:ssr
 ```
 
-## Testing Information
+## Testing Framework & Standards
 
 ### Testing Framework
-The project uses Pest PHP for testing, which is a testing framework built on top of PHPUnit with a more expressive syntax.
+The project uses Pest PHP for testing, which provides a more expressive syntax built on PHPUnit. Never use PHPUnit
 
 ### Running Tests
-Run all tests:
 ```bash
+# Run all tests
 composer test
-```
 
-Run specific test suites:
-```bash
-# Run unit tests with coverage
-composer test:unit
+# Run specific test suites
+composer test:unit          # Unit tests with coverage
+composer test:type-coverage # Type coverage tests
+composer test:types         # Static analysis
+composer test:lint          # Code style checks
+composer test:refactor      # Refactoring checks
 
-# Run type coverage tests
-composer test:type-coverage
-
-# Run static analysis
-composer test:types
-
-# Run code style checks
-composer test:lint
-
-# Run refactoring checks
-composer test:refactor
-```
-
-Run a specific test file:
-```bash
-./vendor/bin/pest tests/path/to/TestFile.php
+# Run specific test file
+./vendor/bin/pest tests/path/to/TestFile.php --coverage
 ```
 
 ### Creating Tests
-1. Tests are organized in the `tests` directory:
-    - `tests/Feature/Console` - For console command tests
-    - `tests/Feature/Http` - For HTTP-related tests (Controllers, requests, etc.)
-    - `tests/Unit/Actions` - For action classes
-    - `tests/Unit/Models` - For model tests
-    - `tests/Unit/Jobs` - For job tests
-    - `tests/Unit/Policies` - For policy tests
-    - `tests/Unit/Services` - For service classes
+1. **Test Organization**:
+    - `tests/Feature/Console` - Console command tests
+    - `tests/Feature/Http` - HTTP-related tests (Controllers, requests, etc.)
+    - `tests/Unit/Actions` - Action classes
+    - `tests/Unit/Models` - Model tests
+    - `tests/Unit/Jobs` - Job tests
+    - `tests/Unit/Policies` - Policy tests
+    - `tests/Unit/Services` - Service classes
 
-2. Test files should follow the naming convention `*Test.php`. Use Pest for all the tests.
+2. **Test Naming**: Files should follow `*Test.php` convention
 
-3. Example of a basic test using Pest PHP:
+3. **Test Structure** - Follow Arrange-Act-Assert pattern:
 ```php
 <?php
 
@@ -121,122 +109,172 @@ it('can perform some action', function (): void {
 });
 ```
 
-4. Use the `RefreshDatabase` trait for tests that interact with the database
+4. **Database Testing**: Use `RefreshDatabase` trait for database interactions
+5. **Factories**: Generate a `{Model}Factory` with each model
 
-5. Follow the Arrange-Act-Assert pattern in your tests.
-    - **Arrange**: Set up the necessary preconditions and inputs. Use factories to create test data.
-    - **Act**: Execute the code under test.
-    - **Assert**: Verify that the expected outcomes occur.
+## PHP Standards & Code Style
 
-6. Generate a {Model}Factory with each model.
-
-## Code Style & Development Practices
-
-### PHP Code Style
-- The project uses Laravel Pint (pint.json) for PHP code style enforcement
-- Strict types declaration is required
+### Core PHP Standards
+- Follow PSR-1, PSR-2, and PSR-12
+- Use strict types declaration: `declare(strict_types=1);`
 - Classes should be final when possible
-- Follow PSR-12 coding standards with Laravel-specific additions
-- Use PHP v8.4 features.
-- Enforce strict types and array shapes via PHPStan.
+- Use PHP v8.4 features
+- Enforce strict types and array shapes via PHPStan
+- Use camelCase for non-public-facing strings
+- Use short nullable notation: `?string` not `string|null`
+- Always specify `void` return types when methods return nothing
 
-Run code style checks:
-```bash
-composer test:lint
+### Class Structure
+```php
+final class SomeClass
+{
+    public function __construct(
+        private string $name,
+        private int $age,
+    ) {
+    }
+}
 ```
 
-Fix code style issues:
+### Type Declarations & Docblocks
+- Use typed properties over docblocks
+- Specify return types including `void`
+- Use short nullable syntax: `?Type` not `Type|null`
+- Document iterables with generics:
+  ```php
+  /** @return Collection<int, User> */
+  public function getUsers(): Collection
+  ```
+
+#### Docblock Rules
+- Don't use docblocks for fully type-hinted methods (unless description needed)
+- **Always import classnames in docblocks** - never use fully qualified names:
+  ```php
+  use Spatie\Url\Url;
+  /** @return Url */
+  ```
+- Use one-line docblocks when possible: `/** @var string */`
+- Most common type should be first in multi-type docblocks
+- For iterables, always specify key and value types:
+  ```php
+  /**
+   * @param array<int, MyObject> $myArray
+   * @param int $typedArgument 
+   */
+  function someFunction(array $myArray, int $typedArgument) {}
+  ```
+- Use array shape notation for fixed keys:
+  ```php
+  /** @return array{
+     first: SomeClass, 
+     second: SomeClass
+  } */
+  ```
+
+### Control Flow - Happy Path Pattern
+- **Happy path last**: Handle error conditions first, success case last
+- **Avoid else**: Use early returns instead of nested conditions
+- **Separate conditions**: Prefer multiple if statements over compound conditions
+- **Always use curly brackets** even for single statements
+
+```php
+// Happy path last
+if (! $user) {
+    return null;
+}
+
+if (! $user->isActive()) {
+    return null;
+}
+
+// Process active user...
+
+// Short ternary
+$name = $isFoo ? 'foo' : 'bar';
+
+// Multi-line ternary
+$result = $object instanceof Model ?
+    $object->name :
+    'A default value';
+```
+
+### Strings & Formatting
+Use string interpolation over concatenation:
+```php
+// Good
+$greeting = "Hello {$name}";
+
+// Avoid
+$greeting = 'Hello ' . $name;
+```
+
+### Code Quality Tools
 ```bash
+# Fix code style issues
 composer lint
-```
 
-When adding new code, run the following command to ensure it adheres to the code style:
-```bash
-composer lint
-```
-
-### JavaScript/TypeScript Code Style
-- Uses Prettier for code formatting
-- ESLint for linting
-- TypeScript for type checking
-
-Configuration:
-- Single quotes
-- Semicolons required
-- 4 spaces for indentation (except YAML files which use 2 spaces)
-- 150 character line length
-
-### Styling & UI
-- Use Shadcn for UI components
-- Use Tailwind CSS for styling
-- Keep UI minimal
-
-### Static Analysis
-- PHPStan (via Larastan) is used for static analysis
-- Type coverage is enforced at 100%
-
-Run static analysis:
-```bash
+# Run static analysis
 composer test:types
-```
 
-### Code Refactoring
-- Rector is used for automated code refactoring
-
-Run refactoring checks:
-```bash
-composer test:refactor
-```
-
-Apply refactoring:
-```bash
+# Apply refactoring
 composer refactor
 ```
 
-### React Component Conventions
+## Laravel Conventions
 
-#### File Structure
-- All file paths should be lowercase: `resources/js/pages/courses/index.tsx`
+### Routes
+- URLs: kebab-case (`/open-source`)
+- Route names: camelCase (`->name('openSource')`)
+- Parameters: camelCase (`{userId}`)
+- Use tuple notation: `[Controller::class, 'method']`
 
-#### Component Names
-- Components should follow the pattern `{Model}{Action}Page`:
-  - `CourseIndexPage`
-  - `CourseShowPage`
-  - `DashboardIndexPage`
-
-#### Props Interfaces
-- Props interfaces should follow the convention `{PageName}Props`:
-  - `CourseIndexPageProps`
-  - `CourseShowPageProps`
-  - `DashboardIndexPageProps`
-
-#### Routes
-- Never use hardcoded routes in React components
-- Always use the `route()` function from Inertia:
-  ```tsx
-  // Incorrect
-  <Link href="/dashboard">Dashboard</Link>
-
-  // Correct
-  <Link href={route('dashboard')}>Dashboard</Link>
-  ```
-
-### Controller Conventions
-- Use Single Action Controllers for simple pages with a single action
-- Implement the `__invoke` method in the controller
-- Register the controller class directly in the routes file:
+### Controllers
+- Singular resource names (`PostController`)
+- Controllers should not have public methods besides '__construct', '__invoke', 'index', 'show', 'create', 'store', 'edit', 'update', 'destroy', 'middleware'
+- **Single Action Controllers**: Use `__invoke` method and register directly:
   ```php
   Route::get('dashboard', DashboardController::class)->name('dashboard');
   ```
+- **Redirects**: Always use `to_route()` for redirects to named routes:
+  ```php
+  return to_route('dashboard')->with('success', 'Action completed');
+  ```
 
-### Redirects in Controllers
-- Always use `to_route()` for redirects to named routes
-- Never use `redirect()->route()` or hardcoded URLs like `redirect('/')`
-- For redirects with flash data, use `to_route('route.name')->with('key', 'value')`
+### Configuration
+- Files: kebab-case (`pdf-generator.php`)
+- Keys: snake_case (`chrome_path`)
+- Add service configs to `config/services.php`, don't create new files
+- Use `config()` helper, avoid `env()` outside config files
 
-### Actions
+### Artisan Commands
+- Names: kebab-case (`delete-old-records`)
+- Always provide feedback (`$this->comment('All ok!')`)
+- Show progress for loops, summary at end
+- Put output BEFORE processing item:
+  ```php
+  $items->each(function(Item $item) {
+      $this->info("Processing item id `{$item->id}`...");
+      $this->processItem($item);
+  });
+  
+  $this->comment("Processed {$items->count()} items.");
+  ```
+
+### Validation & Requests
+- Use FormRequest for validation
+- Name with Create, Update, Delete
+- Use array notation for multiple rules:
+  ```php
+  public function rules() {
+      return [
+          'email' => ['required', 'email'],
+      ];
+  }
+  ```
+
+### Actions Pattern
 - Use Action classes for business logic
-- Wrap all database operations in a `DB::transaction` to ensure data consistency:
+- Wrap database operations in transactions:
   ```php
   public function handle(): void
   {
@@ -245,31 +283,142 @@ composer refactor
       });
   }
   ```
-- Actions pattern and naming verbs. Example:
+- Action naming and usage:
   ```php
   public function store(CreateTodoRequest $request, CreateTodoAction $action)
   {
       $user = $request->user();
-
       $action->handle($user, $request->validated());
   }
   ```
 
-### Requests
-- Use FormRequest for validation
-- Name with Create, Update, Delete.
+## React/Frontend Conventions
+
+### File Structure & Naming
+- All file paths: lowercase (`resources/js/pages/courses/index.tsx`)
+- Components: `{Model}{Action}Page` pattern (`CourseIndexPage`, `CourseShowPage`)
+- Props interfaces: `{PageName}Props` (`CourseIndexPageProps`)
+
+### Routes in React Components
+Never use hardcoded routes:
+```tsx
+// Incorrect
+<Link href="/dashboard">Dashboard</Link>
+
+// Correct
+<Link href={route('dashboard')}>Dashboard</Link>
+```
+
+### Styling & UI
+- Use Shadcn for UI components
+- Use Tailwind CSS for styling
+- Keep UI minimal
+
+### JavaScript/TypeScript Standards
+- Single quotes
+- Semicolons required
+- 4 spaces for indentation (except YAML: 2 spaces)
+- 150 character line length
+
+## Database & Architecture
 
 ### Database
-- Migrations should be created for all database changes
-- Use Laravel's Eloquent ORM for database interactions
-- Use enums for fields with a fixed set of values
+- Migrations for all database changes
+- Use Laravel's Eloquent ORM
+- Use enums for fields with fixed values
+- Avoid `DB::`; use `Model::query()` only
+- **Migrations**: Do not write down methods, only up methods
 
-### Architecture
+### Architecture Guidelines
 - Follow Laravel's MVC architecture
 - Use Actions classes for business logic
 - Use Policies for authorization
 - Use Enums for type-safe constants
-- Delete .gitkeep when adding a file.
-- Stick to existing structure—no new folders.
-- Avoid `DB::`; use `Model::query()` only.
-- No dependency changes without approval.
+- Delete .gitkeep when adding files
+- Stick to existing structure—no new folders
+- No dependency changes without approval
+
+### Authorization
+- Policies use camelCase: `Gate::authorize('editPost', ...)`
+
+## Enums
+Use PascalCase for enum values:
+```php
+enum Status: string
+{
+    case Active = 'active';
+    case Inactive = 'inactive';
+}
+```
+
+## Comments & Documentation
+- **Avoid comments** - write expressive code instead
+- When needed, use proper formatting:
+  ```php
+  // Single line with space after //
+  
+  /*
+   * Multi-line blocks start with single *
+   */
+  ```
+- Refactor comments into descriptive function names
+
+## Whitespace & Formatting
+- Add blank lines between statements for readability
+- Exception: sequences of equivalent single-line operations
+- No extra empty lines between `{}` brackets
+- Let code "breathe" - avoid cramped formatting
+
+## Blade Templates
+- Indent with 4 spaces
+- No spaces after control structures:
+  ```blade
+  @if($condition)
+      Something
+  @endif
+  ```
+
+## API Design
+- Use plural resource names: `/errors`
+- Use kebab-case: `/error-occurrences`
+- Limit deep nesting for simplicity
+
+## Quick Reference - Naming Conventions
+
+### General Naming
+- **Classes**: PascalCase (`UserController`, `OrderStatus`)
+- **Methods/Variables**: camelCase (`getUserName`, `$firstName`)
+- **Routes**: kebab-case (`/open-source`, `/user-profile`)
+- **Config files**: kebab-case (`pdf-generator.php`)
+- **Config keys**: snake_case (`chrome_path`)
+- **Artisan commands**: kebab-case (`php artisan delete-old-records`)
+
+### Laravel Specific
+- **Controllers**: Singular resource name + `Controller` (`PostController`)
+- **Views**: camelCase (`openSource.blade.php`)
+- **Jobs**: action-based (`CreateUser`, `SendEmailNotification`)
+- **Events**: tense-based (`UserRegistering`, `UserRegistered`)
+- **Listeners**: action + `Listener` suffix (`SendInvitationMailListener`)
+- **Commands**: action + `Command` suffix (`PublishScheduledPostsCommand`)
+- **Mailables**: purpose + `Mail` suffix (`AccountActivatedMail`)
+- **Resources/Transformers**: plural + `Resource`/`Transformer` (`UsersResource`)
+- **Enums**: descriptive name, no prefix (`OrderStatus`, `BookingType`)
+
+## Development Workflow Commands
+
+```bash
+# Start development environment
+composer dev
+
+# Testing
+composer test
+composer test:unit
+composer test:types
+
+# Code quality
+composer lint
+composer refactor
+
+# Type checking
+composer test:type-coverage
+```
