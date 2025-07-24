@@ -26,7 +26,7 @@ final class CourseStudentsController extends Controller
     {
         Gate::authorize('update', $course);
 
-        $course->load(['teacher', 'thumbnail', 'students']);
+        $course->load(['teacher', 'students']);
 
         // Get users who are not already enrolled in the course
         $availableStudents = User::query()

@@ -7,7 +7,7 @@ namespace App\Actions\Courses;
 use App\Models\Course;
 use Illuminate\Support\Facades\DB;
 
-final class CreateCourseAction
+final readonly class CreateCourseAction
 {
     /**
      * Handle the creation of a new course.

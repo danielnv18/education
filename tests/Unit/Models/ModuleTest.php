@@ -3,10 +3,8 @@
 declare(strict_types=1);
 
 use App\Models\Course;
-use App\Models\File;
 use App\Models\Lesson;
 use App\Models\Module;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -52,21 +50,6 @@ test('module has many lessons', function (): void {
 
     expect($module->lessons)->toHaveCount(3)
         ->and($module->lessons->first())->toBeInstanceOf(Lesson::class);
-});
-
-test('module has many files', function (): void {
-    $module = Module::factory()->create();
-
-    // Create files with the module as the fileable
-    $user = User::factory()->create();
-    File::factory()->count(3)->create([
-        'fileable_id' => $module->id,
-        'fileable_type' => Module::class,
-        'uploaded_by' => $user->id,
-    ]);
-
-    expect($module->files)->toHaveCount(3)
-        ->and($module->files->first())->toBeInstanceOf(File::class);
 });
 
 test('module factory creates a valid module', function (): void {

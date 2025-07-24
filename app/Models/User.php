@@ -6,18 +6,21 @@ namespace App\Models;
 
 use App\Data\UserData;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\LaravelData\WithData;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 
-final class User extends Authenticatable implements MustVerifyEmail
+final class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, hasRoles, Notifiable;
+    use HasFactory, hasRoles, InteractsWithMedia, Notifiable;
 
     /** @use WithData<UserData> */
     use WithData;
@@ -47,14 +50,6 @@ final class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * @return HasMany<File, $this>
-     */
-    public function files(): HasMany
-    {
-        return $this->hasMany(File::class, 'uploaded_by');
-    }
-
-    /**
      * @return HasMany<Course, $this>
      */
     public function teachingCourses(): HasMany
@@ -70,6 +65,23 @@ final class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Course::class, 'course_enrollments')
             ->withPivot(['enrolled_at', 'status'])
             ->withTimestamps();
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp'])
+            ->singleFile();
+
+    }
+
+    /** @return Attribute<string, void> */
+    public function avatar(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => $this->getFirstMediaUrl('avatar'),
+        );
+
     }
 
     /**

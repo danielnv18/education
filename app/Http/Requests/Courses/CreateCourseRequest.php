@@ -31,7 +31,6 @@ final class CreateCourseRequest extends FormRequest
             'status' => ['required', new Enum(CourseStatus::class)],
             'is_published' => ['boolean'],
             'teacher_id' => ['nullable', 'exists:users,id'],
-            'thumbnail_id' => ['nullable', 'exists:files,id'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
         ];

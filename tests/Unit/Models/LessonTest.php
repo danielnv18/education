@@ -104,11 +104,3 @@ test('lesson factory can create a document lesson', function (): void {
 
     expect($lesson->type)->toBe(LessonType::DOCUMENT);
 });
-
-test('lesson has file relationship', function (): void {
-    // Arrange
-    $lesson = new Lesson();
-
-    // Act & Assert
-    expect($lesson->file())->toBeInstanceOf(Illuminate\Database\Eloquent\Relations\BelongsTo::class);
-});

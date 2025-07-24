@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use App\Models\Course;
-use App\Models\File;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
@@ -37,21 +37,6 @@ test('user has correct casts', function (): void {
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ]);
-});
-
-test('user has many files', function (): void {
-    $user = User::factory()->create();
-    $course = Course::factory()->create();
-
-    // Create files uploaded by the user
-    File::factory()->count(3)->create([
-        'uploaded_by' => $user->id,
-        'fileable_id' => $course->id,
-        'fileable_type' => Course::class,
-    ]);
-
-    expect($user->files)->toHaveCount(3)
-        ->and($user->files->first())->toBeInstanceOf(File::class);
 });
 
 test('user has many teaching courses', function (): void {
@@ -91,4 +76,45 @@ test('user factory creates a valid user', function (): void {
         ->and($user->name)->not->toBeEmpty()
         ->and($user->email)->not->toBeEmpty()
         ->and($user->password)->not->toBeEmpty();
+});
+
+test('user registers media collections correctly', function (): void {
+    $user = User::factory()->create();
+
+    // Add a test avatar to the user
+    $avatar = $user->addMedia(UploadedFile::fake()->image('avatar.jpg'))
+        ->toMediaCollection('avatar');
+
+    // Test that the avatar was added to the collection
+    expect($user->getMedia('avatar'))->toHaveCount(1)
+        ->and($avatar->collection_name)->toBe('avatar');
+
+    // Test that adding a second avatar replaces the first one (singleFile)
+    $newAvatar = $user->addMedia(UploadedFile::fake()->image('new-avatar.png'))
+        ->toMediaCollection('avatar');
+
+    expect($user->getMedia('avatar'))->toHaveCount(1)
+        ->and($user->getFirstMedia('avatar')->file_name)->toBe('new-avatar.png');
+
+    // Test that non-image files are rejected
+    // This would throw an exception if the mime type validation fails
+    // We're not testing the exception here as that's handled by the media library
+});
+
+test('user avatar attribute returns correct url', function (): void {
+    $user = User::factory()->create();
+
+    // Initially, with no avatar, it should return an empty string
+    expect($user->avatar)->toBe('');
+
+    // Add an avatar
+    $user->addMedia(UploadedFile::fake()->image('avatar.jpg'))
+        ->toMediaCollection('avatar');
+
+    // Refresh the model to ensure we get the latest data
+    $user->refresh();
+
+    // Now it should return a URL
+    expect($user->avatar)->not->toBe('')
+        ->and($user->avatar)->toBe($user->getFirstMediaUrl('avatar'));
 });

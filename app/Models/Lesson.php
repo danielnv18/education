@@ -44,14 +44,6 @@ final class Lesson extends Model
     }
 
     /**
-     * @return BelongsTo<File, $this>
-     */
-    public function file(): BelongsTo
-    {
-        return $this->belongsTo(File::class, 'fileable');
-    }
-
-    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

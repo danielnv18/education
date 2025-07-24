@@ -22,7 +22,6 @@ return new class extends Migration
             $table->enum('status', array_column(CourseStatus::cases(), 'value'))->default(CourseStatus::DRAFT->value);
             $table->boolean('is_published')->default(false);
             $table->foreignId('teacher_id')->nullable()->constrained('users');
-            $table->foreignId('thumbnail_id')->nullable()->constrained('files');
             $table->dateTime('start_date')->nullable();
             $table->dateTime('end_date')->nullable();
             $table->timestamps();

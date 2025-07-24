@@ -3,6 +3,7 @@ import { Transition } from '@headlessui/react';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
+import AvatarUpload from '@/components/avatar-upload';
 import DeleteUser from '@/components/delete-user';
 import HeadingSmall from '@/components/heading-small';
 import InputError from '@/components/input-error';
@@ -118,6 +119,10 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
                             </Transition>
                         </div>
                     </form>
+                </div>
+                <div className="mt-8 space-y-6">
+                    <HeadingSmall title="Profile Avatar" description="Upload or change your profile picture" />
+                    <AvatarUpload user={auth.user} />
                 </div>
 
                 <DeleteUser />

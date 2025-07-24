@@ -9,7 +9,7 @@ use App\Models\Course;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
-final class CreateCourseEnrollmentAction
+final readonly class CreateCourseEnrollmentAction
 {
     /**
      * Enroll students in a course.

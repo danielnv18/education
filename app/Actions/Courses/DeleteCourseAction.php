@@ -7,7 +7,7 @@ namespace App\Actions\Courses;
 use App\Models\Course;
 use Illuminate\Support\Facades\DB;
 
-final class DeleteCourseAction
+final readonly class DeleteCourseAction
 {
     /**
      * Handle the deletion of a course.

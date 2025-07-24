@@ -7,7 +7,7 @@ namespace App\Actions\Courses;
 use App\Models\Course;
 use Illuminate\Support\Facades\DB;
 
-final class UpdateCourseAction
+final readonly class UpdateCourseAction
 {
     /**
      * Handle the update of a course.
