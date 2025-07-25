@@ -68,9 +68,9 @@ interface CourseCardProps {
 function CourseCard({ course }: CourseCardProps) {
     return (
         <Card className="overflow-hidden">
-            {course.thumbnail ? (
+            {course.cover ? (
                 <div className="aspect-video overflow-hidden">
-                    <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover" />
+                    <img src={course.cover} alt={course.title} className="h-full w-full object-cover" />
                 </div>
             ) : (
                 <div className="relative aspect-video overflow-hidden">

@@ -4,7 +4,7 @@ declare namespace App.Data {
         title: string;
         description: string | null;
         status: App.Enums.CourseStatus;
-        thumbnail: string | null;
+        cover: string | null;
         endDate: string | null;
         startDate: string | null;
         teacher: App.Data.UserData | null;

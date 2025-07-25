@@ -72,7 +72,6 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
         $this->addMediaCollection('avatar')
             ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp'])
             ->singleFile();
-
     }
 
     /** @return Attribute<string, void> */
@@ -81,7 +80,6 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
         return Attribute::make(
             get: fn (): string => $this->getFirstMediaUrl('avatar'),
         );
-
     }
 
     /**

@@ -75,9 +75,9 @@ export default function CourseShowPage({ course }: CourseShowPageProps) {
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                     <div className="md:col-span-2">
                         <Card>
-                            {course.thumbnail && (
+                            {course.cover && (
                                 <div className="aspect-video overflow-hidden">
-                                    <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover" />
+                                    <img src={course.cover} alt={course.title} className="h-full w-full object-cover" />
                                 </div>
                             )}
                             <CardHeader>

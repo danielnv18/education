@@ -20,7 +20,7 @@ final class CourseData extends Data
         public string $title,
         public ?string $description,
         public CourseStatus $status,
-        public ?string $thumbnail,
+        public ?string $cover,
         #[Date]
         public ?CarbonImmutable $endDate,
         #[Date]

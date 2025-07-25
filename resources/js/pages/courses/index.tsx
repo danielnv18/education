@@ -35,9 +35,9 @@ export default function CourseIndexPage({ courses }: CourseIndexPageProps) {
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {courses.map((course) => (
                         <Card key={course.id} className="overflow-hidden">
-                            {course.thumbnail && (
+                            {course.cover && (
                                 <div className="aspect-video overflow-hidden">
-                                    <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover" />
+                                    <img src={course.cover} alt={course.title} className="h-full w-full object-cover" />
                                 </div>
                             )}
                             <CardHeader>
