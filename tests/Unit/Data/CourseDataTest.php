@@ -19,11 +19,11 @@ it('can be instantiated with required properties', function (): void {
         title: 'PHP Fundamentals',
         description: null,
         status: CourseStatus::DRAFT,
-        modules: new Collection(),
-        thumbnail: null,
+        cover: null,
         endDate: null,
         startDate: null,
         teacher: null,
+        modules: new Collection(),
     );
 
     // Assert
@@ -35,7 +35,7 @@ it('can be instantiated with required properties', function (): void {
         ->and($courseData->modules)->toBeInstanceOf(Collection::class)
         ->and($courseData->modules)->toBeEmpty()
         ->and($courseData->endDate)->toBeNull()
-        ->and($courseData->thumbnail)->toBeNull()
+        ->and($courseData->cover)->toBeNull()
         ->and($courseData->startDate)->toBeNull()
         ->and($courseData->teacher)->toBeNull()
         ->and($courseData->students)->toBeInstanceOf(Collection::class)
@@ -97,12 +97,12 @@ it('can be instantiated with all properties', function (): void {
         title: 'Advanced PHP',
         description: 'Learn advanced PHP concepts',
         status: CourseStatus::ACTIVE,
-        modules: $modules,
-        thumbnail: 'path/to/thumbnail.jpg',
+        cover: 'path/to/cover.jpg',
         endDate: $endDate,
         startDate: $startDate,
         teacher: $teacher,
         isPublished: true,
+        modules: $modules,
         students: $students,
     );
 
@@ -119,7 +119,7 @@ it('can be instantiated with all properties', function (): void {
         ->and($courseData->endDate)->toBe($endDate)
         ->and($courseData->startDate)->toBe($startDate)
         ->and($courseData->isPublished)->toBeTrue()
-        ->and($courseData->thumbnail)->toBe('path/to/thumbnail.jpg')
+        ->and($courseData->cover)->toBe('path/to/cover.jpg')
         ->and($courseData->teacher)->toBeInstanceOf(UserData::class)
         ->and($courseData->teacher->name)->toBe('John Doe')
         ->and($courseData->students)->toBeInstanceOf(Collection::class)
@@ -139,12 +139,12 @@ it('can be converted to array', function (): void {
         title: 'PHP Testing',
         description: 'Learn how to test PHP applications',
         status: CourseStatus::DRAFT,
-        modules: new Collection(),
-        thumbnail: null,
+        cover: null,
         endDate: $endDate,
         startDate: $startDate,
         teacher: null,
         isPublished: false,
+        modules: new Collection(),
     );
 
     // Act
@@ -152,7 +152,7 @@ it('can be converted to array', function (): void {
 
     // Assert
     expect($array)->toBeArray()
-        ->and($array)->toHaveKeys(['id', 'title', 'description', 'status', 'modules', 'endDate', 'startDate', 'thumbnail', 'teacher', 'students', 'isPublished'])
+        ->and($array)->toHaveKeys(['id', 'title', 'description', 'status', 'modules', 'endDate', 'startDate', 'cover', 'teacher', 'students', 'isPublished'])
         ->and($array['id'])->toBeNull()
         ->and($array['title'])->toBe('PHP Testing')
         ->and($array['description'])->toBe('Learn how to test PHP applications')
