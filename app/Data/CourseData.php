@@ -7,6 +7,7 @@ namespace App\Data;
 use App\Enums\CourseStatus;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
+use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Attributes\Validation\Date;
 use Spatie\LaravelData\Data;
@@ -28,8 +29,10 @@ final class CourseData extends Data
         public ?UserData $teacher,
         public bool $isPublished = false,
         /** @var Collection<int, ModuleData> */
+        #[DataCollectionOf(ModuleData::class)]
         public Collection $modules = new Collection(),
         /** @var Collection<int, UserData> */
+        #[DataCollectionOf(UserData::class)]
         public Collection $students = new Collection(),
     ) {}
 }
