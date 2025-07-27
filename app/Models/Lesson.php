@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Data\LessonData;
 use App\Enums\LessonType;
+use Database\Factories\LessonFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,7 @@ use Spatie\LaravelData\WithData;
 
 final class Lesson extends Model
 {
-    /** @use HasFactory<\Database\Factories\LessonFactory> */
+    /** @use HasFactory<LessonFactory> */
     use HasFactory;
 
     /** @use WithData<LessonData> */

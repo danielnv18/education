@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Data\CourseData;
 use App\Enums\CourseStatus;
+use Database\Factories\CourseFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -18,7 +19,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 
 final class Course extends Model implements HasMedia
 {
-    /** @use HasFactory<\Database\Factories\CourseFactory> */
+    /** @use HasFactory<CourseFactory> */
     use HasFactory, InteractsWithMedia;
 
     /** @use WithData<CourseData> */
