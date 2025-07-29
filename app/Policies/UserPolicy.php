@@ -11,7 +11,7 @@ final class UserPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo(PermissionEnum::VIEW_ANY_USERS);
+        return $user->hasPermissionTo(PermissionEnum::ViewAnyUsers);
     }
 
     public function view(User $user, User $model): bool
@@ -21,12 +21,12 @@ final class UserPolicy
             return true;
         }
 
-        return $user->hasPermissionTo(PermissionEnum::VIEW_USER);
+        return $user->hasPermissionTo(PermissionEnum::ViewUser);
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo(PermissionEnum::CREATE_USER);
+        return $user->hasPermissionTo(PermissionEnum::CreateUser);
     }
 
     public function update(User $user, User $model): bool
@@ -36,7 +36,7 @@ final class UserPolicy
             return true;
         }
 
-        return $user->hasPermissionTo(PermissionEnum::UPDATE_USER);
+        return $user->hasPermissionTo(PermissionEnum::UpdateUser);
     }
 
     public function delete(User $user, User $model): bool
@@ -46,21 +46,21 @@ final class UserPolicy
             return false;
         }
 
-        return $user->hasPermissionTo(PermissionEnum::DELETE_USER);
+        return $user->hasPermissionTo(PermissionEnum::DeleteUser);
     }
 
     public function restore(User $user): bool
     {
-        return $user->hasPermissionTo(PermissionEnum::DELETE_USER);
+        return $user->hasPermissionTo(PermissionEnum::DeleteUser);
     }
 
     public function forceDelete(User $user): bool
     {
-        return $user->hasPermissionTo(PermissionEnum::DELETE_USER);
+        return $user->hasPermissionTo(PermissionEnum::DeleteUser);
     }
 
     public function manageUsers(User $user): bool
     {
-        return $user->hasPermissionTo(PermissionEnum::MANAGE_USERS);
+        return $user->hasPermissionTo(PermissionEnum::ManageUsers);
     }
 }

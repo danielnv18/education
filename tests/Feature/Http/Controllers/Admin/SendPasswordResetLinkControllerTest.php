@@ -13,7 +13,7 @@ beforeEach(function (): void {
 test('it sends password reset link and redirects with success message', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     $user = User::factory()->create();
 
@@ -49,7 +49,7 @@ test('unauthenticated users are redirected to login', function (): void {
 test('teacher cannot send password reset links', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $user = User::factory()->create();
 

@@ -139,7 +139,7 @@ it('passes validation with valid data', function (): void {
         'email' => 'test@example.com',
         'password' => 'Password123!',
         'password_confirmation' => 'Password123!',
-        'roles' => [UserRole::STUDENT->value],
+        'roles' => [UserRole::Student->value],
         'email_verified' => true,
     ];
 

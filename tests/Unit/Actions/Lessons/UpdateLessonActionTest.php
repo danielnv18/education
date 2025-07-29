@@ -25,7 +25,7 @@ it('updates a lesson with valid data', function (): void {
         'title' => 'Original Title',
         'content' => 'Original Content',
         'order' => 1,
-        'type' => LessonType::TEXT,
+        'type' => LessonType::Text,
         'is_published' => false,
     ]);
 
@@ -48,7 +48,7 @@ it('updates a lesson with valid data', function (): void {
         ->and($updatedLesson->content)->toBe('Updated Content')
         ->and($updatedLesson->module_id)->toBe($module->id)
         ->and($updatedLesson->order)->toBe(2)
-        ->and($updatedLesson->type)->toBe(LessonType::TEXT)
+        ->and($updatedLesson->type)->toBe(LessonType::Text)
         ->and($updatedLesson->is_published)->toBeTrue();
 });
 
@@ -60,7 +60,7 @@ it('updates a lesson type', function (): void {
     ]);
 
     $data = [
-        'type' => LessonType::VIDEO->value,
+        'type' => LessonType::Video->value,
     ];
 
     $action = new UpdateLessonAction();
@@ -71,7 +71,7 @@ it('updates a lesson type', function (): void {
     // Assert
     expect($updatedLesson)->toBeInstanceOf(Lesson::class)
         ->and($updatedLesson->id)->toBe($lesson->id)
-        ->and($updatedLesson->type)->toBe(LessonType::VIDEO);
+        ->and($updatedLesson->type)->toBe(LessonType::Video);
 });
 
 it('updates a lesson publication status', function (): void {

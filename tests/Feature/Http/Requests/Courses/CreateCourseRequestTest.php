@@ -37,7 +37,7 @@ it('validates title max length', function (): void {
     // Arrange
     $data = [
         'title' => str_repeat('a', 256), // 256 characters, max is 255
-        'status' => CourseStatus::DRAFT->value,
+        'status' => CourseStatus::Draft->value,
     ];
 
     $validator = validator($data, (new CreateCourseRequest())->rules());
@@ -65,7 +65,7 @@ it('validates end_date is after or equal to start_date', function (): void {
     // Arrange
     $data = [
         'title' => 'Test Course',
-        'status' => CourseStatus::DRAFT->value,
+        'status' => CourseStatus::Draft->value,
         'start_date' => '2023-01-15',
         'end_date' => '2023-01-14', // Before start_date
     ];
@@ -82,7 +82,7 @@ it('passes validation with valid data', function (): void {
     $data = [
         'title' => 'Test Course',
         'description' => 'This is a test course',
-        'status' => CourseStatus::DRAFT->value,
+        'status' => CourseStatus::Draft->value,
         'is_published' => false,
         'start_date' => '2023-01-15',
         'end_date' => '2023-01-20',

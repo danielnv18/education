@@ -15,7 +15,7 @@ beforeEach(function (): void {
 test('store method creates a module and redirects for authorized users', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'teacher_id' => $teacher->id,
@@ -46,7 +46,7 @@ test('store method creates a module and redirects for authorized users', functio
 test('update method updates a module and redirects for authorized users', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'teacher_id' => $teacher->id,
@@ -89,7 +89,7 @@ test('update method updates a module and redirects for authorized users', functi
 test('destroy method deletes a module and redirects for authorized users', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'teacher_id' => $teacher->id,

@@ -49,7 +49,7 @@ final class CourseFactory extends Factory
     {
         return $this->state(fn (array $attributes): array => [
             'is_published' => false,
-            'status' => CourseStatus::DRAFT,
+            'status' => CourseStatus::Draft,
         ]);
     }
 
@@ -60,7 +60,7 @@ final class CourseFactory extends Factory
     {
         return $this->state(fn (array $attributes): array => [
             'is_published' => true,
-            'status' => CourseStatus::ACTIVE,
+            'status' => CourseStatus::Active,
         ]);
     }
 
@@ -70,7 +70,7 @@ final class CourseFactory extends Factory
     public function archived(): self
     {
         return $this->state(fn (array $attributes): array => [
-            'status' => CourseStatus::ARCHIVED,
+            'status' => CourseStatus::Archived,
         ]);
     }
 

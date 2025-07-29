@@ -18,7 +18,7 @@ beforeEach(function (): void {
 it('allows admin to view any users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has VIEW_ANY_USERS permission assigned in PermissionSeeder
 
     $policy = new UserPolicy();
@@ -30,7 +30,7 @@ it('allows admin to view any users', function (): void {
 it('does not allow user without view any users permission to view any users', function (): void {
     // Arrange
     $user = User::factory()->create();
-    $user->assignRole(UserRole::TEACHER);
+    $user->assignRole(UserRole::Teacher);
     // User doesn't have VIEW_ANY_USERS permission
 
     $policy = new UserPolicy();
@@ -53,7 +53,7 @@ it('allows user to view their own profile', function (): void {
 it('allows admin to view other users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has VIEW_USER permission assigned in PermissionSeeder
 
     $otherUser = User::factory()->create();
@@ -80,7 +80,7 @@ it('does not allow user without view user permission to view other users', funct
 it('allows admin to create users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has CREATE_USER permission assigned in PermissionSeeder
 
     $policy = new UserPolicy();
@@ -114,7 +114,7 @@ it('allows user to update their own profile', function (): void {
 it('allows admin to update other users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has UPDATE_USER permission assigned in PermissionSeeder
 
     $otherUser = User::factory()->create();
@@ -141,7 +141,7 @@ it('does not allow user without update user permission to update other users', f
 it('does not allow admin to delete themselves', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has DELETE_USER permission assigned in PermissionSeeder
 
     $policy = new UserPolicy();
@@ -153,7 +153,7 @@ it('does not allow admin to delete themselves', function (): void {
 it('allows admin to delete other users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has DELETE_USER permission assigned in PermissionSeeder
 
     $otherUser = User::factory()->create();
@@ -180,7 +180,7 @@ it('does not allow user without delete user permission to delete other users', f
 it('allows admin to restore users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has DELETE_USER permission assigned in PermissionSeeder
 
     $otherUser = User::factory()->create();
@@ -207,7 +207,7 @@ it('does not allow user without delete user permission to restore users', functi
 it('allows admin to force delete users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has DELETE_USER permission assigned in PermissionSeeder
 
     $otherUser = User::factory()->create();

@@ -6,7 +6,7 @@ namespace App\Enums;
 
 enum EnrollmentStatus: string
 {
-    case INVITED = 'invited';
-    case ACTIVE = 'active';
-    case DROPPED = 'dropped';
+    case Invited = 'invited';
+    case Active = 'active';
+    case Dropped = 'dropped';
 }

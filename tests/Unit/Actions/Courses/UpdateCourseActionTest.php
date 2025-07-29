@@ -17,13 +17,13 @@ it('updates a course with the provided data', function (): void {
     $course = Course::factory()->create([
         'title' => 'Original Title',
         'description' => 'Original Description',
-        'status' => CourseStatus::DRAFT->value,
+        'status' => CourseStatus::Draft->value,
     ]);
 
     $data = [
         'title' => 'Updated Title',
         'description' => 'Updated Description',
-        'status' => CourseStatus::ACTIVE->value,
+        'status' => CourseStatus::Active->value,
     ];
 
     $action = new UpdateCourseAction();
@@ -36,7 +36,7 @@ it('updates a course with the provided data', function (): void {
         ->and($updatedCourse->id)->toBe($course->id)
         ->and($updatedCourse->title)->toBe($data['title'])
         ->and($updatedCourse->description)->toBe($data['description'])
-        ->and($updatedCourse->status)->toBe(CourseStatus::ACTIVE);
+        ->and($updatedCourse->status)->toBe(CourseStatus::Active);
 });
 
 it('updates a course teacher', function (): void {

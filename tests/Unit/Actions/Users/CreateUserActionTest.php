@@ -67,7 +67,7 @@ it('assigns roles to a user when specified', function (): void {
         'name' => 'Admin User',
         'email' => 'admin@example.com',
         'password' => 'password123',
-        'roles' => [UserRole::ADMIN->value],
+        'roles' => [UserRole::Admin->value],
     ];
 
     $action = new CreateUserAction();
@@ -78,7 +78,7 @@ it('assigns roles to a user when specified', function (): void {
     // Assert
     $user = User::findOrFail($user->id);
     expect($user)->toBeInstanceOf(User::class)
-        ->and($user->hasRole(UserRole::ADMIN))->toBeTrue();
+        ->and($user->hasRole(UserRole::Admin))->toBeTrue();
 });
 
 it('assigns multiple roles to a user when specified', function (): void {
@@ -87,7 +87,7 @@ it('assigns multiple roles to a user when specified', function (): void {
         'name' => 'Teacher Admin',
         'email' => 'teacher.admin@example.com',
         'password' => 'password123',
-        'roles' => [UserRole::TEACHER->value, UserRole::ADMIN->value],
+        'roles' => [UserRole::Teacher->value, UserRole::Admin->value],
     ];
 
     $action = new CreateUserAction();
@@ -98,8 +98,8 @@ it('assigns multiple roles to a user when specified', function (): void {
     // Assert
     $user = User::findOrFail($user->id);
     expect($user)->toBeInstanceOf(User::class)
-        ->and($user->hasRole(UserRole::TEACHER))->toBeTrue()
-        ->and($user->hasRole(UserRole::ADMIN))->toBeTrue();
+        ->and($user->hasRole(UserRole::Teacher))->toBeTrue()
+        ->and($user->hasRole(UserRole::Admin))->toBeTrue();
 });
 
 it('generates a password when not provided', function (): void {

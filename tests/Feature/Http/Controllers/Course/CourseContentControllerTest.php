@@ -17,7 +17,7 @@ beforeEach(function (): void {
 test('index method returns course content for authorized users', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'teacher_id' => $teacher->id,
@@ -62,7 +62,7 @@ test('only users with permissions can manage course content', function (): void 
 test('student cannot manage course content they are enrolled in', function (): void {
     // Arrange
     $student = User::factory()->create();
-    $student->assignRole(UserRole::STUDENT);
+    $student->assignRole(UserRole::Student);
 
     $course = Course::factory()->create();
     $course->students()->attach($student->id);
@@ -87,7 +87,7 @@ test('student cannot manage course content they are enrolled in', function (): v
 test('student cannot view content of courses they are not enrolled in', function (): void {
     // Arrange
     $student = User::factory()->create();
-    $student->assignRole(UserRole::STUDENT);
+    $student->assignRole(UserRole::Student);
 
     $course = Course::factory()->create();
     // Student is not enrolled in this course, but the controller doesn't check enrollment

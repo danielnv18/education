@@ -18,7 +18,7 @@ it('can be instantiated with required properties', function (): void {
         id: null,
         title: 'PHP Fundamentals',
         description: null,
-        status: CourseStatus::DRAFT,
+        status: CourseStatus::Draft,
         cover: null,
         endDate: null,
         startDate: null,
@@ -31,7 +31,7 @@ it('can be instantiated with required properties', function (): void {
         ->and($courseData->id)->toBeNull()
         ->and($courseData->title)->toBe('PHP Fundamentals')
         ->and($courseData->description)->toBeNull()
-        ->and($courseData->status)->toBe(CourseStatus::DRAFT)
+        ->and($courseData->status)->toBe(CourseStatus::Draft)
         ->and($courseData->modules)->toBeInstanceOf(Collection::class)
         ->and($courseData->modules)->toBeEmpty()
         ->and($courseData->endDate)->toBeNull()
@@ -96,7 +96,7 @@ it('can be instantiated with all properties', function (): void {
         id: 1,
         title: 'Advanced PHP',
         description: 'Learn advanced PHP concepts',
-        status: CourseStatus::ACTIVE,
+        status: CourseStatus::Active,
         cover: 'path/to/cover.jpg',
         endDate: $endDate,
         startDate: $startDate,
@@ -111,7 +111,7 @@ it('can be instantiated with all properties', function (): void {
         ->and($courseData->id)->toBe(1)
         ->and($courseData->title)->toBe('Advanced PHP')
         ->and($courseData->description)->toBe('Learn advanced PHP concepts')
-        ->and($courseData->status)->toBe(CourseStatus::ACTIVE)
+        ->and($courseData->status)->toBe(CourseStatus::Active)
         ->and($courseData->modules)->toBeInstanceOf(Collection::class)
         ->and($courseData->modules)->toHaveCount(2)
         ->and($courseData->modules->first()->title)->toBe('Introduction')
@@ -138,7 +138,7 @@ it('can be converted to array', function (): void {
         id: null,
         title: 'PHP Testing',
         description: 'Learn how to test PHP applications',
-        status: CourseStatus::DRAFT,
+        status: CourseStatus::Draft,
         cover: null,
         endDate: $endDate,
         startDate: $startDate,
@@ -156,7 +156,7 @@ it('can be converted to array', function (): void {
         ->and($array['id'])->toBeNull()
         ->and($array['title'])->toBe('PHP Testing')
         ->and($array['description'])->toBe('Learn how to test PHP applications')
-        ->and($array['status'])->toBe(CourseStatus::DRAFT->value)
+        ->and($array['status'])->toBe(CourseStatus::Draft->value)
         ->and($array['modules'])->toBeArray()
         ->and($array['modules'])->toBeEmpty()
         ->and(new CarbonImmutable($array['endDate']))->equalTo($endDate)
@@ -217,7 +217,7 @@ it('can be created from an array using from method', function (): void {
     $courseData = CourseData::from([
         'title' => 'Laravel Mastery',
         'description' => 'Master Laravel framework',
-        'status' => CourseStatus::ACTIVE->value,
+        'status' => CourseStatus::Active->value,
         'modules' => $modules,
         'end_date' => $endDate,
         'start_date' => $startDate,
@@ -229,7 +229,7 @@ it('can be created from an array using from method', function (): void {
     expect($courseData)->toBeInstanceOf(CourseData::class)
         ->and($courseData->title)->toBe('Laravel Mastery')
         ->and($courseData->description)->toBe('Master Laravel framework')
-        ->and($courseData->status)->toBe(CourseStatus::ACTIVE)
+        ->and($courseData->status)->toBe(CourseStatus::Active)
         ->and($courseData->modules)->toBeInstanceOf(Collection::class)
         ->and($courseData->modules)->toHaveCount(2)
         ->and($courseData->modules->first())->toBeInstanceOf(ModuleData::class)

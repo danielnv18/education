@@ -14,7 +14,7 @@ it('can be instantiated with required properties', function (): void {
         id: null,
         title: 'Introduction to PHP',
         content: 'PHP is a server-side scripting language.',
-        type: LessonType::TEXT,
+        type: LessonType::Text,
     );
 
     // Assert
@@ -22,7 +22,7 @@ it('can be instantiated with required properties', function (): void {
         ->and($lessonData->id)->toBeNull()
         ->and($lessonData->title)->toBe('Introduction to PHP')
         ->and($lessonData->content)->toBe('PHP is a server-side scripting language.')
-        ->and($lessonData->type)->toBe(LessonType::TEXT)
+        ->and($lessonData->type)->toBe(LessonType::Text)
         ->and($lessonData->order)->toBe(0); // Default value
 });
 
@@ -32,7 +32,7 @@ it('can be instantiated with all properties', function (): void {
         id: 1,
         title: 'Advanced PHP',
         content: 'Learn advanced PHP concepts.',
-        type: LessonType::VIDEO,
+        type: LessonType::Video,
         order: 2,
     );
 
@@ -41,7 +41,7 @@ it('can be instantiated with all properties', function (): void {
         ->and($lessonData->id)->toBe(1)
         ->and($lessonData->title)->toBe('Advanced PHP')
         ->and($lessonData->content)->toBe('Learn advanced PHP concepts.')
-        ->and($lessonData->type)->toBe(LessonType::VIDEO)
+        ->and($lessonData->type)->toBe(LessonType::Video)
         ->and($lessonData->order)->toBe(2);
 });
 
@@ -51,7 +51,7 @@ it('can be converted to array', function (): void {
         id: 1,
         title: 'PHP Testing',
         content: 'Learn how to test PHP applications.',
-        type: LessonType::DOCUMENT,
+        type: LessonType::Document,
         order: 3,
     );
 
@@ -64,7 +64,7 @@ it('can be converted to array', function (): void {
         ->and($array['id'])->toBe(1)
         ->and($array['title'])->toBe('PHP Testing')
         ->and($array['content'])->toBe('Learn how to test PHP applications.')
-        ->and($array['type'])->toBe(LessonType::DOCUMENT->value)
+        ->and($array['type'])->toBe(LessonType::Document->value)
         ->and($array['order'])->toBe(3);
 });
 
@@ -73,7 +73,7 @@ it('can be created from an array using from method', function (): void {
     $lessonData = [
         'title' => 'Laravel Basics',
         'content' => 'Introduction to Laravel framework',
-        'type' => LessonType::VIDEO->value,
+        'type' => LessonType::Video->value,
         'order' => 4,
     ];
 
@@ -85,6 +85,6 @@ it('can be created from an array using from method', function (): void {
         ->and($lesson->id)->toBeNull()
         ->and($lesson->title)->toBe('Laravel Basics')
         ->and($lesson->content)->toBe('Introduction to Laravel framework')
-        ->and($lesson->type)->toBe(LessonType::VIDEO)
+        ->and($lesson->type)->toBe(LessonType::Video)
         ->and($lesson->order)->toBe(4);
 });

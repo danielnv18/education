@@ -19,7 +19,7 @@ beforeEach(function (): void {
 it('allows user with admin role to view any courses', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has VIEW_ANY_COURSES permission assigned in PermissionSeeder
 
     $policy = new CoursePolicy();
@@ -31,8 +31,8 @@ it('allows user with admin role to view any courses', function (): void {
 it('allows user with admin role to view any courses even with multiple roles', function (): void {
     // Arrange
     $user = User::factory()->create();
-    $user->assignRole(UserRole::ADMIN);
-    $user->assignRole(UserRole::TEACHER);
+    $user->assignRole(UserRole::Admin);
+    $user->assignRole(UserRole::Teacher);
     // Admin role has VIEW_ANY_COURSES permission assigned in PermissionSeeder
 
     $policy = new CoursePolicy();
@@ -55,7 +55,7 @@ it('does not allow user without view any courses permission to view any courses'
 it('allows user with admin role to view a course', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has VIEW_ANY_COURSES permission assigned in PermissionSeeder
 
     $course = Course::factory()->create();
@@ -69,7 +69,7 @@ it('allows user with admin role to view a course', function (): void {
 it('allows teacher to view their own course', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
     // Teacher role has VIEW_COURSE permission assigned in PermissionSeeder
 
     $course = Course::factory()->create(['teacher_id' => $teacher->id]);
@@ -83,7 +83,7 @@ it('allows teacher to view their own course', function (): void {
 it('does not allow teacher to view other teachers courses', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
     // Teacher role has VIEW_COURSE permission assigned in PermissionSeeder
 
     $otherTeacher = User::factory()->create();
@@ -98,7 +98,7 @@ it('does not allow teacher to view other teachers courses', function (): void {
 it('allows enrolled student to view a course', function (): void {
     // Arrange
     $student = User::factory()->create();
-    $student->assignRole(UserRole::STUDENT);
+    $student->assignRole(UserRole::Student);
     // Student role has VIEW_COURSE permission assigned in PermissionSeeder
 
     $course = Course::factory()->create();
@@ -126,7 +126,7 @@ it('does not allow non-enrolled user without a role to view a course', function 
 it('allows teacher to create a course', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
     // Teacher role has CREATE_COURSE permission assigned in PermissionSeeder
 
     $policy = new CoursePolicy();
@@ -138,7 +138,7 @@ it('allows teacher to create a course', function (): void {
 it('does not allow user without a role that has create course permission to create a course', function (): void {
     // Arrange
     $user = User::factory()->create();
-    $user->assignRole(UserRole::STUDENT);
+    $user->assignRole(UserRole::Student);
     // Student role doesn't have CREATE_COURSE permission
 
     $policy = new CoursePolicy();
@@ -150,7 +150,7 @@ it('does not allow user without a role that has create course permission to crea
 it('allows admin to update any course', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has VIEW_ANY_COURSES permission assigned in PermissionSeeder
 
     $course = Course::factory()->create();
@@ -164,7 +164,7 @@ it('allows admin to update any course', function (): void {
 it('allows teacher to update their own course', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
     // Teacher role has UPDATE_COURSE permission assigned in PermissionSeeder
 
     $course = Course::factory()->create(['teacher_id' => $teacher->id]);
@@ -178,7 +178,7 @@ it('allows teacher to update their own course', function (): void {
 it('allows user with teacher role to update their own course', function (): void {
     // Arrange
     $user = User::factory()->create();
-    $user->assignRole(UserRole::TEACHER);
+    $user->assignRole(UserRole::Teacher);
     // Teacher role has UPDATE_COURSE and VIEW_COURSE permissions assigned in PermissionSeeder
 
     $course = Course::factory()->create(['teacher_id' => $user->id]);
@@ -192,7 +192,7 @@ it('allows user with teacher role to update their own course', function (): void
 it('does not allow teacher to update other teachers courses', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
     // Teacher role has UPDATE_COURSE permission but not VIEW_ANY_COURSES permission
 
     $otherTeacher = User::factory()->create();
@@ -207,7 +207,7 @@ it('does not allow teacher to update other teachers courses', function (): void 
 it('does not allow student to update a course', function (): void {
     // Arrange
     $student = User::factory()->create();
-    $student->assignRole(UserRole::STUDENT);
+    $student->assignRole(UserRole::Student);
     // Student role doesn't have UPDATE_COURSE permission
 
     $course = Course::factory()->create();
@@ -221,7 +221,7 @@ it('does not allow student to update a course', function (): void {
 it('allows admin to delete a course', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has DELETE_COURSE permission assigned in PermissionSeeder
 
     $course = Course::factory()->create();
@@ -235,7 +235,7 @@ it('allows admin to delete a course', function (): void {
 it('does not allow teacher to delete a course', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
     // Teacher role doesn't have DELETE_COURSE permission
 
     $course = Course::factory()->create(['teacher_id' => $teacher->id]);
@@ -249,7 +249,7 @@ it('does not allow teacher to delete a course', function (): void {
 it('allows admin to restore a course', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has RESTORE_COURSE permission assigned in PermissionSeeder
 
     $course = Course::factory()->create();
@@ -263,7 +263,7 @@ it('allows admin to restore a course', function (): void {
 it('does not allow teacher to restore a course', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
     // Teacher role doesn't have RESTORE_COURSE permission
 
     $course = Course::factory()->create(['teacher_id' => $teacher->id]);
@@ -277,7 +277,7 @@ it('does not allow teacher to restore a course', function (): void {
 it('allows admin to force delete a course', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has FORCE_DELETE_COURSE permission assigned in PermissionSeeder
 
     $course = Course::factory()->create();
@@ -291,7 +291,7 @@ it('allows admin to force delete a course', function (): void {
 it('does not allow teacher to force delete a course', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
     // Teacher role doesn't have FORCE_DELETE_COURSE permission
 
     $course = Course::factory()->create(['teacher_id' => $teacher->id]);
@@ -305,7 +305,7 @@ it('does not allow teacher to force delete a course', function (): void {
 it('allows admin to manage content of any course', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has VIEW_ANY_COURSES permission assigned in PermissionSeeder
 
     $course = Course::factory()->create();
@@ -319,7 +319,7 @@ it('allows admin to manage content of any course', function (): void {
 it('allows teacher to manage their own course content', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
     // Teacher role has MANAGE_COURSE_CONTENT permission assigned in PermissionSeeder
 
     $course = Course::factory()->create(['teacher_id' => $teacher->id]);
@@ -333,7 +333,7 @@ it('allows teacher to manage their own course content', function (): void {
 it('does not allow teacher to manage other teachers course content', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
     // Teacher role has MANAGE_COURSE_CONTENT permission assigned in PermissionSeeder
 
     $otherTeacher = User::factory()->create();
@@ -348,7 +348,7 @@ it('does not allow teacher to manage other teachers course content', function ()
 it('does not allow student to manage course content', function (): void {
     // Arrange
     $student = User::factory()->create();
-    $student->assignRole(UserRole::STUDENT);
+    $student->assignRole(UserRole::Student);
     // Student role doesn't have MANAGE_COURSE_CONTENT permission
 
     $course = Course::factory()->create();
@@ -362,7 +362,7 @@ it('does not allow student to manage course content', function (): void {
 it('allows admin to view content of any course', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
     // Admin role has VIEW_ANY_COURSES permission assigned in PermissionSeeder
 
     $course = Course::factory()->create();
@@ -376,7 +376,7 @@ it('allows admin to view content of any course', function (): void {
 it('allows teacher to view their own course content', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
     // Teacher role has VIEW_COURSE_CONTENT permission assigned in PermissionSeeder
 
     $course = Course::factory()->create(['teacher_id' => $teacher->id]);
@@ -390,7 +390,7 @@ it('allows teacher to view their own course content', function (): void {
 it('allows enrolled student to view course content', function (): void {
     // Arrange
     $student = User::factory()->create();
-    $student->assignRole(UserRole::STUDENT);
+    $student->assignRole(UserRole::Student);
     // Student role has VIEW_COURSE_CONTENT permission assigned in PermissionSeeder
 
     $course = Course::factory()->create();
@@ -405,7 +405,7 @@ it('allows enrolled student to view course content', function (): void {
 it('does not allow non-enrolled student to view course content', function (): void {
     // Arrange
     $student = User::factory()->create();
-    $student->assignRole(UserRole::STUDENT);
+    $student->assignRole(UserRole::Student);
     // Student role has VIEW_COURSE_CONTENT permission assigned in PermissionSeeder
 
     $course = Course::factory()->create();

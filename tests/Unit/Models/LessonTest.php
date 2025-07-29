@@ -90,17 +90,17 @@ test('lessons are ordered by order attribute', function (): void {
 test('lesson factory can create a text lesson', function (): void {
     $lesson = Lesson::factory()->asText()->create();
 
-    expect($lesson->type)->toBe(LessonType::TEXT);
+    expect($lesson->type)->toBe(LessonType::Text);
 });
 
 test('lesson factory can create a video lesson', function (): void {
     $lesson = Lesson::factory()->asVideo()->create();
 
-    expect($lesson->type)->toBe(LessonType::VIDEO);
+    expect($lesson->type)->toBe(LessonType::Video);
 });
 
 test('lesson factory can create a document lesson', function (): void {
     $lesson = Lesson::factory()->asDocument()->create();
 
-    expect($lesson->type)->toBe(LessonType::DOCUMENT);
+    expect($lesson->type)->toBe(LessonType::Document);
 });

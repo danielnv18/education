@@ -68,7 +68,7 @@ it('passes validation with valid data', function (): void {
     $data = [
         'title' => 'Updated Course Title',
         'description' => 'This is an updated course description',
-        'status' => CourseStatus::ACTIVE->value,
+        'status' => CourseStatus::Active->value,
         'is_published' => true,
         'start_date' => '2023-01-15',
         'end_date' => '2023-01-20',

@@ -16,7 +16,7 @@ beforeEach(function (): void {
 test('index method returns courses list for authorized users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     Course::factory()->count(3)->create();
 
@@ -33,11 +33,11 @@ test('index method returns courses list for authorized users', function (): void
 test('create method returns form with teachers for authorized users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     $teachers = User::factory()->count(3)->create();
     foreach ($teachers as $teacher) {
-        $teacher->assignRole(UserRole::TEACHER);
+        $teacher->assignRole(UserRole::Teacher);
     }
 
     // Act
@@ -53,15 +53,15 @@ test('create method returns form with teachers for authorized users', function (
 test('store method creates a course and redirects for authorized users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $courseData = [
         'title' => 'Test Course',
         'description' => 'Test Description',
-        'status' => CourseStatus::DRAFT->value,
+        'status' => CourseStatus::Draft->value,
         'is_published' => false,
         'teacher_id' => $teacher->id,
     ];
@@ -82,7 +82,7 @@ test('store method creates a course and redirects for authorized users', functio
 test('show method displays course details for authorized users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     $course = Course::factory()->create();
 
@@ -99,12 +99,12 @@ test('show method displays course details for authorized users', function (): vo
 test('edit method returns form with course and teachers for authorized users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     $course = Course::factory()->create();
     $teachers = User::factory()->count(3)->create();
     foreach ($teachers as $teacher) {
-        $teacher->assignRole(UserRole::TEACHER);
+        $teacher->assignRole(UserRole::Teacher);
     }
 
     // Act
@@ -123,22 +123,22 @@ test('update method updates a course and redirects for authorized users', functi
 
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'title' => 'Original Title',
         'description' => 'Original Description',
-        'status' => CourseStatus::DRAFT,
+        'status' => CourseStatus::Draft,
         'teacher_id' => $teacher->id,
     ]);
 
     $updateData = [
         'title' => 'Updated Course Title',
         'description' => 'Updated Description',
-        'status' => CourseStatus::ACTIVE->value,
+        'status' => CourseStatus::Active->value,
         'teacher_id' => $teacher->id,
         'is_published' => false,
     ];
@@ -156,14 +156,14 @@ test('update method updates a course and redirects for authorized users', functi
         'id' => $course->id,
         'title' => 'Updated Course Title',
         'description' => 'Updated Description',
-        'status' => CourseStatus::ACTIVE->value,
+        'status' => CourseStatus::Active->value,
     ]);
 });
 
 test('destroy method deletes a course and redirects for authorized users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     $course = Course::factory()->create();
     $courseId = $course->id;
@@ -193,7 +193,7 @@ test('unauthorized users cannot access course endpoints', function (): void {
     $storeData = [
         'title' => 'Test Course',
         'description' => 'Test Description',
-        'status' => CourseStatus::DRAFT->value,
+        'status' => CourseStatus::Draft->value,
         'is_published' => false,
     ];
     $this->actingAs($user)->post(route('courses.store'), $storeData)->assertStatus(403);
@@ -206,7 +206,7 @@ test('unauthorized users cannot access course endpoints', function (): void {
     $updateData = [
         'title' => 'Updated Title',
         'description' => 'Updated Description',
-        'status' => CourseStatus::ACTIVE->value,
+        'status' => CourseStatus::Active->value,
         'teacher_id' => $course->teacher_id,
         'is_published' => $course->is_published,
     ];

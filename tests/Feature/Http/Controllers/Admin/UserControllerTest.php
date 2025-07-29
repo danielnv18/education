@@ -15,7 +15,7 @@ beforeEach(function (): void {
 test('index method returns users list for authorized users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     User::factory()->count(3)->create();
 
@@ -32,7 +32,7 @@ test('index method returns users list for authorized users', function (): void {
 test('create method returns form for authorized users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     // Act
     $response = $this->actingAs($admin)->get(route('admin.users.create'));
@@ -45,14 +45,14 @@ test('create method returns form for authorized users', function (): void {
 test('store method creates a user and redirects for authorized users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     $userData = [
         'name' => 'Test User',
         'email' => 'test@example.com',
         'password' => 'password123',
         'password_confirmation' => 'password123',
-        'roles' => [UserRole::STUDENT->value],
+        'roles' => [UserRole::Student->value],
     ];
 
     // Act
@@ -63,7 +63,7 @@ test('store method creates a user and redirects for authorized users', function 
     $user = User::query()->where('email', 'test@example.com')->first();
     $this->assertNotNull($user);
     $this->assertEquals($userData['name'], $user->name);
-    $this->assertTrue($user->hasRole(UserRole::STUDENT));
+    $this->assertTrue($user->hasRole(UserRole::Student));
 
     // Since the controller returns a UserData object, we can't directly assert the redirect
     // Instead, we'll check that the response is a redirect and has the success message
@@ -74,10 +74,10 @@ test('store method creates a user and redirects for authorized users', function 
 test('show method displays user details for authorized users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     $user = User::factory()->create();
-    $user->assignRole(UserRole::STUDENT);
+    $user->assignRole(UserRole::Student);
 
     // Act
     $response = $this->actingAs($admin)->get(route('admin.users.show', $user));
@@ -92,10 +92,10 @@ test('show method displays user details for authorized users', function (): void
 test('edit method returns form with user data for authorized users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     $user = User::factory()->create();
-    $user->assignRole(UserRole::STUDENT);
+    $user->assignRole(UserRole::Student);
 
     // Act
     $response = $this->actingAs($admin)->get(route('admin.users.edit', $user));
@@ -110,20 +110,20 @@ test('edit method returns form with user data for authorized users', function ()
 test('update method updates a user and redirects for authorized users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     $user = User::factory()->create([
         'name' => 'Original Name',
         'email' => 'original@example.com',
     ]);
-    $user->assignRole(UserRole::STUDENT);
+    $user->assignRole(UserRole::Student);
 
     $updateData = [
         'name' => 'Updated Name',
         'email' => 'updated@example.com',
         'password' => 'newpassword123',
         'password_confirmation' => 'newpassword123',
-        'roles' => [UserRole::TEACHER->value],
+        'roles' => [UserRole::Teacher->value],
         'email_verified' => true,
     ];
 
@@ -141,28 +141,28 @@ test('update method updates a user and redirects for authorized users', function
     $this->assertEquals('updated@example.com', $user->email);
     $this->assertTrue(Hash::check('newpassword123', $user->password));
     $this->assertNotNull($user->email_verified_at);
-    $this->assertTrue($user->hasRole(UserRole::TEACHER));
-    $this->assertFalse($user->hasRole(UserRole::STUDENT));
+    $this->assertTrue($user->hasRole(UserRole::Teacher));
+    $this->assertFalse($user->hasRole(UserRole::Student));
 });
 
 test('update method works without changing password', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     $user = User::factory()->create([
         'name' => 'Original Name',
         'email' => 'original@example.com',
     ]);
     $originalPassword = $user->password;
-    $user->assignRole(UserRole::STUDENT);
+    $user->assignRole(UserRole::Student);
 
     $updateData = [
         'name' => 'Updated Name',
         'email' => 'updated@example.com',
         'password' => '',
         'password_confirmation' => '',
-        'roles' => [UserRole::STUDENT->value],
+        'roles' => [UserRole::Student->value],
     ];
 
     // Act
@@ -182,7 +182,7 @@ test('update method works without changing password', function (): void {
 test('destroy method deletes a user and redirects for authorized users', function (): void {
     // Arrange
     $admin = User::factory()->create();
-    $admin->assignRole(UserRole::ADMIN);
+    $admin->assignRole(UserRole::Admin);
 
     $user = User::factory()->create();
     $userId = $user->id;
@@ -200,7 +200,7 @@ test('destroy method deletes a user and redirects for authorized users', functio
 test('unauthorized users cannot access user endpoints', function (): void {
     // Arrange
     $regularUser = User::factory()->create();
-    $regularUser->assignRole(UserRole::STUDENT);
+    $regularUser->assignRole(UserRole::Student);
 
     $targetUser = User::factory()->create();
 
@@ -214,7 +214,7 @@ test('unauthorized users cannot access user endpoints', function (): void {
         'email' => 'test@example.com',
         'password' => 'password123',
         'password_confirmation' => 'password123',
-        'roles' => [UserRole::STUDENT->value],
+        'roles' => [UserRole::Student->value],
     ];
     $this->actingAs($regularUser)->post(route('admin.users.store'), $storeData)->assertStatus(403);
 
@@ -228,7 +228,7 @@ test('unauthorized users cannot access user endpoints', function (): void {
         'email' => 'updated@example.com',
         'password' => 'newpassword123',
         'password_confirmation' => 'newpassword123',
-        'roles' => [UserRole::TEACHER->value],
+        'roles' => [UserRole::Teacher->value],
     ];
     $this->actingAs($regularUser)->put(route('admin.users.update', $targetUser), $updateData)->assertStatus(403);
 

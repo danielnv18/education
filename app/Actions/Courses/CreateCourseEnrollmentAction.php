@@ -27,10 +27,10 @@ final readonly class CreateCourseEnrollmentAction
             }
 
             // Assign a student role to all students who don't have it
-            $studentsWithoutRole = $students->reject(fn (User $student): bool => $student->hasRole(UserRole::STUDENT));
+            $studentsWithoutRole = $students->reject(fn (User $student): bool => $student->hasRole(UserRole::Student));
 
             // Assign the student role to those who don't have it
-            $studentsWithoutRole->each(fn (User $student) => $student->assignRole(UserRole::STUDENT));
+            $studentsWithoutRole->each(fn (User $student) => $student->assignRole(UserRole::Student));
 
             // Sync the enrollments
             $course->students()->syncWithoutDetaching($students->pluck('id')->toArray());

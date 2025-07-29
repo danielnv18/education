@@ -31,10 +31,10 @@ it('enrolls a student in a course', function (): void {
     $action->handle($course, $students);
 
     // Assert
-    expect($student->hasRole(UserRole::STUDENT))->toBeTrue()
+    expect($student->hasRole(UserRole::Student))->toBeTrue()
         ->and($course->students()->where('user_id', $student->id)->exists())->toBeTrue()
         ->and($course->students()->where('user_id', $student->id)->first()->pivot->status)
-        ->toBe(EnrollmentStatus::ACTIVE->value);
+        ->toBe(EnrollmentStatus::Active->value);
 });
 
 it('assigns student role if not already assigned', function (): void {
@@ -44,7 +44,7 @@ it('assigns student role if not already assigned', function (): void {
     $students = [$student->id];
 
     // Verify the student doesn't have the role yet
-    expect($student->hasRole(UserRole::STUDENT))->toBeFalse();
+    expect($student->hasRole(UserRole::Student))->toBeFalse();
 
     $action = new CreateCourseEnrollmentAction();
 
@@ -53,7 +53,7 @@ it('assigns student role if not already assigned', function (): void {
     $student->refresh();
 
     // Assert
-    expect($student->hasRole(UserRole::STUDENT))->toBeTrue();
+    expect($student->hasRole(UserRole::Student))->toBeTrue();
 });
 
 it('does not enroll a student twice', function (): void {
@@ -111,10 +111,10 @@ it('enrolls multiple students in a course', function (): void {
 
     // Assert
     foreach ($students as $student) {
-        expect($student->hasRole(UserRole::STUDENT))->toBeTrue()
+        expect($student->hasRole(UserRole::Student))->toBeTrue()
             ->and($course->students()->where('user_id', $student->id)->exists())->toBeTrue()
             ->and($course->students()->where('user_id', $student->id)->first()->pivot->status)
-            ->toBe(EnrollmentStatus::ACTIVE->value);
+            ->toBe(EnrollmentStatus::Active->value);
     }
 
     expect($course->students()->count())->toBe(3);

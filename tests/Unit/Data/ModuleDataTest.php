@@ -35,14 +35,14 @@ it('can be instantiated with all properties', function (): void {
             id: 1,
             title: 'Laravel Basics',
             content: 'Learn the basics of Laravel.',
-            type: LessonType::TEXT,
+            type: LessonType::Text,
             order: 1,
         ),
         new LessonData(
             id: 2,
             title: 'Laravel Routing',
             content: 'Learn about Laravel routing.',
-            type: LessonType::VIDEO,
+            type: LessonType::Video,
             order: 2,
         ),
     ]);
@@ -97,13 +97,13 @@ it('can be created from an array using from method', function (): void {
         [
             'title' => 'Laravel Basics',
             'content' => 'Learn the basics of Laravel.',
-            'type' => LessonType::TEXT->value,
+            'type' => LessonType::Text->value,
             'order' => 1,
         ],
         [
             'title' => 'Laravel Routing',
             'content' => 'Learn about Laravel routing.',
-            'type' => LessonType::VIDEO->value,
+            'type' => LessonType::Video->value,
             'order' => 2,
         ],
     ];
@@ -129,7 +129,7 @@ it('can be created from an array using from method', function (): void {
         ->and($module->lessons)->toHaveCount(2)
         ->and($module->lessons->first())->toBeInstanceOf(LessonData::class)
         ->and($module->lessons->first()->title)->toBe('Laravel Basics')
-        ->and($module->lessons->first()->type)->toBe(LessonType::TEXT)
+        ->and($module->lessons->first()->type)->toBe(LessonType::Text)
         ->and($module->lessons->last()->title)->toBe('Laravel Routing')
-        ->and($module->lessons->last()->type)->toBe(LessonType::VIDEO);
+        ->and($module->lessons->last()->type)->toBe(LessonType::Video);
 });

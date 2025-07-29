@@ -17,7 +17,7 @@ it('creates a course with the provided data', function (): void {
     $data = [
         'title' => 'Test Course',
         'description' => 'This is a test course',
-        'status' => CourseStatus::DRAFT->value,
+        'status' => CourseStatus::Draft->value,
         'is_published' => false,
     ];
 
@@ -30,7 +30,7 @@ it('creates a course with the provided data', function (): void {
     expect($course)->toBeInstanceOf(Course::class)
         ->and($course->title)->toBe($data['title'])
         ->and($course->description)->toBe($data['description'])
-        ->and($course->status)->toBe(CourseStatus::DRAFT)
+        ->and($course->status)->toBe(CourseStatus::Draft)
         ->and($course->is_published)->toBe($data['is_published']);
 });
 
@@ -41,7 +41,7 @@ it('creates a course with a teacher', function (): void {
     $data = [
         'title' => 'Course with Teacher',
         'description' => 'This course has a teacher assigned',
-        'status' => CourseStatus::ACTIVE->value,
+        'status' => CourseStatus::Active->value,
         'is_published' => true,
         'teacher_id' => $teacher->id,
     ];
@@ -64,7 +64,7 @@ it('creates a course with dates', function (): void {
     $data = [
         'title' => 'Course with Dates',
         'description' => 'This course has start and end dates',
-        'status' => CourseStatus::ACTIVE->value,
+        'status' => CourseStatus::Active->value,
         'is_published' => true,
         'start_date' => $startDate,
         'end_date' => $endDate,
@@ -85,7 +85,7 @@ it('uses a database transaction', function (): void {
     // Arrange
     $data = [
         'title' => 'Transaction Test Course',
-        'status' => CourseStatus::DRAFT->value,
+        'status' => CourseStatus::Draft->value,
     ];
 
     // Mock DB facade to verify transaction is used

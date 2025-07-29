@@ -20,7 +20,7 @@ return new class extends Migration
             $table->longText('content')->nullable();
             $table->foreignId('module_id')->constrained()->onDelete('cascade');
             $table->unsignedInteger('order')->default(0);
-            $table->enum('type', array_column(LessonType::cases(), 'value'))->default(LessonType::TEXT->value);
+            $table->enum('type', array_column(LessonType::cases(), 'value'))->default(LessonType::Text->value);
             $table->boolean('is_published')->default(false);
             $table->timestamps();
         });

@@ -56,7 +56,7 @@ it('validates name max length', function (): void {
     $data = [
         'name' => str_repeat('a', 256), // 256 characters, max is 255
         'email' => 'test@example.com',
-        'roles' => [UserRole::STUDENT->value],
+        'roles' => [UserRole::Student->value],
     ];
 
     $validator = validator($data, $request->rules());
@@ -75,7 +75,7 @@ it('validates email format', function (): void {
     $data = [
         'name' => 'Test User',
         'email' => 'invalid-email',
-        'roles' => [UserRole::STUDENT->value],
+        'roles' => [UserRole::Student->value],
     ];
 
     $validator = validator($data, $request->rules());
@@ -97,7 +97,7 @@ it('validates email uniqueness but ignores current user', function (): void {
     $data = [
         'name' => 'Test User',
         'email' => 'existing@example.com', // Already exists for another user
-        'roles' => [UserRole::STUDENT->value],
+        'roles' => [UserRole::Student->value],
     ];
 
     $validator = validator($data, $request->rules());
@@ -110,7 +110,7 @@ it('validates email uniqueness but ignores current user', function (): void {
     $data = [
         'name' => 'Test User',
         'email' => 'user@example.com', // Current user's email
-        'roles' => [UserRole::STUDENT->value],
+        'roles' => [UserRole::Student->value],
     ];
 
     $validator = validator($data, $request->rules());
@@ -130,7 +130,7 @@ it('validates password confirmation', function (): void {
         'email' => 'test@example.com',
         'password' => 'password123',
         'password_confirmation' => 'different-password',
-        'roles' => [UserRole::STUDENT->value],
+        'roles' => [UserRole::Student->value],
     ];
 
     $validator = validator($data, $request->rules());
@@ -207,7 +207,7 @@ it('passes validation with valid data', function (): void {
         'email' => 'test@example.com',
         'password' => 'Password123!',
         'password_confirmation' => 'Password123!',
-        'roles' => [UserRole::STUDENT->value],
+        'roles' => [UserRole::Student->value],
         'email_verified' => true,
     ];
 

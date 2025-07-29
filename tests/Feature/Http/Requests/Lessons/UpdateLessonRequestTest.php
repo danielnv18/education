@@ -84,7 +84,7 @@ it('passes validation with valid data', function (): void {
         'content' => 'This is an updated lesson content',
         'module_id' => $module->id,
         'order' => 2,
-        'type' => LessonType::VIDEO->value,
+        'type' => LessonType::Video->value,
         'is_published' => true,
     ];
 

@@ -15,7 +15,7 @@ final class CoursePolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo(PermissionEnum::VIEW_ANY_COURSES);
+        return $user->hasPermissionTo(PermissionEnum::ViewAnyCourses);
     }
 
     /**
@@ -24,12 +24,12 @@ final class CoursePolicy
     public function view(User $user, Course $course): bool
     {
         // If user has general permission to view any courses
-        if ($user->hasPermissionTo(PermissionEnum::VIEW_ANY_COURSES)) {
+        if ($user->hasPermissionTo(PermissionEnum::ViewAnyCourses)) {
             return true;
         }
 
         // If user has permission to view course
-        if ($user->hasPermissionTo(PermissionEnum::VIEW_COURSE)) {
+        if ($user->hasPermissionTo(PermissionEnum::ViewCourse)) {
             // If User is the teacher of the course
             if ($course->teacher_id === $user->id) {
                 return true;
@@ -47,7 +47,7 @@ final class CoursePolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo(PermissionEnum::CREATE_COURSE);
+        return $user->hasPermissionTo(PermissionEnum::CreateCourse);
     }
 
     /**
@@ -56,12 +56,12 @@ final class CoursePolicy
     public function update(User $user, Course $course): bool
     {
         // If user has general permission to view any courses (admin)
-        if ($user->hasPermissionTo(PermissionEnum::VIEW_ANY_COURSES)) {
+        if ($user->hasPermissionTo(PermissionEnum::ViewAnyCourses)) {
             return true;
         }
 
         // If user has permission to update course
-        if ($user->hasPermissionTo(PermissionEnum::UPDATE_COURSE)) {
+        if ($user->hasPermissionTo(PermissionEnum::UpdateCourse)) {
             // Teacher can only update their own courses
             return $course->teacher_id === $user->id;
         }
@@ -74,7 +74,7 @@ final class CoursePolicy
      */
     public function delete(User $user): bool
     {
-        return $user->hasPermissionTo(PermissionEnum::DELETE_COURSE);
+        return $user->hasPermissionTo(PermissionEnum::DeleteCourse);
     }
 
     /**
@@ -82,7 +82,7 @@ final class CoursePolicy
      */
     public function restore(User $user): bool
     {
-        return $user->hasPermissionTo(PermissionEnum::RESTORE_COURSE);
+        return $user->hasPermissionTo(PermissionEnum::RestoreCourse);
     }
 
     /**
@@ -90,7 +90,7 @@ final class CoursePolicy
      */
     public function forceDelete(User $user): bool
     {
-        return $user->hasPermissionTo(PermissionEnum::FORCE_DELETE_COURSE);
+        return $user->hasPermissionTo(PermissionEnum::ForceDeleteCourse);
     }
 
     /**
@@ -99,12 +99,12 @@ final class CoursePolicy
     public function manageContent(User $user, Course $course): bool
     {
         // If the user has general permission to view any courses (admin)
-        if ($user->hasPermissionTo(PermissionEnum::VIEW_ANY_COURSES)) {
+        if ($user->hasPermissionTo(PermissionEnum::ViewAnyCourses)) {
             return true;
         }
 
         // If the user has permission to manage course content
-        if ($user->hasPermissionTo(PermissionEnum::MANAGE_COURSE_CONTENT)) {
+        if ($user->hasPermissionTo(PermissionEnum::ManageCourseContent)) {
             // Teacher can only manage their own course content
             return $course->teacher_id === $user->id;
         }
@@ -118,12 +118,12 @@ final class CoursePolicy
     public function viewContent(User $user, Course $course): bool
     {
         // If user has general permission to view any courses (admin)
-        if ($user->hasPermissionTo(PermissionEnum::VIEW_ANY_COURSES)) {
+        if ($user->hasPermissionTo(PermissionEnum::ViewAnyCourses)) {
             return true;
         }
 
         // If user has permission to view course content
-        if ($user->hasPermissionTo(PermissionEnum::VIEW_COURSE_CONTENT)) {
+        if ($user->hasPermissionTo(PermissionEnum::ViewCourseContent)) {
             // Teacher can only view content of their own courses
             if ($course->teacher_id === $user->id) {
                 return true;

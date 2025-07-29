@@ -134,12 +134,12 @@ it('removes email verification when specified', function (): void {
 it('updates user roles when specified', function (): void {
     // Arrange
     $user = User::factory()->create();
-    $user->assignRole(UserRole::STUDENT);
+    $user->assignRole(UserRole::Student);
 
     $userData = [
         'name' => $user->name,
         'email' => $user->email,
-        'roles' => [UserRole::TEACHER->value],
+        'roles' => [UserRole::Teacher->value],
     ];
 
     $action = new UpdateUserAction();
@@ -151,8 +151,8 @@ it('updates user roles when specified', function (): void {
     $updatedUser = User::findOrFail($user->id);
     $updatedUser->load('roles');
 
-    expect($updatedUser->hasRole(UserRole::STUDENT))->toBeFalse()
-        ->and($updatedUser->hasRole(UserRole::TEACHER))->toBeTrue();
+    expect($updatedUser->hasRole(UserRole::Student))->toBeFalse()
+        ->and($updatedUser->hasRole(UserRole::Teacher))->toBeTrue();
 });
 
 it('uses a database transaction', function (): void {

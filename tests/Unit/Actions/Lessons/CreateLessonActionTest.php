@@ -25,7 +25,7 @@ it('creates a lesson with valid data', function (): void {
         'content' => 'Test Content',
         'module_id' => $module->id,
         'order' => 1,
-        'type' => LessonType::TEXT->value,
+        'type' => LessonType::Text->value,
         'is_published' => false,
     ];
 
@@ -40,7 +40,7 @@ it('creates a lesson with valid data', function (): void {
         ->and($lesson->content)->toBe('Test Content')
         ->and($lesson->module_id)->toBe($module->id)
         ->and($lesson->order)->toBe(1)
-        ->and($lesson->type)->toBe(LessonType::TEXT)
+        ->and($lesson->type)->toBe(LessonType::Text)
         ->and($lesson->is_published)->toBeFalse();
 });
 
@@ -48,11 +48,11 @@ it('creates a lesson with different types', function (): void {
     // Arrange
     $module = Module::factory()->create();
     $types = [
-        LessonType::TEXT->value,
-        LessonType::VIDEO->value,
-        LessonType::DOCUMENT->value,
-        LessonType::LINK->value,
-        LessonType::EMBED->value,
+        LessonType::Text->value,
+        LessonType::Video->value,
+        LessonType::Document->value,
+        LessonType::Link->value,
+        LessonType::Embed->value,
     ];
 
     $action = new CreateLessonAction();
@@ -83,7 +83,7 @@ it('creates a published lesson', function (): void {
         'content' => 'Test Content',
         'module_id' => $module->id,
         'order' => 1,
-        'type' => LessonType::TEXT->value,
+        'type' => LessonType::Text->value,
         'is_published' => true,
     ];
 
@@ -105,7 +105,7 @@ it('uses a database transaction', function (): void {
         'content' => 'Test Content',
         'module_id' => $module->id,
         'order' => 1,
-        'type' => LessonType::TEXT->value,
+        'type' => LessonType::Text->value,
         'is_published' => false,
     ];
 

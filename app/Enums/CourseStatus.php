@@ -6,7 +6,7 @@ namespace App\Enums;
 
 enum CourseStatus: string
 {
-    case DRAFT = 'draft';
-    case ACTIVE = 'active';
-    case ARCHIVED = 'archived';
+    case Draft = 'draft';
+    case Active = 'active';
+    case Archived = 'archived';
 }

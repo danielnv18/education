@@ -15,7 +15,7 @@ beforeEach(function (): void {
 test('index method returns students management page for authorized users', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'teacher_id' => $teacher->id,
@@ -23,7 +23,7 @@ test('index method returns students management page for authorized users', funct
 
     $students = User::factory()->count(3)->create();
     foreach ($students as $student) {
-        $student->assignRole(UserRole::STUDENT);
+        $student->assignRole(UserRole::Student);
         $student->email_verified_at = now();
         $student->save();
     }
@@ -63,7 +63,7 @@ test('unauthorized users cannot access students management page', function (): v
 test('store method enrolls students in the course', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'teacher_id' => $teacher->id,
@@ -71,7 +71,7 @@ test('store method enrolls students in the course', function (): void {
 
     $students = User::factory()->count(2)->create();
     foreach ($students as $student) {
-        $student->assignRole(UserRole::STUDENT);
+        $student->assignRole(UserRole::Student);
     }
 
     $studentIds = $students->pluck('id')->toArray();
@@ -115,7 +115,7 @@ test('unauthorized users cannot enroll students', function (): void {
 test('validation fails when no student_ids are provided', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'teacher_id' => $teacher->id,
@@ -134,10 +134,10 @@ test('validation fails when no student_ids are provided', function (): void {
 test('only course teacher can manage students', function (): void {
     // Arrange
     $teacher1 = User::factory()->create();
-    $teacher1->assignRole(UserRole::TEACHER);
+    $teacher1->assignRole(UserRole::Teacher);
 
     $teacher2 = User::factory()->create();
-    $teacher2->assignRole(UserRole::TEACHER);
+    $teacher2->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'teacher_id' => $teacher1->id,

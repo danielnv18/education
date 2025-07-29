@@ -66,7 +66,7 @@ final class LessonFactory extends Factory
     public function asText(): self
     {
         return $this->state(fn (array $attributes): array => [
-            'type' => LessonType::TEXT,
+            'type' => LessonType::Text,
         ]);
     }
 
@@ -76,7 +76,7 @@ final class LessonFactory extends Factory
     public function asVideo(): self
     {
         return $this->state(fn (array $attributes): array => [
-            'type' => LessonType::VIDEO,
+            'type' => LessonType::Video,
         ]);
     }
 
@@ -86,7 +86,7 @@ final class LessonFactory extends Factory
     public function asDocument(): self
     {
         return $this->state(fn (array $attributes): array => [
-            'type' => LessonType::DOCUMENT,
+            'type' => LessonType::Document,
         ]);
     }
 }

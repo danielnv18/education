@@ -19,7 +19,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->enum('status', array_column(CourseStatus::cases(), 'value'))->default(CourseStatus::DRAFT->value);
+            $table->enum('status', array_column(CourseStatus::cases(), 'value'))->default(CourseStatus::Draft->value);
             $table->boolean('is_published')->default(false);
             $table->foreignId('teacher_id')->nullable()->constrained('users');
             $table->dateTime('start_date')->nullable();
@@ -32,7 +32,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('course_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('status', array_column(EnrollmentStatus::cases(), 'value'))->default(EnrollmentStatus::ACTIVE->value);
+            $table->enum('status', array_column(EnrollmentStatus::cases(), 'value'))->default(EnrollmentStatus::Active->value);
             $table->dateTime('enrolled_at')->useCurrent();
             $table->timestamps();
 

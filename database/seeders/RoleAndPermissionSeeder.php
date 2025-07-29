@@ -43,25 +43,25 @@ final class RoleAndPermissionSeeder extends Seeder
     private function assignPermissionsToRoles(array $permissionModels): void
     {
         // Admin role - gets all permissions
-        $adminRole = Role::findByName(UserRole::ADMIN->value);
+        $adminRole = Role::findByName(UserRole::Admin->value);
         $adminRole->givePermissionTo($permissionModels);
 
         // Teacher role
-        $teacherRole = Role::findByName(UserRole::TEACHER->value);
+        $teacherRole = Role::findByName(UserRole::Teacher->value);
         $teacherPermissions = PermissionModel::whereIn('name', [
-            PermissionEnum::VIEW_COURSE->value,
-            PermissionEnum::CREATE_COURSE->value,
-            PermissionEnum::UPDATE_COURSE->value,
-            PermissionEnum::MANAGE_COURSE_CONTENT->value,
-            PermissionEnum::VIEW_COURSE_CONTENT->value,
+            PermissionEnum::ViewCourse->value,
+            PermissionEnum::CreateCourse->value,
+            PermissionEnum::UpdateCourse->value,
+            PermissionEnum::ManageCourseContent->value,
+            PermissionEnum::ViewCourseContent->value,
         ])->get();
         $teacherRole->givePermissionTo($teacherPermissions);
 
         // Student role
-        $studentRole = Role::findByName(UserRole::STUDENT->value);
+        $studentRole = Role::findByName(UserRole::Student->value);
         $studentPermissions = PermissionModel::whereIn('name', [
-            PermissionEnum::VIEW_COURSE->value,
-            PermissionEnum::VIEW_COURSE_CONTENT->value,
+            PermissionEnum::ViewCourse->value,
+            PermissionEnum::ViewCourseContent->value,
         ])->get();
         $studentRole->givePermissionTo($studentPermissions);
     }

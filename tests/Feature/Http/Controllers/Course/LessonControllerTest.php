@@ -17,7 +17,7 @@ beforeEach(function (): void {
 test('store method creates a lesson and redirects for authorized users', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'teacher_id' => $teacher->id,
@@ -32,7 +32,7 @@ test('store method creates a lesson and redirects for authorized users', functio
         'content' => 'Test Content',
         'module_id' => $module->id,
         'order' => 1,
-        'type' => LessonType::TEXT->value,
+        'type' => LessonType::Text->value,
         'is_published' => true,
     ];
 
@@ -50,7 +50,7 @@ test('store method creates a lesson and redirects for authorized users', functio
         'content' => 'Test Content',
         'module_id' => $module->id,
         'order' => 1,
-        'type' => LessonType::TEXT->value,
+        'type' => LessonType::Text->value,
         'is_published' => true,
     ]);
 });
@@ -58,7 +58,7 @@ test('store method creates a lesson and redirects for authorized users', functio
 test('update method updates a lesson and redirects for authorized users', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'teacher_id' => $teacher->id,
@@ -72,13 +72,13 @@ test('update method updates a lesson and redirects for authorized users', functi
         'module_id' => $module->id,
         'title' => 'Original Title',
         'content' => 'Original Content',
-        'type' => LessonType::TEXT,
+        'type' => LessonType::Text,
     ]);
 
     $updateData = [
         'title' => 'Updated Title',
         'content' => 'Updated Content',
-        'type' => LessonType::VIDEO->value,
+        'type' => LessonType::Video->value,
     ];
 
     // Act
@@ -94,14 +94,14 @@ test('update method updates a lesson and redirects for authorized users', functi
         'id' => $lesson->id,
         'title' => 'Updated Title',
         'content' => 'Updated Content',
-        'type' => LessonType::VIDEO->value,
+        'type' => LessonType::Video->value,
     ]);
 });
 
 test('destroy method deletes a lesson and redirects for authorized users', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'teacher_id' => $teacher->id,
@@ -146,7 +146,7 @@ test('any user cannot create lessons', function (): void {
         'content' => 'Test Content',
         'module_id' => $module->id,
         'order' => 1,
-        'type' => LessonType::TEXT->value,
+        'type' => LessonType::Text->value,
         'is_published' => true,
     ];
 
@@ -210,7 +210,7 @@ test('any user cannot delete lessons', function (): void {
 test('validation fails when required fields are missing for store', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'teacher_id' => $teacher->id,
@@ -229,7 +229,7 @@ test('validation fails when required fields are missing for store', function ():
 test('validation fails when required fields are invalid for store', function (): void {
     // Arrange
     $teacher = User::factory()->create();
-    $teacher->assignRole(UserRole::TEACHER);
+    $teacher->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'teacher_id' => $teacher->id,
@@ -251,10 +251,10 @@ test('validation fails when required fields are invalid for store', function ():
 test('only course teacher can manage lessons', function (): void {
     // Arrange
     $teacher1 = User::factory()->create();
-    $teacher1->assignRole(UserRole::TEACHER);
+    $teacher1->assignRole(UserRole::Teacher);
 
     $teacher2 = User::factory()->create();
-    $teacher2->assignRole(UserRole::TEACHER);
+    $teacher2->assignRole(UserRole::Teacher);
 
     $course = Course::factory()->create([
         'teacher_id' => $teacher1->id,
@@ -274,7 +274,7 @@ test('only course teacher can manage lessons', function (): void {
         'title' => 'Test Lesson by Another Teacher',
         'content' => 'Test Content',
         'module_id' => $module->id,
-        'type' => LessonType::TEXT->value,
+        'type' => LessonType::Text->value,
     ];
 
     // Act - Create

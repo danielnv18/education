@@ -94,18 +94,18 @@ test('course factory can create a draft course', function (): void {
     $course = Course::factory()->draft()->create();
 
     expect($course->is_published)->toBeFalse()
-        ->and($course->status)->toBe(CourseStatus::DRAFT);
+        ->and($course->status)->toBe(CourseStatus::Draft);
 });
 
 test('course factory can create an active course', function (): void {
     $course = Course::factory()->active()->create();
 
     expect($course->is_published)->toBeTrue()
-        ->and($course->status)->toBe(CourseStatus::ACTIVE);
+        ->and($course->status)->toBe(CourseStatus::Active);
 });
 
 test('course factory can create an archived course', function (): void {
     $course = Course::factory()->archived()->create();
 
-    expect($course->status)->toBe(CourseStatus::ARCHIVED);
+    expect($course->status)->toBe(CourseStatus::Archived);
 });

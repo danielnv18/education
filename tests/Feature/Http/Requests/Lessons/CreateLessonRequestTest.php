@@ -41,7 +41,7 @@ it('validates title max length', function (): void {
     $data = [
         'title' => str_repeat('a', 256), // 256 characters, max is 255
         'module_id' => $module->id,
-        'type' => LessonType::TEXT->value,
+        'type' => LessonType::Text->value,
     ];
 
     $validator = validator($data, (new CreateLessonRequest())->rules());
@@ -56,7 +56,7 @@ it('validates module_id exists', function (): void {
     $data = [
         'title' => 'Test Lesson',
         'module_id' => 9999, // Non-existent module ID
-        'type' => LessonType::TEXT->value,
+        'type' => LessonType::Text->value,
     ];
 
     $validator = validator($data, (new CreateLessonRequest())->rules());
@@ -72,7 +72,7 @@ it('validates order is an integer and minimum 0', function (): void {
     $data = [
         'title' => 'Test Lesson',
         'module_id' => $module->id,
-        'type' => LessonType::TEXT->value,
+        'type' => LessonType::Text->value,
         'order' => -1, // Invalid order
     ];
 
@@ -107,7 +107,7 @@ it('passes validation with valid data', function (): void {
         'content' => 'This is a test lesson',
         'module_id' => $module->id,
         'order' => 1,
-        'type' => LessonType::TEXT->value,
+        'type' => LessonType::Text->value,
         'is_published' => false,
     ];
 

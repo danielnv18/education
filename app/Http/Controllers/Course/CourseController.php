@@ -48,7 +48,7 @@ final class CourseController extends Controller
 
         $teachers = User::query()
             ->whereHas('roles', function (Builder $query): void {
-                $query->where('name', UserRole::TEACHER);
+                $query->where('name', UserRole::Teacher);
             })
             ->orderBy('name')
             ->get();
@@ -96,7 +96,7 @@ final class CourseController extends Controller
 
         $teachers = User::query()
             ->whereHas('roles', function (Builder $query): void {
-                $query->where('name', UserRole::TEACHER);
+                $query->where('name', UserRole::Teacher);
             })
             ->orderBy('name')
             ->get();

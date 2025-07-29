@@ -27,19 +27,19 @@ final class LocalSeeder extends Seeder
             'email' => 'admin@lms.com',
             'password' => bcrypt('password'),
             'email_verified_at' => now(),
-        ])->assignRole(UserRole::ADMIN);
+        ])->assignRole(UserRole::Admin);
 
         User::factory()->count(5)->create([
             'email_verified_at' => now(),
         ])->each(function (User $user): void {
-            $user->assignRole(UserRole::ADMIN, UserRole::TEACHER);
+            $user->assignRole(UserRole::Admin, UserRole::Teacher);
         });
 
         // Teachers
         User::factory()->count(5)->create([
             'email_verified_at' => now(),
         ])->each(function (User $user): void {
-            $user->assignRole(UserRole::TEACHER);
+            $user->assignRole(UserRole::Teacher);
         });
 
         // Students
