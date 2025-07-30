@@ -30,8 +30,8 @@ return new class extends Migration
         // Course enrollments pivot table
         Schema::create('course_enrollments', function (Blueprint $table): void {
             $table->id();
-            $table->foreignId('course_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('course_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->enum('status', array_column(EnrollmentStatus::cases(), 'value'))->default(EnrollmentStatus::Active->value);
             $table->dateTime('enrolled_at')->useCurrent();
             $table->timestamps();

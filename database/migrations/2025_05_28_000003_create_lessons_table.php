@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->longText('content')->nullable();
-            $table->foreignId('module_id')->constrained()->onDelete('cascade');
+            $table->foreignId('module_id')->constrained()->cascadeOnDelete();
             $table->unsignedInteger('order')->default(0);
             $table->enum('type', array_column(LessonType::cases(), 'value'))->default(LessonType::Text->value);
             $table->boolean('is_published')->default(false);
