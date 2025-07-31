@@ -33,6 +33,7 @@ final class UpdateCourseRequest extends FormRequest
             'teacher_id' => ['nullable', 'exists:users,id'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
+            'cover' => ['nullable', 'image', 'mimes:jpeg,png,webp', 'max:10240'],
         ];
     }
 }

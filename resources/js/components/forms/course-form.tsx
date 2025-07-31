@@ -1,3 +1,4 @@
+import CoverImageUpload from '@/components/cover-image-upload';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,6 +16,7 @@ export interface CourseFormData {
     teacher_id: string;
     start_date: string;
     end_date: string;
+    cover?: File | null;
 }
 
 export interface CourseFormErrors {
@@ -25,6 +27,7 @@ export interface CourseFormErrors {
     teacher_id?: string;
     start_date?: string;
     end_date?: string;
+    cover?: string;
 }
 
 interface CourseFormProps {
@@ -35,9 +38,10 @@ interface CourseFormProps {
     teachers: App.Data.UserData[];
     onSubmit: (e: React.FormEvent) => void;
     submitButtonText: string;
+    course?: App.Data.CourseData;
 }
 
-export default function CourseForm({ data, setData, errors, processing, teachers, onSubmit, submitButtonText }: CourseFormProps) {
+export default function CourseForm({ data, setData, errors, processing, teachers, onSubmit, submitButtonText, course }: CourseFormProps) {
     return (
         <Card>
             <CardHeader>
@@ -110,6 +114,16 @@ export default function CourseForm({ data, setData, errors, processing, teachers
                             <Input id="end_date" type="date" value={data.end_date} onChange={(e) => setData('end_date', e.target.value)} />
                             {errors.end_date && <InputError message={errors.end_date} />}
                         </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label>Cover Image</Label>
+                        <CoverImageUpload
+                            course={course}
+                            onFileSelect={(file) => setData('cover', file)}
+                            error={errors.cover}
+                            processing={processing}
+                        />
                     </div>
 
                     <div className="flex justify-end">

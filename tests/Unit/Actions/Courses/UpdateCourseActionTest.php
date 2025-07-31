@@ -7,6 +7,7 @@ use App\Enums\CourseStatus;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -92,6 +93,90 @@ it('updates course dates', function (): void {
         ->and($updatedCourse->end_date->toDateString())->toBe($newEndDate->toDateString())
         ->and($updatedCourse->start_date->toDateString())->not->toBe($originalStartDate->toDateString())
         ->and($updatedCourse->end_date->toDateString())->not->toBe($originalEndDate->toDateString());
+});
+
+it('does not change the cover image when cover is not provided', function (): void {
+    // Arrange
+    $course = Course::factory()->create();
+
+    // Add an initial cover image
+    $course->addMedia(UploadedFile::fake()->image('initial-cover.jpg'))
+        ->toMediaCollection('cover');
+
+    // Get the initial cover filename
+    $initialCoverFilename = $course->getFirstMedia('cover')->file_name;
+
+    $data = [
+        'title' => 'Updated Title',
+        // No cover provided
+    ];
+
+    $action = new UpdateCourseAction();
+
+    // Act
+    $updatedCourse = $action->handle($course, $data);
+
+    // Assert
+    expect($updatedCourse)->toBeInstanceOf(Course::class)
+        ->and($updatedCourse->getFirstMedia('cover'))->not->toBeNull()
+        ->and($updatedCourse->getFirstMedia('cover')->file_name)->toBe($initialCoverFilename);
+});
+
+it('removes the cover image when cover is explicitly set to null', function (): void {
+    // Arrange
+    $course = Course::factory()->create();
+
+    // Add an initial cover image
+    $course->addMedia(UploadedFile::fake()->image('initial-cover.jpg'))
+        ->toMediaCollection('cover');
+
+    // Verify the course has a cover image
+    expect($course->getFirstMedia('cover'))->not->toBeNull();
+
+    $data = [
+        'title' => 'Updated Title',
+        'cover' => null, // Explicitly set to null
+    ];
+
+    $action = new UpdateCourseAction();
+
+    // Act
+    $updatedCourse = $action->handle($course, $data);
+
+    // Assert
+    expect($updatedCourse)->toBeInstanceOf(Course::class)
+        ->and($updatedCourse->getFirstMedia('cover'))->toBeNull();
+});
+
+it('replaces the cover image when a new cover is provided', function (): void {
+    // Arrange
+    $course = Course::factory()->create();
+
+    // Add an initial cover image
+    $course->addMedia(UploadedFile::fake()->image('initial-cover.jpg'))
+        ->toMediaCollection('cover');
+
+    // Get the initial cover filename
+    $initialCoverFilename = $course->getFirstMedia('cover')->file_name;
+
+    // Create a new cover image
+    $newCover = UploadedFile::fake()->image('new-cover.jpg');
+
+    $data = [
+        'title' => 'Updated Title',
+        'cover' => $newCover,
+    ];
+
+    $action = new UpdateCourseAction();
+
+    // Act
+    $updatedCourse = $action->handle($course, $data);
+
+    // Assert
+    expect($updatedCourse)->toBeInstanceOf(Course::class)
+        ->and($updatedCourse->getFirstMedia('cover'))->not->toBeNull()
+        ->and($updatedCourse->getFirstMedia('cover')->file_name)->toBe('new-cover.jpg')
+        ->and($updatedCourse->getFirstMedia('cover')->file_name)->not->toBe($initialCoverFilename);
 });
 
 it('uses a database transaction', function (): void {

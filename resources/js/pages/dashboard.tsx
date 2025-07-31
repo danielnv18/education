@@ -75,6 +75,10 @@ function CourseCard({ course }: CourseCardProps) {
             ) : (
                 <div className="relative aspect-video overflow-hidden">
                     <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
+                        <div className="text-sm font-medium text-neutral-700 dark:text-neutral-300">{course.title}</div>
+                        <div className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">No cover image</div>
+                    </div>
                 </div>
             )}
             <CardHeader>

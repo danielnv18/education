@@ -16,6 +16,7 @@ export default function CourseCreatePage({ teachers = [] }: CourseCreatePageProp
         teacher_id: '',
         start_date: '',
         end_date: '',
+        cover: null,
     });
 
     const breadcrumbs = [

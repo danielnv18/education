@@ -9,7 +9,7 @@ interface CourseEditPageProps {
 }
 
 export default function CourseEditPage({ course, teachers = [] }: CourseEditPageProps) {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         title: course.title,
         description: course.description || '',
         status: course.status,
@@ -17,6 +17,8 @@ export default function CourseEditPage({ course, teachers = [] }: CourseEditPage
         teacher_id: course.teacher?.id ? String(course.teacher.id) : '',
         start_date: course.startDate ? new Date(course.startDate).toISOString().split('T')[0] : '',
         end_date: course.endDate ? new Date(course.endDate).toISOString().split('T')[0] : '',
+        cover: null,
+        _method: 'PUT', // Add the _method field to indicate it's a PUT request
     });
 
     const breadcrumbs = [
@@ -40,7 +42,12 @@ export default function CourseEditPage({ course, teachers = [] }: CourseEditPage
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        put(route('courses.update', { course: course.id }));
+        post(route('courses.update', { course: course.id }), {
+            onSuccess: () => {
+                // Redirect to the course show page
+                window.location.href = route('courses.show', { course: course.id });
+            },
+        });
     };
 
     return (
@@ -56,6 +63,7 @@ export default function CourseEditPage({ course, teachers = [] }: CourseEditPage
                     teachers={teachers}
                     onSubmit={handleSubmit}
                     submitButtonText="Update Course"
+                    course={course}
                 />
             </CourseLayout>
         </AppLayout>

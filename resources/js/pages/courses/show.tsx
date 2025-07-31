@@ -75,9 +75,16 @@ export default function CourseShowPage({ course }: CourseShowPageProps) {
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                     <div className="md:col-span-2">
                         <Card>
-                            {course.cover && (
+                            {course.cover ? (
                                 <div className="aspect-video overflow-hidden">
                                     <img src={course.cover} alt={course.title} className="h-full w-full object-cover" />
+                                </div>
+                            ) : (
+                                <div className="relative aspect-video overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
+                                        <div className="text-sm font-medium text-neutral-700 dark:text-neutral-300">{course.title}</div>
+                                        <div className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">No cover image</div>
+                                    </div>
                                 </div>
                             )}
                             <CardHeader>

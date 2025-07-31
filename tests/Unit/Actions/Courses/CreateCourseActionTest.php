@@ -7,6 +7,7 @@ use App\Enums\CourseStatus;
 use App\Models\Course;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -79,6 +80,29 @@ it('creates a course with dates', function (): void {
     expect($course)->toBeInstanceOf(Course::class)
         ->and($course->start_date->toDateString())->toBe($startDate->toDateString())
         ->and($course->end_date->toDateString())->toBe($endDate->toDateString());
+});
+
+it('creates a course with a cover image', function (): void {
+    // Arrange
+    $cover = UploadedFile::fake()->image('cover.jpg');
+
+    $data = [
+        'title' => 'Course with Cover Image',
+        'description' => 'This course has a cover image',
+        'status' => CourseStatus::Active->value,
+        'is_published' => true,
+        'cover' => $cover,
+    ];
+
+    $action = new CreateCourseAction();
+
+    // Act
+    $course = $action->handle($data);
+
+    // Assert
+    expect($course)->toBeInstanceOf(Course::class)
+        ->and($course->getFirstMedia('cover'))->not->toBeNull()
+        ->and($course->getFirstMedia('cover')->file_name)->toBe('cover.jpg');
 });
 
 it('uses a database transaction', function (): void {
