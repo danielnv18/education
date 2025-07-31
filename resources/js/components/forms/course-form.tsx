@@ -32,7 +32,7 @@ export interface CourseFormErrors {
 
 interface CourseFormProps {
     data: CourseFormData;
-    setData: (key: string, value: string | boolean) => void;
+    setData: (key: string, value: string | boolean | File | null) => void;
     errors: CourseFormErrors;
     processing: boolean;
     teachers: App.Data.UserData[];
