@@ -28,9 +28,6 @@ final class CourseData extends Data
         public ?CarbonImmutable $startDate,
         public ?UserData $teacher,
         public bool $isPublished = false,
-        /** @var Collection<int, ModuleData> */
-        #[DataCollectionOf(ModuleData::class)]
-        public Collection $modules = new Collection(),
         /** @var Collection<int, UserData> */
         #[DataCollectionOf(UserData::class)]
         public Collection $students = new Collection(),
