@@ -4,15 +4,29 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Data\UserData;
+use Database\Factories\UserFactory;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\LaravelData\WithData;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\Permission\Traits\HasRoles;
 
-final class User extends Authenticatable
+final class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    /** @use HasFactory<UserFactory> */
+    use HasFactory, hasRoles, InteractsWithMedia, Notifiable;
+
+    /** @use WithData<UserData> */
+    use WithData;
+
+    protected string $dataClass = UserData::class;
 
     /**
      * The attributes that are mass assignable.
@@ -34,6 +48,39 @@ final class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    /**
+     * @return HasMany<Course, $this>
+     */
+    public function teachingCourses(): HasMany
+    {
+        return $this->hasMany(Course::class, 'teacher_id');
+    }
+
+    /**
+     * @return BelongsToMany<Course, $this>
+     */
+    public function enrolledCourses(): BelongsToMany
+    {
+        return $this->belongsToMany(Course::class, 'course_enrollments')
+            ->withPivot(['enrolled_at', 'status'])
+            ->withTimestamps();
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp'])
+            ->singleFile();
+    }
+
+    /** @return Attribute<string, void> */
+    public function avatar(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => $this->getFirstMediaUrl('avatar'),
+        );
+    }
 
     /**
      * Get the attributes that should be cast.
