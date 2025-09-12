@@ -49,7 +49,6 @@ final class RolesAndPermissionsSeeder extends Seeder
 
         // Student: view-only permissions
         $studentPermissions = [
-            PermissionEnum::ViewAnyCourses->value,
             PermissionEnum::ViewCourse->value,
             PermissionEnum::ViewCourseContent->value,
         ];
