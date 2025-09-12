@@ -93,8 +93,8 @@ final class Course extends Model implements HasMedia
             'created_at' => 'immutable_datetime',
             'updated_at' => 'immutable_datetime',
             'published_at' => 'immutable_datetime',
-            'start_date' => 'immutable_datetime',
-            'end_date' => 'immutable_datetime',
+            'start_at' => 'immutable_datetime',
+            'end_at' => 'immutable_datetime',
             'status' => CourseStatus::class,
         ];
     }
