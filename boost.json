@@ -1,0 +1,12 @@
+{
+    "agents": [
+        "codex",
+        "copilot"
+    ],
+    "editors": [
+        "phpstorm"
+    ],
+    "guidelines": [
+        "laravel/fortify"
+    ]
+}
