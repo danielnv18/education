@@ -47,6 +47,7 @@
 - [ ] Integrate TipTap editor while persisting lesson body as Markdown for future editor flexibility.
 - [ ] Define lesson detail page to render rich text from stored Markdown, embedded media, and downloadable documents.
 - [ ] Add UI flows for assignment analytics, submission review, and attendance recording/visualisation.
+- [ ] Standardize data grids on TanStack Table with ShadCN UI components, including pagination, sorting, and filtering patterns.
 - [ ] Build exam-taking interfaces with autosave per question, countdown timers, and status indicators; include configuration screens for question banks.
 - [ ] Consider deferred props or lazy loading for large media lists or lesson content.
 
