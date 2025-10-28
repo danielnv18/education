@@ -9,10 +9,11 @@
 - [ ] Identify lesson content types (rich text, embedded video URLs, attached documents) and the data structures needed to support them.
 - [ ] Implement publishing workflow using datetime fields (`publish_at`) for modules and lessons; ensure only content past publish datetime is visible.
 - [ ] Extend domain to support assignment modules, assignment submissions, exams, question banks, attendance records (present/late/absent), course titles, banner images (16:9), and rich course descriptions stored as Markdown in `description` columns.
+- [ ] Standardise every status across the domain using PHP backed enums while persisting enum values in string columns.
 
 ## Permissions & Roles (`spatie/laravel-permission`)
 - [ ] Publish and run the package's migrations once the core schema is defined; ensure configuration matches upcoming models.
-- [ ] Seed base roles (`admin`, `teacher`, `content_manager`) and associated permissions; ensure default users without roles fall back to learner experience.
+- [ ] Seed base roles (`admin`, `teacher`, `content_manager`) and associated permissions; ensure default users without roles fall back to learner experience and recognise `content_manager` as a global role.
 - [ ] Represent course assistants via course-user pivot metadata (no distinct role) granting content, grading, and attendance abilities limited to assigned courses.
 - [ ] Map feature-level permissions: user management, course management (create/update/delete, assign teachers/assistants), enrollment, content publishing, attendance recording, exam management.
 - [ ] Integrate policies and gates for all domain resources (courses, modules, lessons, assignments, attendance, exams, question banks) aligned with role and assistant capabilities.
@@ -25,7 +26,7 @@
 - [ ] Specify how teachers can manage enrollments while respecting admin-only operations.
 - [ ] Allow admins to revoke pending invitations when necessary.
 - [ ] Support invitation acceptance/refusal workflows with invitations remaining active until responded to, auditing sent/responded timestamps, sender, recipient, and acceptance status, plus resending capabilities.
-- [ ] Ensure content managers share admin abilities for course CRUD and assigning teachers/assistants while respecting scoped assistant permissions.
+- [ ] Ensure content managers share admin abilities for course CRUD and assigning teachers/assistants via their global role assignment while respecting scoped assistant permissions.
 - [ ] Design pivot management for assigning/removing assistants per course with appropriate auditing.
 - [ ] Implement bulk assistant assignment UI to attach/detach users across courses efficiently.
 
