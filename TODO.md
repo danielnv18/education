@@ -2,14 +2,16 @@
 
 ## Domain & Data Modelling
 - [ ] Define Eloquent models for `User`, `Course`, `Module`, `Lesson`, and enrollment pivots following existing conventions.
+- [ ] Create a `user_profiles` table (1:1 with `users`) for extended profile data including bio, avatar, locale, and timezone.
 - [ ] Model relationships: users ↔ courses (teachers, assistants, students), courses → modules (ordered), modules → lessons (ordered).
 - [ ] Define course-user pivot metadata to capture assistant assignments, enrollment roles, and per-course capabilities.
 - [ ] Design DTOs with `spatie/laravel-data` for course/module/lesson payloads (creation, update, listing, publishing state).
 - [ ] Identify lesson content types (rich text, embedded video URLs, attached documents) and the data structures needed to support them.
 - [ ] Implement publishing workflow using datetime fields (`publish_at`) for modules and lessons; ensure only content past publish datetime is visible.
-- [ ] Extend domain to support assignment modules, assignment submissions, exams, question banks, attendance records (present/late/absent), course titles, banner images (16:9), and rich course descriptions (stored as Markdown).
+- [ ] Extend domain to support assignment modules, assignment submissions, exams, question banks, attendance records (present/late/absent), course titles, banner images (16:9), and rich course descriptions stored as Markdown in `description` columns.
 
 ## Permissions & Roles (`spatie/laravel-permission`)
+- [ ] Publish and run the package's migrations once the core schema is defined; ensure configuration matches upcoming models.
 - [ ] Seed base roles (`admin`, `teacher`, `content_manager`) and associated permissions; ensure default users without roles fall back to learner experience.
 - [ ] Represent course assistants via course-user pivot metadata (no distinct role) granting content, grading, and attendance abilities limited to assigned courses.
 - [ ] Map feature-level permissions: user management, course management (create/update/delete, assign teachers/assistants), enrollment, content publishing, attendance recording, exam management.
@@ -36,6 +38,7 @@
 
 ## Media & Content Handling (`spatie/laravel-medialibrary`)
 - [ ] Configure media collections for lesson resources (documents, embedded video thumbnails if needed, supplemental files) and course banner images (enforce 16:9 ratio).
+- [ ] Register `spatie/laravel-medialibrary` collections on models once those models are scaffolded.
 - [ ] Determine storage disks, conversions (if any), and validation rules enforcing 5 MB max images and 10 MB max documents.
 - [ ] Support allowed document extensions (PDF, spreadsheets, presentations, text documents); block direct video uploads while supporting embedded video metadata.
 - [ ] Support multiple lesson attachments ordered by creation time; define retrieval queries respecting that order.
@@ -43,13 +46,14 @@
 
 ## Frontend (Inertia + React)
 - [ ] Outline course dashboard UI for admins/teachers/content managers/students including role-based navigation.
-- [ ] Plan forms using `<Form>` or `useForm` helpers for course/module/lesson CRUD and enrollment.
-- [ ] Integrate TipTap editor while persisting lesson body as Markdown for future editor flexibility.
+- [ ] Plan forms using `<Form>` or `useForm` helpers for course/module/lesson CRUD and enrollment, pairing them with Shadcn components for consistent UX.
+- [ ] Integrate TipTap editor while persisting lesson body as Markdown for future editor flexibility (stored in `content` columns).
 - [ ] Define lesson detail page to render rich text from stored Markdown, embedded media, and downloadable documents.
 - [ ] Add UI flows for assignment analytics, submission review, and attendance recording/visualisation.
 - [ ] Standardize data grids on TanStack Table with ShadCN UI components, including pagination, sorting, and filtering patterns.
 - [ ] Build exam-taking interfaces with autosave per question, countdown timers, and status indicators; include configuration screens for question banks.
 - [ ] Consider deferred props or lazy loading for large media lists or lesson content.
+- [ ] Emphasize Tailwind CSS v4 utilities and design tokens alongside Shadcn primitives for layout, spacing, and theming.
 
 ## Testing Strategy (Pest)
 - [ ] Draft feature tests covering role permissions, course lifecycle, enrollment flows, publish visibility, exams, and assignments.
