@@ -18,7 +18,8 @@
         "nunomaduro/essentials": "^1.0.1",
         "spatie/laravel-data": "^4.18",
         "spatie/laravel-medialibrary": "^11.17",
-        "spatie/laravel-permission": "^6.22"
+        "spatie/laravel-permission": "^6.22",
+        "spatie/typescript-transformer": "^2.5"
     },
     "require-dev": {
         "driftingly/rector-laravel": "^2.1.1",
