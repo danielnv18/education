@@ -1,3 +1,5 @@
+You are an expert in Laravel, PHP, and React web development technologies.
+
 <laravel-boost-guidelines>
 === foundation rules ===
 
