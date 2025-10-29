@@ -25,30 +25,31 @@
 ## Course Structure
 1. **Courses**
    - **Migration:** `create_courses_table`
-     - Columns: `id`, `slug` (unique), `title`, `description` (longText, stores Markdown), `banner_media_id` (nullable, references `media`), `owner_id`, `status` (string referencing `CourseStatus` enum such as `draft`, `published`, `archived`), `published_at`, `starts_at`, `ends_at`, `metadata` (json), `created_by_id`, `updated_by_id`.
+     - Columns: `id`, `slug` (unique), `title`, `description` (longText, stores Markdown), `banner_media_id` (nullable, references `media`), `owner_id` (teacher of record), `status` (string referencing `CourseStatus` enum such as `draft`, `published`, `archived`), `published_at`, `starts_at`, `ends_at`, `metadata` (json for course-level preferences like featured flags or highlight colors), `created_by_id`, `updated_by_id`.
      - Indexes: `unique slug`, `status`, `published_at`, `starts_at`, `ends_at`.
    - **Model:** `App\Models\Course`
      - Relationships: `owner`, `modules`, `lessons` (through modules), `assistants`, `teachers`, `students`, `invitations`, `assignments`, `exams`, `attendanceSessions`.
      - Cast `metadata` to array.
 2. **Course Enrollments Pivot**
    - **Migration:** `create_course_user_table`
-     - Columns: `course_id`, `user_id`, `role` (string referencing `CourseRole` enum: `teacher`, `student`, `assistant`), `assistant_scope` (json), `enrolled_at`, `invited_at`, `invitation_id` (nullable), `status` (string referencing `EnrollmentStatus` enum such as `pending`, `active`, `inactive`), timestamps.
+     - Columns: `course_id`, `user_id`, `role` (string referencing `CourseRole` enum: `teacher`, `student`, `assistant`), `enrolled_at`, `invited_at`, `invitation_id` (nullable), `status` (string referencing `EnrollmentStatus` enum such as `pending`, `active`, `inactive`), timestamps.
      - Composite primary key on `(course_id, user_id)`, index `role`, `status`.
    - **Model:** `App\Models\CourseUser` (pivot extending `Pivot`)
-     - Accessors for capabilities; casts for `assistant_scope`.
+     - Assistants inherit a consistent capability set defined by roles and gain course-level access only to the courses they’re attached to; no per-course capability column is required.
+     - Enforce a single `teacher` row per course (unique index on `course_id` + `role` for `teacher`) while permitting many assistants.
      - Content managers are granted access via global role assignments, not stored in this pivot.
 
 ## Modules & Lessons
 1. **Modules**
    - **Migration:** `create_modules_table`
-     - Columns: `id`, `course_id`, `title`, `description` (longText, Markdown), `order`, `type` (`content`, `assignment`, `exam`), `publish_at`, `unpublish_at`, `is_published` (computed via publish window), `metadata` (json), audit columns.
+     - Columns: `id`, `course_id`, `title`, `description` (longText, Markdown), `order`, `type` (`content`, `assignment`, `exam`), `publish_at`, `unpublish_at`, `is_published` (computed via publish window), `metadata` (json storing scheduling or visibility toggles), audit columns.
      - Indexes: `course_id + order`, `publish_at`.
    - **Model:** `App\Models\Module`
      - Relationships: `course`, `lessons`, `assignments`, `exams`.
      - Casts: `metadata`.
 2. **Lessons**
    - **Migration:** `create_lessons_table`
-     - Columns: `id`, `module_id`, `title`, `slug`, `summary`, `content` (longText, Markdown default), `content_type` (`markdown`, `video_embed`, `document_bundle`), `publish_at`, `unpublish_at`, `order`, `duration_minutes`, `metadata` (json), audit columns.
+     - Columns: `id`, `module_id`, `title`, `slug`, `summary`, `content` (longText, Markdown default), `content_type` (`markdown`, `video_embed`, `document_bundle`), `publish_at`, `unpublish_at`, `order`, `duration_minutes`, `metadata` (json with authoring preferences like default tabs or transcript language), audit columns.
      - Indexes: `module_id + order`, `slug`, `publish_at`.
    - **Model:** `App\Models\Lesson`
      - Relationships: `module`, `course` (through module), `media`, `attachments`.
@@ -60,7 +61,7 @@
 ## Invitations & Enrollment Workflow
 1. **Invitations**
    - **Migration:** `create_invitations_table`
-     - Columns: `id`, `course_id` (nullable for global invites), `email`, `inviter_id`, `invitee_id` (nullable), `role`, `token`, `status` (string referencing `InvitationStatus` enum such as `pending`, `accepted`, `declined`, `revoked`), `sent_at`, `responded_at`, `expires_at`, `metadata`, timestamps.
+     - Columns: `id`, `course_id` (nullable for global invites), `email`, `inviter_id`, `invitee_id` (nullable), `role`, `token`, `status` (string referencing `InvitationStatus` enum such as `pending`, `accepted`, `declined`, `revoked`), `sent_at`, `responded_at`, `expires_at`, `metadata` (json for delivery metrics like resend counts), timestamps.
      - Indexes: `email`, `token` unique, `status`.
    - **Model:** `App\Models\Invitation`
      - Relationships: `course`, `inviter`, `invitee`.
@@ -68,7 +69,7 @@
 ## Assignments & Submissions
 1. **Assignments**
    - **Migration:** `create_assignments_table`
-     - Columns: `id`, `module_id`, `title`, `instructions` (longText, Markdown), `type` (`essay`, `upload`, `quiz`, `project`), `points_possible`, `open_at`, `due_at`, `close_at`, `publish_at`, `allow_late_submissions` (bool), `metadata`, `created_by_id`, `updated_by_id`.
+     - Columns: `id`, `module_id`, `title`, `instructions` (longText, Markdown), `type` (`essay`, `upload`, `quiz`, `project`), `points_possible`, `open_at`, `due_at`, `close_at`, `publish_at`, `allow_late_submissions` (bool), `metadata` (json for rubric references, submission caps, grading settings), `created_by_id`, `updated_by_id`.
      - Indexes: `module_id`, `publish_at`, `open_at`, `due_at`, `close_at`.
    - **Model:** `App\Models\Assignment`
      - Relationships: `module`, `course`, `submissions`, `media`, `attachments`.
@@ -80,13 +81,13 @@
    - **Model:** `App\Models\AssignmentExtension`.
 3. **Submissions**
    - **Migration:** `create_submissions_table`
-     - Columns: `id`, `assignment_id`, `user_id`, `status` (string referencing `SubmissionStatus` enum such as `draft`, `submitted`, `graded`, `returned`), `submitted_at`, `graded_at`, `grade`, `feedback` (longText, Markdown), `metadata`, `created_by_id`, `updated_by_id`.
+     - Columns: `id`, `assignment_id`, `user_id`, `status` (string referencing `SubmissionStatus` enum such as `draft`, `submitted`, `graded`, `returned`), `submitted_at`, `graded_at`, `grade`, `feedback` (longText, Markdown), `metadata` (json capturing override flags, late approvals, or artefact hints), `created_by_id`, `updated_by_id`.
      - Indexes: `assignment_id`, `user_id`, `status`.
    - **Model:** `App\Models\Submission`
      - Relationships: `assignment`, `student`, `grader`, `media`.
 4. **Submission Activities**
    - **Migration:** `create_submission_events_table`
-     - Columns: `id`, `submission_id`, `actor_id`, `type` (`autosave`, `comment`, `status_change`), `payload` (json), timestamps.
+     - Columns: `id`, `submission_id`, `actor_id`, `type` (`autosave`, `comment`, `status_change`), `payload` (json containing event-specific data), timestamps.
    - **Model:** `App\Models\SubmissionEvent`.
 
 ## Exams & Question Banks
@@ -97,7 +98,7 @@
    - **Model:** `App\Models\QuestionBank`.
 2. **Questions**
    - **Migration:** `create_questions_table`
-     - Columns: `id`, `question_bank_id`, `type` (`single_choice`, `multiple_choice`, `rich_text`), `prompt` (longText, Markdown), `metadata`, `points`, `created_by_id`, `updated_by_id`, timestamps.
+     - Columns: `id`, `question_bank_id`, `type` (`single_choice`, `multiple_choice`, `rich_text`), `prompt` (longText, Markdown), `metadata` (json for difficulty, tags, optional hints), `points`, `created_by_id`, `updated_by_id`, timestamps.
      - Indexes: `question_bank_id`, `type`.
    - **Model:** `App\Models\Question`.
 3. **Question Options**
@@ -107,12 +108,12 @@
    - **Model:** `App\Models\QuestionOption`.
 4. **Exams**
    - **Migration:** `create_exams_table`
-     - Columns: `id`, `module_id`, `title`, `instructions` (longText, Markdown), `time_limit_minutes`, `attempt_limit`, `availability_starts_at`, `availability_ends_at`, `publish_at`, `metadata`, `created_by_id`, `updated_by_id`.
+     - Columns: `id`, `module_id`, `title`, `instructions` (longText, Markdown), `time_limit_minutes`, `attempt_limit`, `availability_starts_at`, `availability_ends_at`, `publish_at`, `metadata` (json for grading policy, proctoring requirements, or shuffle settings), `created_by_id`, `updated_by_id`.
      - Indexes: `module_id`, `publish_at`, `availability_starts_at`.
    - **Model:** `App\Models\Exam`.
 5. **Exam Sections**
    - **Migration:** `create_exam_sections_table`
-     - Columns: `id`, `exam_id`, `title`, `order`, `question_bank_id` (nullable), `question_selection_mode` (`all`, `random`), `question_count`, `metadata`.
+     - Columns: `id`, `exam_id`, `title`, `order`, `question_bank_id` (nullable), `question_selection_mode` (`all`, `random`), `question_count`, `metadata` (json detailing section-level timing or shuffle rules).
      - Indexes: `exam_id`, `question_bank_id`.
    - **Model:** `App\Models\ExamSection`.
 6. **Exam Section Questions**
@@ -122,14 +123,15 @@
    - **Pivot Model:** `ExamSectionQuestion`.
 7. **Exam Attempts**
    - **Migration:** `create_exam_attempts_table`
-     - Columns: `id`, `exam_id`, `user_id`, `status` (string referencing `AttemptStatus` enum such as `in_progress`, `submitted`, `graded`, `expired`), `started_at`, `submitted_at`, `graded_at`, `score`, `metadata`.
+     - Columns: `id`, `exam_id`, `user_id`, `status` (string referencing `AttemptStatus` enum such as `in_progress`, `submitted`, `graded`, `expired`), `started_at`, `submitted_at`, `graded_at`, `score`, `metadata` (json for device info, integrity flags, or late offsets).
      - Indexes: `exam_id`, `user_id`, `status`.
    - **Model:** `App\Models\ExamAttempt`.
 8. **Attempt Responses**
    - **Migration:** `create_attempt_responses_table`
-     - Columns: `id`, `exam_attempt_id`, `question_id`, `response` (json), `is_correct` (nullable until graded), `autosaved_at`, timestamps.
+     - Columns: `id`, `exam_attempt_id`, `question_id`, `response` (json storing selected option IDs or rich text content), `is_correct` (nullable until graded), `autosaved_at`, timestamps.
      - Indexes: `exam_attempt_id`, `question_id`.
    - **Model:** `App\Models\AttemptResponse`.
+     - Autosave expectations: immediately persist when a select-style answer changes; delay writes for rich text questions until 30 seconds after the user stops typing (debounced per keystroke).
 
 ## Attendance Tracking
 1. **Attendance Sessions**
@@ -145,12 +147,15 @@
 
 ## Media & Files (spatie/laravel-medialibrary)
 - Publish media library migration (`create_media_table`) and keep default incrementing primary key configuration for consistency once model scaffolding begins.
+- All collections use the default filesystem disk unless future requirements dictate overrides.
 - Configure model-specific collections:
   - `Course`: `banner` collection with 16:9 validation, single file.
   - `Lesson`: `resources` collection allowing documents (PDF, DOCX, PPTX, XLSX, TXT), limit 10 MB, ordered by `media.order_column`.
   - `Assignment`: `attachments` collection (same rules as lessons).
   - `Submission`: `artifacts` collection for student uploads, 25 MB max.
   - `Question`: optional `illustrations`.
+- In local/dev, persist media to the default disk; production deployments should swap to S3 (or compatible object storage) via configuration without code changes.
+- Generate 4:3 and 16:9 thumbnail conversions via queued jobs to avoid blocking user requests.
 
 ## Notifications & Auditing Support
 1. **Notification Logs**
@@ -162,6 +167,21 @@
 ## DTO Synchronization Helpers
 - Plan to create DTOs parallel to models (`app/Data/...`), aligning with schema.
 - Configure `spatie/typescript-transformer` to scan DTO namespace; add custom Artisan command to regenerate on schema changes.
+
+## JSON Field Reference
+- `UserProfile.links`: `{ label: string, url: string }[]`.
+- `Course.metadata`: `{ featured?: bool, highlightColor?: string|null, defaultLayout?: string|null }`.
+- `Module.metadata`: `{ releaseStrategy?: 'immediate'|'scheduled', visibilityNote?: string|null }`.
+- `Lesson.metadata`: `{ defaultTab?: 'content'|'attachments', transcriptLanguage?: string|null }`.
+- `Invitation.metadata`: `{ resendCount?: int, lastSentAt?: string|null }`.
+- `Assignment.metadata`: `{ rubricId?: int|null, maxFiles?: int|null, submissionLimit?: int|null }`.
+- `Submission.metadata`: `{ lateApproved?: bool, extensionId?: int|null, requiresManualReview?: bool }`.
+- `SubmissionEvent.payload`: keyed by event type—for `comment` `{ body: string }`, for `status_change` `{ from: string, to: string }`, for `autosave` `{ fields: array }`.
+- `Question.metadata`: `{ difficulty?: 'easy'|'medium'|'hard', tags?: string[], hint?: string|null }`.
+- `Exam.metadata`: `{ gradingPolicy?: 'auto'|'manual', proctoringRequired?: bool, shuffleSections?: bool }`.
+- `ExamSection.metadata`: `{ shuffleQuestions?: bool, timeLimitMinutes?: int|null }`.
+- `ExamAttempt.metadata`: `{ ipAddress?: string|null, integrityFlags?: string[] }`.
+- `AttemptResponse.response`: for select questions `{ selectedOptionIds: int[] }`; for rich text `{ content: string, draft?: bool }`.
 
 ## Frontend Implementation Notes
 - Default to Shadcn UI components for Inertia React pages, pairing them with TanStack Table, dialog, and form primitives to keep UX consistent.

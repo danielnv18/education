@@ -4,7 +4,7 @@
 - [ ] Define Eloquent models for `User`, `Course`, `Module`, `Lesson`, and enrollment pivots following existing conventions.
 - [ ] Create a `user_profiles` table (1:1 with `users`) for extended profile data including bio, avatar, locale, and timezone.
 - [ ] Model relationships: users ↔ courses (teachers, assistants, students), courses → modules (ordered), modules → lessons (ordered).
-- [ ] Define course-user pivot metadata to capture assistant assignments, enrollment roles, and per-course capabilities.
+- [ ] Define course-user pivot structure to capture enrollment roles, invitations, and status tracking while assistants inherit consistent capabilities and gain access per assigned course.
 - [ ] Design DTOs with `spatie/laravel-data` for course/module/lesson payloads (creation, update, listing, publishing state).
 - [ ] Identify lesson content types (rich text, embedded video URLs, attached documents) and the data structures needed to support them.
 - [ ] Implement publishing workflow using datetime fields (`publish_at`) for modules and lessons; ensure only content past publish datetime is visible.
@@ -14,7 +14,7 @@
 ## Permissions & Roles (`spatie/laravel-permission`)
 - [ ] Publish and run the package's migrations once the core schema is defined; ensure configuration matches upcoming models.
 - [ ] Seed base roles (`admin`, `teacher`, `content_manager`) and associated permissions; ensure default users without roles fall back to learner experience and recognise `content_manager` as a global role.
-- [ ] Represent course assistants via course-user pivot metadata (no distinct role) granting content, grading, and attendance abilities limited to assigned courses.
+- [ ] Represent course assistants via course-user pivot entries (no distinct role) and ensure they gain full course-management capabilities for each assigned course.
 - [ ] Map feature-level permissions: user management, course management (create/update/delete, assign teachers/assistants), enrollment, content publishing, attendance recording, exam management.
 - [ ] Integrate policies and gates for all domain resources (courses, modules, lessons, assignments, attendance, exams, question banks) aligned with role and assistant capabilities.
 - [ ] Ensure middleware/guards enforce authorization consistently across Fortify/Inertia flows.
@@ -40,20 +40,21 @@
 ## Media & Content Handling (`spatie/laravel-medialibrary`)
 - [ ] Configure media collections for lesson resources (documents, embedded video thumbnails if needed, supplemental files) and course banner images (enforce 16:9 ratio).
 - [ ] Register `spatie/laravel-medialibrary` collections on models once those models are scaffolded.
-- [ ] Determine storage disks, conversions (if any), and validation rules enforcing 5 MB max images and 10 MB max documents.
+- [ ] Use the default filesystem disk for local/dev media storage, queue thumbnail conversions (4:3 and 16:9), and ensure configuration can flip to S3-compatible storage in production while enforcing 5 MB max images and 10 MB max documents.
 - [ ] Support allowed document extensions (PDF, spreadsheets, presentations, text documents); block direct video uploads while supporting embedded video metadata.
 - [ ] Support multiple lesson attachments ordered by creation time; define retrieval queries respecting that order.
 - [ ] Plan for embedding external video links vs. storing media locally.
 
 ## Frontend (Inertia + React)
-- [ ] Outline course dashboard UI for admins/teachers/content managers/students including role-based navigation.
-- [ ] Plan forms using `<Form>` or `useForm` helpers for course/module/lesson CRUD and enrollment, pairing them with Shadcn components for consistent UX.
-- [ ] Integrate TipTap editor while persisting lesson body as Markdown for future editor flexibility (stored in `content` columns).
-- [ ] Define lesson detail page to render rich text from stored Markdown, embedded media, and downloadable documents.
-- [ ] Add UI flows for assignment analytics, submission review, and attendance recording/visualisation.
-- [ ] Standardize data grids on TanStack Table with ShadCN UI components, including pagination, sorting, and filtering patterns.
-- [ ] Build exam-taking interfaces with autosave per question, countdown timers, and status indicators; include configuration screens for question banks.
-- [ ] Consider deferred props or lazy loading for large media lists or lesson content.
+- [ ] Outline course dashboard UI for admins/teachers/content managers/students including role-based navigation, ensuring all navigation uses Inertia `<Link>` with `prefetch` on high-traffic routes.
+- [ ] Plan forms using `<Form>` or `useForm` helpers for course/module/lesson CRUD, enrollment, invitations, and grading; confirm validation and success flashes flow through shared props.
+- [ ] Integrate TipTap editor while persisting lesson body as Markdown for future editor flexibility (stored in `content` columns). Capture attachment uploads through Inertia form submissions and show progress via `router.on('progress')`.
+- [ ] Define lesson detail page to render rich text from stored Markdown, embedded media, and downloadable documents. Defer secondary content (attachments, recommendations) using deferred props or `whenVisible`.
+- [ ] Add UI flows for assignment analytics, submission review, and attendance recording/visualisation with partial reloads refreshing only the affected datasets after actions.
+- [ ] Standardize data grids on TanStack Table with Shadcn UI components, including pagination, sorting, and filtering patterns, and scope reloads to the `only` props that changed.
+- [ ] Build exam-taking interfaces with autosave per question (instantly on select answers, debounced 30 seconds after typing stops for rich text), countdown timers, and status indicators powered by debounced Inertia requests; allow resume flows to hydrate from cached props.
+- [ ] Establish shared UI state (auth user, notification counts, role switches) via Inertia shared data middleware instead of bespoke API calls.
+- [ ] Document when to prefetch modal/panel routes and how long to cache them (`cacheFor`) to keep experiences instant.
 - [ ] Emphasize Tailwind CSS v4 utilities and design tokens alongside Shadcn primitives for layout, spacing, and theming.
 
 ## Testing Strategy (Pest)
@@ -75,7 +76,7 @@
 - [ ] Design models for exams, exam sections, questions (single choice, multiple choice, rich text), question banks, and exam attempts.
 - [ ] Support configurable question counts per exam including random selection from question banks.
 - [ ] Implement scheduling windows (start/end datetimes) and time limits for exam attempts.
-- [ ] Determine autosave strategy for student responses (per question) using Inertia/React with backend persistence.
+- [ ] Implement autosave so select answers persist immediately while rich-text answers debounce to 30 seconds after typing stops, ensuring backend endpoints record the `autosaved_at` timestamp per response.
 - [ ] Build auto-grading for single/multiple choice exams; require manual grading when rich text questions exist.
 - [ ] Create DTOs and actions for exam creation, configuration, question bank management, and grading workflows.
 - [ ] Ensure teachers, assistants, and content managers can create/configure exams and question banks within assigned courses.
