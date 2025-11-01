@@ -39,7 +39,7 @@
 
 ## Course Authoring
 - **Course Detail Shell:** Header with banner image management (Shadcn `Dialog` for uploads), tabs for Modules, People, Attendance, Assignments, Exams. Uploads run through Inertia form submissions with progress bars; tab content should defer heavy payloads and rely on partial reloads when actions occur.
-- **People Tab:** Two sections—teachers/assistants (driven by pivot) and student roster. Assistants gain full course-management capabilities for each course they’re assigned to (no granular overrides). Use `whenVisible` or deferred props so large rosters fetch only on demand.
+- **People Tab:** Two sections—teachers/assistants (driven by pivot) and student roster. Assistants gain full course-management capabilities for each course they’re assigned to (no granular overrides). Surface per-student attendance summaries (percent present, counts of present/late/absent) inline for teachers and assistants. Use `whenVisible` or deferred props so large rosters fetch only on demand.
 - **Enrollment Flows:** Invite learners via email using Shadcn `Sheet` or modal containing `<Form>` fields and enum-backed status display for pending invitations. Prefetch invitation endpoints and use partial reloads to update local lists instantly.
 
 ```text
@@ -107,7 +107,7 @@
 ## Attendance
 - **Session List:** Table showing past sessions with status counts; quick action to open a session in record mode. Prefetch the record view and refresh summaries via partial reloads when statuses change.
 - **Record Attendance:** Grid of students with quick status toggles (present/late/absent) mapped to enum badge colors; include notes drawer per student. Persist edits through Inertia forms with `preserveScroll`; for concurrent edits, rely on server events or manual refresh triggers rather than polling.
-- **Attendance Analytics:** Charts/tables highlighting trends and totals leveraging Shadcn `Card`/`Chart` components (if available). Use deferred props for expensive aggregates so the sessions list renders instantly.
+- **Attendance Analytics:** Charts/tables highlighting trends and totals leveraging Shadcn `Card`/`Chart` components (if available). Provide aggregated stats (percent present, counts per status) for each learner within the course roster (teacher/assistant access) and expose a personal history view for students. Use deferred props for expensive aggregates so the sessions list renders instantly.
 
 ```text
 /courses/{course}/attendance
@@ -117,9 +117,9 @@
 ```
 
 ## Learner Experience
-- **My Courses:** Card layout showing publish status and next lesson. Provide CTA for latest assignment/exam due soon. Prefetch course pages on hover and rely on shared data for global deadlines.
-- **Lesson Reader:** Focused view with breadcrumb navigation, Markdown-rendered content, media attachments, and publish state alerts. Lazy-load attachments via deferred props and track download progress for large files.
-- **Assignment Detail:** Shows instructions, due dates, submission status (enum). Provide direct link to submit/edit attempt. Use partial reloads to refresh status after submission without leaving the page.
+- **My Courses:** Card layout showing publish status and next lesson. Provide CTA for latest assignment/exam due soon and quick access to personal attendance/assessment statistics. Prefetch course pages on hover and rely on shared data for global deadlines.
+- **Lesson Reader:** Focused view with breadcrumb navigation, Markdown-rendered content, media attachments, and publish state alerts. Lazy-load attachments via deferred props and track download progress for large files. Offer a sidebar summary of the student’s standing (attendance percentage, assignment/exam completion) within the course.
+- **Assignment Detail:** Shows instructions, due dates, submission status (enum). Provide direct link to submit/edit attempt. Use partial reloads to refresh status after submission without leaving the page and link to attendance/assessment analytics for the student.
 - **Exam Overview:** Displays availability windows, attempt limits, and start CTA; disables button when outside schedule according to enum-driven status. Poll for window changes in the minutes leading up to availability to keep CTAs accurate.
 
 ```text

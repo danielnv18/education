@@ -85,8 +85,8 @@
 ## Attendance Tracking
 - [ ] Model manually created attendance sessions for each course with statuses (`present`, `late`, `absent`) tied to students and timestamps.
 - [ ] Build actions that allow teachers, assistants, and content managers to create sessions, record attendance, update entries, and maintain history.
-- [ ] Ensure admins, teachers, assistants, and content managers can view attendance records; define learner visibility requirements if any.
-- [ ] Plan DTOs and Inertia pages for capturing attendance and rendering summaries/analytics.
+- [ ] Ensure admins, teachers, assistants, and content managers can view attendance records; expose aggregated percentages/counts on teacher/assistant rosters and provide personal history views for students (course page + profile).
+- [ ] Plan DTOs and Inertia pages for capturing attendance and rendering summaries/analytics, including per-student aggregates (present/late/absent).
 - [ ] Consider future integration with `spatie/laravel-settings` if attendance policies need to be configurable per course or globally.
 
 ## TypeScript & DTO Synchronization

@@ -1,24 +1,25 @@
 # Architecture Overview
 
 ## Domain Roles & Relationships
-- **Teachers:** Each course has exactly one teacher-of-record. A teacher can own many courses, and teacher assignments are stored via the `course_user` pivot with the `teacher` role (enforced as one row per course). The `courses.owner_id` column points to the same teacher to simplify eager loading.
-- **Assistants:** Assistants are attached to courses through the same pivot, flagged with the `assistant` role. They inherit a consistent capability set (content, grading, attendance) and gain access to every course where they have a pivot row. There is no per-course capability override.
-- **Admins & Content Managers:** Global roles granted through `spatie/laravel-permission`. They can attach/detach teachers and assistants, manage invitations, and oversee global settings.
+- **Teachers:** Each course has exactly one teacher-of-record. A teacher can own many courses, and teacher assignments are stored via the `course_user` pivot with the `teacher` role (enforced as one row per course). The `courses.owner_id` column points to the same teacher to simplify eager loading, and teachers can update course-level metadata, schedules, and enrollment assignments in addition to managing content.
+- **Assistants:** Assistants are attached to courses through the same pivot, flagged with the `assistant` role. They can manage course content (modules, lessons, assignments, exams, attendance) but cannot modify course-level metadata or settings. There is no per-course capability override.
+- **Admins & Content Managers:** Global roles granted through `spatie/laravel-permission`. Admins own user lifecycle management (create, update, delete, restore, password resets). Content managers focus on course lifecycle and content, including accessing inactive courses, attaching/detaching teachers and assistants, and overseeing global course settings.
 - **Students:** Learners join courses via the pivot using the `student` role. Enrollment status determines visibility of course content.
 
 ## Enumerations
-| Enum | Allowed Values | Purpose |
-| --- | --- | --- |
-| `CourseStatus` | `draft`, `published`, `archived` | Controls learner visibility and publishing cadence. |
-| `EnrollmentStatus` | `pending`, `active`, `inactive` | Tracks invitation lifecycle and course access for students/assistants. |
-| `InvitationStatus` | `pending`, `accepted`, `declined`, `revoked` | Governs invitation workflows and resend capability. |
-| `ModuleType` | `content`, `assignment`, `exam` | Drives tab visibility and feature toggles inside the course shell. |
-| `LessonContentType` | `markdown`, `video_embed`, `document_bundle` | Selects editor presets and rendering pipelines. |
-| `AssignmentType` | `essay`, `upload`, `quiz`, `project` | Configures grading options, submission form inputs, and validation. |
-| `SubmissionStatus` | `draft`, `submitted`, `graded`, `returned` | Controls student access to editing, grading views, and analytics. |
-| `QuestionType` | `single_choice`, `multiple_choice`, `rich_text` | Determines available authoring fields and grading mode. |
-| `AttemptStatus` | `in_progress`, `submitted`, `graded`, `expired` | Indicates learner progress through exam attempts. |
-| `AttendanceStatus` | `present`, `late`, `absent` | Drives attendance analytics and badge colors. |
+| Enum                | Allowed Values                                  | Purpose                                                                                           |
+|---------------------|-------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| `CourseStatus`      | `draft`, `published`, `archived`                | Controls learner visibility and publishing cadence.                                               |
+| `CourseRole`        | `teacher`, `assistant`, `student`               | Defines per-course capabilities via the `course_user` pivot and enforces the single-teacher rule. |
+| `EnrollmentStatus`  | `pending`, `active`, `inactive`                 | Tracks invitation lifecycle and course access for students/assistants.                            |
+| `InvitationStatus`  | `pending`, `accepted`, `declined`, `revoked`    | Governs invitation workflows and resend capability.                                               |
+| `ModuleType`        | `content`, `assignment`, `exam`                 | Drives tab visibility and feature toggles inside the course shell.                                |
+| `LessonContentType` | `markdown`, `video_embed`, `document_bundle`    | Selects editor presets and rendering pipelines.                                                   |
+| `AssignmentType`    | `essay`, `upload`, `quiz`, `project`            | Configures grading options, submission form inputs, and validation.                               |
+| `SubmissionStatus`  | `draft`, `submitted`, `graded`, `returned`      | Controls student access to editing, grading views, and analytics.                                 |
+| `QuestionType`      | `single_choice`, `multiple_choice`, `rich_text` | Determines available authoring fields and grading mode.                                           |
+| `AttemptStatus`     | `in_progress`, `submitted`, `graded`, `expired` | Indicates learner progress through exam attempts.                                                 |
+| `AttendanceStatus`  | `present`, `late`, `absent`                     | Drives attendance analytics and badge colors.                                                     |
 
 All enums are implemented as PHP backed enums and persisted as strings (≤50 chars) to keep flexibility across services.
 
@@ -34,7 +35,7 @@ All enums are implemented as PHP backed enums and persisted as strings (≤50 ch
 ## Services & Supporting Layers
 - **Action Classes (`app/Actions`)** encapsulate domain behavior (course creation, enrollment, grading) and provide single `handle()` entry points so controllers, jobs, and console commands remain thin.
 - **Queued Jobs** handle heavy operations: media conversions, bulk notifications, and potential future grading batches.
-- **DTOs (`app/Data`)** define contract-safe payloads for API/Inertia props. Paired with `spatie/typescript-transformer` to keep TypeScript definitions in sync.
+- **DTOs (`app/Data`)** define contract-safe payloads for API/Inertia props. Paired with `spatie/typescript-transformer` to keep TypeScript definitions in sync and aligned with Shadcn form components and validation states.
 - **Policies & Gates** leverage `spatie/laravel-permission` roles plus pivot data to gate course content, ensuring assistants only see assigned courses.
 - **Notifications & Auditing** (future): `NotificationLog` table records outbound notifications; optional audit logs can track instructor edits if the feature is enabled.
 
@@ -50,4 +51,3 @@ All enums are implemented as PHP backed enums and persisted as strings (≤50 ch
 - **Validation:** Dedicated Form Request classes should reference enum rules and validate scheduling windows (e.g., `publish_at <= unpublish_at`).
 - **Transactions:** Multi-model workflows (course creation with modules, enrollment with invitations) should run inside database transactions within their respective action classes.
 - **Configuration:** Media disks, queue connections, and future settings should rely on environment configuration, allowing dev (local disk) and prod (S3) parity without code changes.
-

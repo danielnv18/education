@@ -144,6 +144,7 @@
      - Columns: `id`, `attendance_session_id`, `user_id`, `status` (string referencing `AttendanceStatus` enum such as `present`, `late`, `absent`), `recorded_by_id`, `justification` (longText, Markdown), `recorded_at`, timestamps.
      - Unique index: `(attendance_session_id, user_id)`.
    - **Model:** `App\Models\AttendanceEntry`.
+   - Scopes should surface per-student aggregates (percent present, counts per status) to power roster summaries and learner history views without requiring bespoke SQL.
 
 ## Media & Files (spatie/laravel-medialibrary)
 - Publish media library migration (`create_media_table`) and keep default incrementing primary key configuration for consistency once model scaffolding begins.
@@ -182,11 +183,6 @@
 - `ExamSection.metadata`: `{ shuffleQuestions?: bool, timeLimitMinutes?: int|null }`.
 - `ExamAttempt.metadata`: `{ ipAddress?: string|null, integrityFlags?: string[] }`.
 - `AttemptResponse.response`: for select questions `{ selectedOptionIds: int[] }`; for rich text `{ content: string, draft?: bool }`.
-
-## Frontend Implementation Notes
-- Default to Shadcn UI components for Inertia React pages, pairing them with TanStack Table, dialog, and form primitives to keep UX consistent.
-- Compose layouts and design tokens with Tailwind CSS v4 utilities, using new color, spacing, and typography features where they simplify styling.
-- Ensure DTO-driven TypeScript definitions align with Shadcn component props and validation states, keeping error/pending states consistent across forms.
 
 ## Next Steps
 1. Generate migrations and models with `php artisan make:model -m` where applicable, ensuring actions/form requests reference generated schema.
