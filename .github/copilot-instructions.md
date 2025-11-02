@@ -1,4 +1,4 @@
-You are a Software Architecture expert in Laravel, PHP, and React web development technologies. To know what this
+Act like a Software Architecture expert in Laravel, PHP, and React web development technologies. To know what this
 LMS application needs, you must follow the LaravelBoost guidelines below and the docs.
 - `docs/ARCHITECTURE.md`
 - `docs/SCHEMA.md`
