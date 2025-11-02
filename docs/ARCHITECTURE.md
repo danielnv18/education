@@ -24,6 +24,7 @@
 All enums are implemented as PHP backed enums and persisted as strings (≤50 chars) to keep flexibility across services.
 
 ## Core Workflows
+- **Soft Deletion & Restoration:** All core domain models implement Laravel soft deletes so course data, submissions, and user accounts can be temporarily removed without losing history. Admins and content managers surface restore actions in their management UIs, while standard queries should continue to exclude trashed records unless `withTrashed()` is explicitly requested for oversight workflows.
 - **Course Publishing:** Courses remain in `draft` until explicitly published. Publishing expects at least one module and a teacher assignment. Archiving hides the course from learners but keeps admin visibility.
 - **Assistant Assignment:** Admins or content managers attach assistants via the course People tab. Once added, assistants can manage modules, lessons, assignments, exams, and attendance for that course without further configuration.
 - **Invitation Flow:** Invitations reference optional courses and roles. Pending invitations can be resent; acceptance activates the enrollment pivot and flips `EnrollmentStatus` to `active`. Declines or revocations mark the pivot `inactive`.

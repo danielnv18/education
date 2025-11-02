@@ -25,6 +25,7 @@
 
 ## Administration
 - **User Management:** Table (TanStack + Shadcn `Table`) with filters, role assignment controls (global roles: admin, content manager). Modal dialog for inviting new users and resending invitations. Use `<Form>` with partial reloads targeting `users`, and prefetch detail rows before entering modals.
+  - Include trashed filters and restore buttons so admins can recover soft-deleted accounts without leaving the page.
 - **Course Index:** Grid/list of all courses with status badges (enum-driven). Include bulk actions for publishing, archiving, and assigning primary owners. Use `router.reload({ only: [...] })` to refresh affected badges instead of full page visits.
 - **Settings:** Placeholder for future global preferences (e.g., default timezones, grading scales) aligning with potential `spatie/laravel-settings` usage. Persist via Inertia forms and surface confirmations using shared flash props.
 
@@ -39,6 +40,7 @@
 
 ## Course Authoring
 - **Course Detail Shell:** Header with banner image management (Shadcn `Dialog` for uploads), tabs for Modules, People, Attendance, Assignments, Exams. Uploads run through Inertia form submissions with progress bars; tab content should defer heavy payloads and rely on partial reloads when actions occur.
+  - Each tab surfaces soft-deleted records in contextual "Trash" drawers so instructors can restore modules, lessons, assignments, or exams when needed.
 - **People Tab:** Two sections—teachers/assistants (driven by pivot) and student roster. Assistants gain full course-management capabilities for each course they’re assigned to (no granular overrides). Surface per-student attendance summaries (percent present, counts of present/late/absent) inline for teachers and assistants. Use `whenVisible` or deferred props so large rosters fetch only on demand.
 - **Enrollment Flows:** Invite learners via email using Shadcn `Sheet` or modal containing `<Form>` fields and enum-backed status display for pending invitations. Prefetch invitation endpoints and use partial reloads to update local lists instantly.
 

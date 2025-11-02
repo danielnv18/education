@@ -2,6 +2,7 @@
 
 ## Domain & Data Modelling
 - [ ] Define Eloquent models for `User`, `Course`, `Module`, `Lesson`, and enrollment pivots following existing conventions.
+- [ ] Add `SoftDeletes` support (migration column + trait and tests) for every model defined in this plan so content can be archived and restored.
 - [ ] Create a `user_profiles` table (1:1 with `users`) for extended profile data including bio, avatar, locale, and timezone.
 - [ ] Model relationships: users ↔ courses (teachers, assistants, students), courses → modules (ordered), modules → lessons (ordered).
 - [ ] Define course-user pivot structure to capture enrollment roles, invitations, and status tracking while assistants inherit consistent capabilities and gain access per assigned course.

@@ -3,11 +3,12 @@
 ## Conventions & Shared Columns
 - Rely on Laravel's default unsigned big integer auto-increment primary keys; reserve UUIDs only for external integrations that require them.
 - Back every status field with a PHP backed enum; persist the enum value in the database using `string` columns (typically length 50) and enforce enum consistency via casts/accessors.
-- Apply `softDeletes()` and `timestamps()` on all authorable resources; add `published_at` columns where publishing cadence is needed.
+- Apply `softDeletes()` (persisting a nullable `deleted_at` column) and `timestamps()` on every model described below, including `users`, so records can be restored without losing historical context; add `published_at` columns where publishing cadence is needed.
 - Store datetimes in UTC with `->nullable()` only when business rules permit; add indexes to `publish_at`, `invite_expires_at`, and other query-heavy columns.
 - Add `created_by_id` / `updated_by_id` foreign keys when auditing creator/editor is necessary; reference `users`.
 
 ## Core User Enhancements
+- Ensure the `users` table includes a nullable `deleted_at` column and that `App\Models\User` uses the `SoftDeletes` trait so accounts can be restored after deactivation.
 1. **Migration:** `create_user_profiles_table`
    - Columns: `id`, `user_id` (unique, FK to `users`), `display_name`, `bio` (longText for Markdown), `avatar_url`, `timezone`, `locale`, `links` (json), timestamps.
    - Add indexes on `user_id` (unique) and `timezone` to assist scheduling queries.
@@ -23,6 +24,7 @@
 3. **Model updates:** ensure `User` uses `HasRoles`.
 
 ## Course Structure
+All course-centric tables (`courses`, modules, enrollment pivots) store a nullable `deleted_at` column so the related models can leverage Laravel soft deletes for archival and restoration workflows.
 1. **Courses**
    - **Migration:** `create_courses_table`
      - Columns: `id`, `slug` (unique), `title`, `description` (longText, stores Markdown), `banner_media_id` (nullable, references `media`), `owner_id` (teacher of record), `status` (string referencing `CourseStatus` enum such as `draft`, `published`, `archived`), `published_at`, `starts_at`, `ends_at`, `metadata` (json for course-level preferences like featured flags or highlight colors), `created_by_id`, `updated_by_id`.
@@ -40,6 +42,7 @@
      - Content managers are granted access via global role assignments, not stored in this pivot.
 
 ## Modules & Lessons
+Modules, lessons, and their related attachments use `deleted_at` to support soft deletion without permanently losing authored content.
 1. **Modules**
    - **Migration:** `create_modules_table`
      - Columns: `id`, `course_id`, `title`, `description` (longText, Markdown), `order`, `type` (`content`, `assignment`, `exam`), `publish_at`, `unpublish_at`, `is_published` (computed via publish window), `metadata` (json storing scheduling or visibility toggles), audit columns.
@@ -59,6 +62,7 @@
    - **Model:** use `InteractsWithMedia` on `Lesson` and configure collections once base models are scaffolded.
 
 ## Invitations & Enrollment Workflow
+Invitations and enrollment records rely on soft deletes to keep historical audit trails when an invite is withdrawn or a pivot membership is retired.
 1. **Invitations**
    - **Migration:** `create_invitations_table`
      - Columns: `id`, `course_id` (nullable for global invites), `email`, `inviter_id`, `invitee_id` (nullable), `role`, `token`, `status` (string referencing `InvitationStatus` enum such as `pending`, `accepted`, `declined`, `revoked`), `sent_at`, `responded_at`, `expires_at`, `metadata` (json for delivery metrics like resend counts), timestamps.
@@ -67,6 +71,7 @@
      - Relationships: `course`, `inviter`, `invitee`.
 
 ## Assignments & Submissions
+Assignment, submission, and extension tables expose `deleted_at` to allow reversible removals during content cleanup or grade disputes.
 1. **Assignments**
    - **Migration:** `create_assignments_table`
      - Columns: `id`, `module_id`, `title`, `instructions` (longText, Markdown), `type` (`essay`, `upload`, `quiz`, `project`), `points_possible`, `open_at`, `due_at`, `close_at`, `publish_at`, `allow_late_submissions` (bool), `metadata` (json for rubric references, submission caps, grading settings), `created_by_id`, `updated_by_id`.
@@ -91,6 +96,7 @@
    - **Model:** `App\Models\SubmissionEvent`.
 
 ## Exams & Question Banks
+Question banks, questions, options, exams, sections, and attempts all include `deleted_at` columns and rely on `SoftDeletes` in their models for reversible archival.
 1. **Question Banks**
    - **Migration:** `create_question_banks_table`
      - Columns: `id`, `course_id`, `title`, `description` (longText, Markdown), `created_by_id`, `updated_by_id`, timestamps.
@@ -134,6 +140,7 @@
      - Autosave expectations: immediately persist when a select-style answer changes; delay writes for rich text questions until 30 seconds after the user stops typing (debounced per keystroke).
 
 ## Attendance Tracking
+Attendance sessions and entries record `deleted_at` to allow instructors to correct mistakes without purging audit data.
 1. **Attendance Sessions**
    - **Migration:** `create_attendance_sessions_table`
      - Columns: `id`, `course_id`, `title`, `held_at`, `created_by_id`, `notes` (longText, Markdown), timestamps.
@@ -147,6 +154,7 @@
    - Scopes should surface per-student aggregates (percent present, counts per status) to power roster summaries and learner history views without requiring bespoke SQL.
 
 ## Media & Files (spatie/laravel-medialibrary)
+Medialibrary models already support soft deletes; ensure custom collections added to domain models respect `SoftDeletes` when querying related media.
 - Publish media library migration (`create_media_table`) and keep default incrementing primary key configuration for consistency once model scaffolding begins.
 - All collections use the default filesystem disk unless future requirements dictate overrides.
 - Configure model-specific collections:
@@ -159,6 +167,7 @@
 - Generate 4:3 and 16:9 thumbnail conversions via queued jobs to avoid blocking user requests.
 
 ## Notifications & Auditing Support
+Notification and audit log tables keep `deleted_at` columns so records can be hidden when necessary without compromising future forensic needs.
 1. **Notification Logs**
    - **Migration:** `create_notification_logs_table`
      - Columns: `id`, `type`, `notifiable_type`, `notifiable_id`, `channel`, `payload`, `sent_at`, timestamps.

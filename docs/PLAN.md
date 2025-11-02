@@ -9,6 +9,7 @@
 ## Guiding Principles
 - Whenever creating or updating an Eloquent model, create or update its factory and corresponding DTOs in the same phase to keep backend payloads and tests aligned.
 - Maintain phase-level Pest coverage; tests accompany each feature milestone rather than being deferred.
+- Soft deletes are the default for every domain model—add the `deleted_at` column in migrations and apply the `SoftDeletes` trait when scaffolding models and actions.
 
 ## Phase 1 — Foundation & Tooling
 1. Confirm base packages (`spatie/laravel-permission`, `spatie/laravel-medialibrary`, `spatie/laravel-data`, `spatie/typescript-transformer`) are installed and configured. Publish vendor migrations that are prerequisites (`roles`, `permissions`, `media`).
