@@ -11,6 +11,8 @@
 |---------------------|-------------------------------------------------|---------------------------------------------------------------------------------------------------|
 | `CourseStatus`      | `draft`, `published`, `archived`                | Controls learner visibility and publishing cadence.                                               |
 | `CourseRole`        | `teacher`, `assistant`, `student`               | Defines per-course capabilities via the `course_user` pivot and enforces the single-teacher rule. |
+| `RoleEnum`          | `admin`, `content_manager`, `teacher`           | Global roles applied through `spatie/laravel-permission` to gate administrative features.         |
+| `PermissionEnum`    | see `App\Enums\PermissionEnum`                 | Canonical permission slugs aligned with `docs/PERMISSIONS.md`.                                     |
 | `EnrollmentStatus`  | `pending`, `active`, `inactive`                 | Tracks invitation lifecycle and course access for students/assistants.                            |
 | `InvitationStatus`  | `pending`, `accepted`, `declined`, `revoked`    | Governs invitation workflows and resend capability.                                               |
 | `LessonContentType` | `markdown`, `video_embed`, `document_bundle`    | Selects editor presets and rendering pipelines.                                                   |

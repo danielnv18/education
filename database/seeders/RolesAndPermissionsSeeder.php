@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
-use App\Enums\SystemPermission;
-use App\Enums\SystemRole;
+use App\Enums\PermissionEnum;
+use App\Enums\RoleEnum;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
@@ -19,36 +19,65 @@ final class RolesAndPermissionsSeeder extends Seeder
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         DB::transaction(function (): void {
-            foreach (SystemPermission::values() as $permission) {
+            $permissions = array_map(static fn (PermissionEnum $case): string => $case->value, PermissionEnum::cases());
+
+            foreach ($permissions as $permission) {
                 Permission::findOrCreate($permission, 'web');
             }
 
             $rolePermissions = [
-                SystemRole::Admin->value => SystemPermission::values(),
-                SystemRole::ContentManager->value => [
-                    SystemPermission::CreateCourses->value,
-                    SystemPermission::UpdateCourses->value,
-                    SystemPermission::DeleteCourses->value,
-                    SystemPermission::AssignCourseTeachers->value,
-                    SystemPermission::AssignCourseAssistants->value,
-                    SystemPermission::ManageEnrollments->value,
-                    SystemPermission::PublishContent->value,
-                    SystemPermission::RecordAttendance->value,
-                    SystemPermission::ManageExams->value,
+                RoleEnum::Admin->value => $permissions,
+                RoleEnum::ContentManager->value => [
+                    PermissionEnum::ResendInvitations->value,
+                    PermissionEnum::RevokeInvitations->value,
+                    PermissionEnum::AssignCourseStaff->value,
+                    PermissionEnum::ManageEnrollments->value,
+                    PermissionEnum::ViewUserDirectory->value,
+                    PermissionEnum::ManageCourses->value,
+                    PermissionEnum::PublishCourses->value,
+                    PermissionEnum::ManageCourseMetadata->value,
+                    PermissionEnum::AccessInactiveCourses->value,
+                    PermissionEnum::ManageModules->value,
+                    PermissionEnum::ManageLessons->value,
+                    PermissionEnum::ManageAssignments->value,
+                    PermissionEnum::GradeAssignments->value,
+                    PermissionEnum::ManageExams->value,
+                    PermissionEnum::GradeExams->value,
+                    PermissionEnum::CreateAttendanceSessions->value,
+                    PermissionEnum::RecordAttendance->value,
+                    PermissionEnum::ViewAttendanceAnalytics->value,
+                    PermissionEnum::ViewAssessmentAnalytics->value,
+                    PermissionEnum::ManagePlatformSettings->value,
+                    PermissionEnum::ManageNotificationChannels->value,
+                    PermissionEnum::ManageQueues->value,
+                    PermissionEnum::ViewDashboards->value,
                 ],
-                SystemRole::Teacher->value => [
-                    SystemPermission::UpdateCourses->value,
-                    SystemPermission::ManageEnrollments->value,
-                    SystemPermission::PublishContent->value,
-                    SystemPermission::RecordAttendance->value,
-                    SystemPermission::ManageExams->value,
+                RoleEnum::Teacher->value => [
+                    PermissionEnum::ResendInvitations->value,
+                    PermissionEnum::RevokeInvitations->value,
+                    PermissionEnum::AssignCourseStaff->value,
+                    PermissionEnum::ManageEnrollments->value,
+                    PermissionEnum::ViewUserDirectory->value,
+                    PermissionEnum::ManageCourses->value,
+                    PermissionEnum::PublishCourses->value,
+                    PermissionEnum::ManageCourseMetadata->value,
+                    PermissionEnum::AccessInactiveCourses->value,
+                    PermissionEnum::ManageModules->value,
+                    PermissionEnum::ManageLessons->value,
+                    PermissionEnum::ManageAssignments->value,
+                    PermissionEnum::GradeAssignments->value,
+                    PermissionEnum::ManageExams->value,
+                    PermissionEnum::GradeExams->value,
+                    PermissionEnum::CreateAttendanceSessions->value,
+                    PermissionEnum::RecordAttendance->value,
+                    PermissionEnum::ViewAttendanceAnalytics->value,
+                    PermissionEnum::ViewAssessmentAnalytics->value,
+                    PermissionEnum::ViewDashboards->value,
                 ],
             ];
 
             foreach ($rolePermissions as $role => $permissions) {
-                $roleModel = Role::findOrCreate($role, 'web');
-
-                $roleModel->syncPermissions($permissions);
+                Role::findOrCreate($role, 'web')->syncPermissions($permissions);
             }
         });
     }

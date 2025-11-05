@@ -7,6 +7,8 @@ Key:
 - `Self` – limited to the user’s own account or submissions.
 - `—` – not permitted.
 
+Canonical permission slugs for these capabilities live in `App\\Enums\\PermissionEnum`.
+
 ## User & Role Management
 
 | Capability                                               | Admin  | Content Manager | Teacher | Assistant | Student | Notes                                                                                         |

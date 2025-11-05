@@ -20,8 +20,9 @@
 
 ## Roles & Permissions (spatie/laravel-permission)
 1. **Vendor migrations:** package already installed; publish and run defaults (`roles`, `permissions`, `model_has_roles`, `model_has_permissions`, `role_has_permissions`) once core domain tables are in place.
-2. **Seeder alignment:** create seeders for base roles and permissions, treating `content_manager` as a global role alongside `admin`.
-3. **Model updates:** ensure `User` uses `HasRoles`.
+2. **Seeder alignment:** create seeders for base roles and permissions, treating `content_manager` as a global role alongside `admin`, and use `App\\Enums\\RoleEnum` so the database values remain in sync.
+3. **Permission slugs:** register capabilities using `App\\Enums\\PermissionEnum` to keep permission strings aligned with `docs/PERMISSIONS.md` and shared frontend DTOs.
+4. **Model updates:** ensure `User` uses `HasRoles`.
 
 ## Course Structure
 All course-centric tables (`courses`, modules, enrollment pivots) store a nullable `deleted_at` column so the related models can leverage Laravel soft deletes for archival and restoration workflows.
