@@ -12,10 +12,10 @@
 - Soft deletes are the default for every domain model—add the `deleted_at` column in migrations and apply the `SoftDeletes` trait when scaffolding models and actions.
 
 ## Phase 1 — Foundation & Tooling
-1. Confirm base packages (`spatie/laravel-permission`, `spatie/laravel-medialibrary`, `spatie/laravel-data`, `spatie/typescript-transformer`) are installed and configured. Publish vendor migrations that are prerequisites (`roles`, `permissions`, `media`).
-2. Establish shared enums in PHP (`CourseStatus`, `CourseRole`, `EnrollmentStatus`, etc.) to match `docs/ARCHITECTURE.md` and wire them into `config`/`app/Enums`.
-3. Prepare developer tooling flows: DTO generation pipeline, Pint formatting script, Pest helpers, and queues configuration (per `docs/TODO.md` Operational Considerations).
-4. Add baseline Pest tests (configuration smoke tests, enum serialization checks) to ensure tooling and enums behave as expected.
+- [x] Confirm base packages (`spatie/laravel-permission`, `spatie/laravel-medialibrary`, `spatie/laravel-data`, `spatie/laravel-typescript-transformer`) are installed and configured. Publish vendor migrations that are prerequisites (`roles`, `permissions`, `media`).
+- [x] Establish shared enums in PHP (`CourseStatus`, `CourseRole`, `EnrollmentStatus`, etc.) to match `docs/ARCHITECTURE.md` and wire them into `config`/`app/Enums`.
+- [x] Prepare developer tooling flows: DTO generation pipeline, Pint formatting script, Pest helpers, and queues configuration (per `docs/TODO.md` Operational Considerations).
+- [x] Add baseline Pest tests (configuration smoke tests, enum serialization checks) to ensure tooling and enums behave as expected.
 
 ## Phase 2 — Users, Roles & Invitations
 1. Create the `user_profiles` table, model, factory, DTOs, and seed data; connect to `User` relationships (see `docs/SCHEMA.md` Core User Enhancements).
@@ -30,7 +30,7 @@
 4. Write Pest tests validating course ownership rules, enrollment role scopes, and policy enforcement.
 
 ## Phase 4 — Modules & Lessons
-1. Scaffold module and lesson migrations/models/factories/DTOs with ordering, publish windows, and content types (see `docs/SCHEMA.md` Modules & Lessons).
+1. Scaffold module and lesson migrations/models/factories/DTOs with ordering, publish windows, and support for mixed module content (lessons, assignments, exams) (see `docs/SCHEMA.md` Modules & Lessons).
 2. Integrate media collections for lessons and course banners via Medialibrary; add attachment actions (per `docs/TODO.md` Media & Content Handling).
 3. Create actions/form requests for CRUD, publishing toggles, and scheduling validation. Ensure Inertia props use DTOs.
 4. Cover module/lesson CRUD, scheduling validation, and media rules with Pest feature tests (including attachment upload handling).

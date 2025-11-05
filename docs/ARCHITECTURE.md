@@ -13,7 +13,6 @@
 | `CourseRole`        | `teacher`, `assistant`, `student`               | Defines per-course capabilities via the `course_user` pivot and enforces the single-teacher rule. |
 | `EnrollmentStatus`  | `pending`, `active`, `inactive`                 | Tracks invitation lifecycle and course access for students/assistants.                            |
 | `InvitationStatus`  | `pending`, `accepted`, `declined`, `revoked`    | Governs invitation workflows and resend capability.                                               |
-| `ModuleType`        | `content`, `assignment`, `exam`                 | Drives tab visibility and feature toggles inside the course shell.                                |
 | `LessonContentType` | `markdown`, `video_embed`, `document_bundle`    | Selects editor presets and rendering pipelines.                                                   |
 | `AssignmentType`    | `essay`, `upload`, `quiz`, `project`            | Configures grading options, submission form inputs, and validation.                               |
 | `SubmissionStatus`  | `draft`, `submitted`, `graded`, `returned`      | Controls student access to editing, grading views, and analytics.                                 |
@@ -21,7 +20,7 @@
 | `AttemptStatus`     | `in_progress`, `submitted`, `graded`, `expired` | Indicates learner progress through exam attempts.                                                 |
 | `AttendanceStatus`  | `present`, `late`, `absent`                     | Drives attendance analytics and badge colors.                                                     |
 
-All enums are implemented as PHP backed enums and persisted as strings (≤50 chars) to keep flexibility across services.
+All enums are implemented as PHP backed enums and persisted as strings (≤50 chars) to keep flexibility across services. Modules no longer rely on a type enum; instead, they can mix lessons, assignments, and exams within the same container, and the UI adapts based on the resources present.
 
 ## Core Workflows
 - **Soft Deletion & Restoration:** All core domain models implement Laravel soft deletes so course data, submissions, and user accounts can be temporarily removed without losing history. Admins and content managers surface restore actions in their management UIs, while standard queries should continue to exclude trashed records unless `withTrashed()` is explicitly requested for oversight workflows.

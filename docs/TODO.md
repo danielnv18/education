@@ -9,12 +9,12 @@
 - [ ] Design DTOs with `spatie/laravel-data` for course/module/lesson payloads (creation, update, listing, publishing state).
 - [ ] Identify lesson content types (rich text, embedded video URLs, attached documents) and the data structures needed to support them.
 - [ ] Implement publishing workflow using datetime fields (`publish_at`) for modules and lessons; ensure only content past publish datetime is visible.
-- [ ] Extend domain to support assignment modules, assignment submissions, exams, question banks, attendance records (present/late/absent), course titles, banner images (16:9), and rich course descriptions stored as Markdown in `description` columns.
-- [ ] Standardise every status across the domain using PHP backed enums while persisting enum values in string columns.
+- [ ] Extend domain to support assignments, assignment submissions, exams, question banks, attendance records (present/late/absent), course titles, banner images (16:9), and rich course descriptions stored as Markdown in `description` columns.
+- [x] Standardise every status across the domain using PHP backed enums while persisting enum values in string columns.
 
 ## Permissions & Roles (`spatie/laravel-permission`)
 - [ ] Publish and run the package's migrations once the core schema is defined; ensure configuration matches upcoming models.
-- [x] Seed base roles (`admin`, `teacher`, `content_manager`) and associated permissions; ensure default users without roles fall back to learner experience and recognise `content_manager` as a global role.
+- [ ] Seed base roles (`admin`, `teacher`, `content_manager`) and associated permissions; ensure default users without roles fall back to learner experience and recognise `content_manager` as a global role.
 - [ ] Represent course assistants via course-user pivot entries (no distinct role) and ensure they gain full course-management capabilities for each assigned course.
 - [ ] Map feature-level permissions: user management, course management (create/update/delete, assign teachers/assistants), enrollment, content publishing, attendance recording, exam management.
 - [ ] Integrate policies and gates for all domain resources (courses, modules, lessons, assignments, attendance, exams, question banks) aligned with role and assistant capabilities.
@@ -32,7 +32,7 @@
 - [ ] Implement bulk assistant assignment UI to attach/detach users across courses efficiently.
 
 ## Module & Lesson Authoring
-- [ ] Design CRUD flows for modules (including assignment-type modules) and lessons with publish toggles; ensure only published content is visible to learners.
+- [ ] Design CRUD flows for modules (which can mix lessons, assignments, and exams) and lessons with publish toggles; ensure only published content is visible to learners.
 - [ ] Support unpublishing (revoking) lessons and modules after they have been published.
 - [ ] Decide ordering strategy (manual ordering fields vs. drag-and-drop later).
 - [ ] Prepare actions for attaching media to lessons via `spatie/laravel-medialibrary`.
@@ -65,7 +65,7 @@
 - [ ] Add automated grading and autosave behaviour tests for exams (unit + feature).
 
 ## Assignments & Submissions
-- [ ] Define assignment module structure supporting attachments, deadlines, manual enable, and datetime-based availability.
+- [ ] Define assignment structure (attached to modules) supporting attachments, deadlines, manual enable, and datetime-based availability.
 - [ ] Design submission model capturing student attachments, rich text responses, timestamps, grades, and per-student deadline extensions.
 - [ ] Plan DTOs for assignments and submissions to power admin/teacher/content manager/assistant authoring and learner submissions.
 - [ ] Ensure media handling rules align with assignment attachment requirements.

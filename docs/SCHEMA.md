@@ -45,11 +45,12 @@ All course-centric tables (`courses`, modules, enrollment pivots) store a nullab
 Modules, lessons, and their related attachments use `deleted_at` to support soft deletion without permanently losing authored content.
 1. **Modules**
    - **Migration:** `create_modules_table`
-     - Columns: `id`, `course_id`, `title`, `description` (longText, Markdown), `order`, `type` (`content`, `assignment`, `exam`), `publish_at`, `unpublish_at`, `is_published` (computed via publish window), `metadata` (json storing scheduling or visibility toggles), audit columns.
+     - Columns: `id`, `course_id`, `title`, `description` (longText, Markdown), `order`, `publish_at`, `unpublish_at`, `is_published` (computed via publish window), `metadata` (json storing scheduling or visibility toggles), audit columns.
      - Indexes: `course_id + order`, `publish_at`.
    - **Model:** `App\Models\Module`
      - Relationships: `course`, `lessons`, `assignments`, `exams`.
      - Casts: `metadata`.
+     - Behavior: modules are flexible containers and may include any combination of lessons, assignments, and exams without a dedicated type column.
 2. **Lessons**
    - **Migration:** `create_lessons_table`
      - Columns: `id`, `module_id`, `title`, `slug`, `summary`, `content` (longText, Markdown default), `content_type` (`markdown`, `video_embed`, `document_bundle`), `publish_at`, `unpublish_at`, `order`, `duration_minutes`, `metadata` (json with authoring preferences like default tabs or transcript language), audit columns.

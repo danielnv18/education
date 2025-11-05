@@ -2,9 +2,14 @@
     "private": true,
     "type": "module",
     "scripts": {
+        "prebuild": "php artisan typescript:transform --no-interaction --format",
         "build": "vite build",
+        "prebuild:ssr": "php artisan typescript:transform --no-interaction --format",
         "build:ssr": "vite build && vite build --ssr",
+        "predev": "php artisan typescript:transform --no-interaction --format",
         "dev": "vite",
+        "prewatch": "php artisan typescript:transform --no-interaction --format",
+        "watch": "vite build --watch",
         "lint": "eslint . --fix && prettier --write resources/",
         "test:lint": "eslint . && prettier --check resources/",
         "test:types": "tsc --noEmit"
