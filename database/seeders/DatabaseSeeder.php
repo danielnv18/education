@@ -13,5 +13,9 @@ final class DatabaseSeeder extends Seeder
         $this->call([
             RolesAndPermissionsSeeder::class,
         ]);
+
+        if (app()->environment(['local'])) {
+            $this->call(LocalRoleUsersSeeder::class);
+        }
     }
 }
