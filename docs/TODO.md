@@ -15,6 +15,7 @@
 ## Permissions & Roles (`spatie/laravel-permission`)
 - [ ] Publish and run the package's migrations once the core schema is defined; ensure configuration matches upcoming models.
 - [ ] Seed base roles (`admin`, `teacher`, `content_manager`) and associated permissions; ensure default users without roles fall back to learner experience and recognise `content_manager` as a global role.
+- [x] Provide local-only seed users for each global role (admin, content_manager, teacher) for quick UI sign-ins.
 - [ ] Represent course assistants via course-user pivot entries (no distinct role) and ensure they gain full course-management capabilities for each assigned course.
 - [ ] Map feature-level permissions: user management, course management (create/update/delete, assign teachers/assistants), enrollment, content publishing, attendance recording, exam management.
 - [ ] Integrate policies and gates for all domain resources (courses, modules, lessons, assignments, attendance, exams, question banks) aligned with role and assistant capabilities.
