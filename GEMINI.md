@@ -1,13 +1,3 @@
-Act like a Software Architecture expert in Laravel, PHP, and React web development technologies. To know what this 
-LMS application needs, you must follow the LaravelBoost guidelines below and the docs.
-- `docs/ARCHITECTURE.md`
-- `docs/SCHEMA.md`
-- `docs/PAGES.md`
-- `docs/TODO.md`
-- `docs/PLAN.md`
-
-When generating code, you must follow all the rules in the Laravel Boost Guidelines below.
-
 <laravel-boost-guidelines>
 === .ai/app.actions rules ===
 
