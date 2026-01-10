@@ -40,6 +40,9 @@ Route::middleware('auth')->group(function (): void {
     // User Two-Factor Authentication...
     Route::get('settings/two-factor', [UserTwoFactorAuthenticationController::class, 'show'])
         ->name('two-factor.show');
+
+    // Admin...
+    Route::get('admin/users', fn () => Inertia::render('Admin/Users'))->name('admin.users');
 });
 
 Route::middleware('guest')->group(function (): void {
