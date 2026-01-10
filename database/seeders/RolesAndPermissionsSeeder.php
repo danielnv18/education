@@ -16,7 +16,7 @@ final class RolesAndPermissionsSeeder extends Seeder
 {
     public function run(): void
     {
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
+        resolve(PermissionRegistrar::class)->forgetCachedPermissions();
 
         DB::transaction(function (): void {
             $permissions = array_map(static fn (PermissionEnum $case): string => $case->value, PermissionEnum::cases());

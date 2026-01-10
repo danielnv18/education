@@ -15,7 +15,7 @@ it('may create a user', function (): void {
 
     Event::fake([Registered::class]);
 
-    $action = app(CreateUser::class);
+    $action = resolve(CreateUser::class);
 
     $user = $action->handle([
         'name' => 'Test User',
