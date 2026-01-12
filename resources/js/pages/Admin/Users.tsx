@@ -16,35 +16,37 @@ import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-type User = {
-    id: string;
-    name: string;
-    email: string;
-    role: 'admin' | 'user' | 'editor';
-    status: 'active' | 'inactive' | 'banned';
-    lastLogin: string;
-};
-
 // Mock data generator
-const generateUsers = (count: number): User[] => {
+const generateUsers = (count: number): App.Data.UserData[] => {
     return Array.from({ length: count }).map((_, i) => ({
-        id: `user-${i + 1}`,
+        id: i + 1,
         name: `User ${i + 1}`,
         email: `user${i + 1}@example.com`,
-        role: i % 10 === 0 ? 'admin' : i % 5 === 0 ? 'editor' : 'user',
-        status: i % 3 === 0 ? 'inactive' : i % 7 === 0 ? 'banned' : 'active',
-        lastLogin: new Date(
+        emailVerifiedAt: i % 3 === 0 ? null : new Date().toISOString(),
+        createdAt: new Date(
             Date.now() - Math.random() * 10000000000,
         ).toISOString(),
+        updatedAt: new Date().toISOString(),
+        roles: [
+            {
+                name:
+                    i % 10 === 0
+                        ? 'Admin'
+                        : i % 5 === 0
+                            ? 'Editor'
+                            : 'User',
+            },
+        ],
+        avatar: null,
     }));
 };
 
 const users = generateUsers(200);
 
 export default function AdminUsers() {
-    const [copiedId, setCopiedId] = useState<string | null>(null);
+    const [copiedId, setCopiedId] = useState<number | null>(null);
 
-    const columns: ColumnDef<User>[] = [
+    const columns: ColumnDef<App.Data.UserData>[] = [
         {
             accessorKey: 'name',
             header: 'Name',
@@ -54,32 +56,22 @@ export default function AdminUsers() {
             header: 'Email',
         },
         {
-            accessorKey: 'role',
+            accessorKey: 'roles',
             header: 'Role',
             cell: ({ row }) => {
-                const role = row.getValue('role') as string;
-                return <div className="capitalize">{role}</div>;
-            },
-        },
-        {
-            accessorKey: 'status',
-            header: 'Status',
-            cell: ({ row }) => {
-                const status = row.getValue('status') as string;
+                const roles = row.original.roles;
                 return (
-                    <div
-                        className={`capitalize ${status === 'active' ? 'text-green-600' : status === 'banned' ? 'text-red-600' : 'text-gray-500'}`}
-                    >
-                        {status}
+                    <div className="capitalize">
+                        {roles.map((r) => r.name).join(', ')}
                     </div>
                 );
             },
         },
         {
-            accessorKey: 'lastLogin',
-            header: 'Last Login',
+            accessorKey: 'createdAt',
+            header: 'Created At',
             cell: ({ row }) => {
-                const date = new Date(row.getValue('lastLogin'));
+                const date = new Date(row.getValue('createdAt'));
                 return (
                     <div className="text-right font-medium">
                         {date.toLocaleDateString()}
@@ -104,7 +96,9 @@ export default function AdminUsers() {
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuItem
                                 onClick={() => {
-                                    navigator.clipboard.writeText(user.id);
+                                    navigator.clipboard.writeText(
+                                        user.id.toString(),
+                                    );
                                     setCopiedId(user.id);
                                     setTimeout(() => setCopiedId(null), 2000);
                                     toast.success(
