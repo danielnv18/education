@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Spatie\LaravelData\Mappers\CamelCaseMapper;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
 return [
