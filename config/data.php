@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use Spatie\LaravelData\Mappers\CamelCaseMapper;
+use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+
 return [
     /*
      * The package will use this format when working with dates. If this option
@@ -134,7 +137,7 @@ return [
      * global strategy here, or override it on a specific data object.
      */
     'name_mapping_strategy' => [
-        'input' => null,
+        'input' => SnakeCaseMapper::class,
         'output' => null,
     ],
 
