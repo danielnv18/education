@@ -16,6 +16,7 @@ final class DatabaseSeeder extends Seeder
 
         if (app()->environment(['local'])) {
             $this->call(LocalRoleUsersSeeder::class);
+            $this->call(LocalTestUsersSeeder::class);
         }
     }
 }
