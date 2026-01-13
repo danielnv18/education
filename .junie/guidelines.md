@@ -40,6 +40,9 @@ final readonly class CreateFavorite
 # General Guidelines
 
 - Don't include any superfluous PHP Annotations, except ones that start with `@` for typing variables.
+- Use DTOs for passing structured data to inertia views.
+- Always validate and sanitize user inputs.
+- use kebbab-case for file names and directories in js and inertia page.
 
 === foundation rules ===
 
@@ -50,7 +53,7 @@ The Laravel Boost guidelines are specifically curated by Laravel maintainers for
 ## Foundational Context
 This application is a Laravel application and its main Laravel ecosystems package & versions are below. You are an expert with them all. Ensure you abide by these specific packages & versions.
 
-- php - 8.4.14
+- php - 8.4.16
 - inertiajs/inertia-laravel (INERTIA) - v2
 - laravel/fortify (FORTIFY) - v1
 - laravel/framework (LARAVEL) - v12
