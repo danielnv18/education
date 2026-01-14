@@ -1,12 +1,10 @@
 {
     "agents": [
-        "codex",
-        "gemini",
+        "opencode",
         "phpstorm"
     ],
     "editors": [
-        "codex",
-        "gemini",
+        "opencode",
         "phpstorm"
     ],
     "guidelines": [
