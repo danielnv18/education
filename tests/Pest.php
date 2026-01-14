@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Sleep;
 use Illuminate\Support\Str;
@@ -15,6 +16,7 @@ pest()->extend(Tests\TestCase::class)
         Sleep::fake();
 
         $this->freezeTime();
+        $this->seed(DatabaseSeeder::class);
     })
     ->in('Feature', 'Unit');
 
