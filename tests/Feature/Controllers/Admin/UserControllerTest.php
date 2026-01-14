@@ -33,6 +33,33 @@ it('forbids non-admin users from admin routes', function (): void {
     $response->assertForbidden();
 });
 
+it('forbids non-admin users from storing users', function (): void {
+    $user = User::factory()->asTeacher()->create();
+
+    $response = $this->actingAs($user)
+        ->fromRoute('dashboard')
+        ->post(route('admin.users.store'), [
+            'name' => 'Blocked User',
+            'email' => 'blocked.user@example.com',
+        ]);
+
+    $response->assertForbidden();
+});
+
+it('forbids non-admin users from updating users', function (): void {
+    $user = User::factory()->asTeacher()->create();
+    $targetUser = User::factory()->create();
+
+    $response = $this->actingAs($user)
+        ->fromRoute('dashboard')
+        ->put(route('admin.users.update', $targetUser), [
+            'name' => 'Blocked Update',
+            'email' => 'blocked.update@example.com',
+        ]);
+
+    $response->assertForbidden();
+});
+
 it('renders the admin user create page', function (): void {
     $admin = User::factory()->asAdmin()->create();
 

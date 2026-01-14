@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Enums\RoleEnum;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserEmailResetNotificationController;
@@ -41,8 +42,13 @@ Route::middleware('auth')->group(function (): void {
     Route::get('settings/two-factor', [UserTwoFactorAuthenticationController::class, 'show'])
         ->name('two-factor.show');
 
-    // Admin...
-    Route::get('admin/users', fn () => Inertia::render('Admin/Users'))->name('admin.users');
+    // admin...
+    Route::prefix('admin')
+        ->name('admin.')
+        ->middleware(['role:'.RoleEnum::Admin->value])
+        ->group(function (): void {
+            Route::resource('users', App\Http\Controllers\Admin\UserController::class);
+        });
 });
 
 Route::middleware('guest')->group(function (): void {

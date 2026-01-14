@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Admin;
 
+use App\Enums\RoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class StoreUserRequest extends FormRequest
 {
+    public function authorize(): bool
+    {
+        return $this->user()?->hasRole(RoleEnum::Admin->value) ?? false;
+    }
+
     public function rules(): array
     {
         return [
