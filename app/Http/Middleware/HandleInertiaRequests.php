@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -36,13 +37,15 @@ final class HandleInertiaRequests extends Middleware
         assert(is_string($quote));
 
         $user = $request->user();
-        $user->load('roles');
+        if ($user instanceof User) {
+            $user->load('roles');
+        }
 
         return [
             ...parent::share($request),
             'name' => config('app.name'),
             'auth' => [
-                'user' => $user->getData(),
+                'user' => $user?->getData(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
