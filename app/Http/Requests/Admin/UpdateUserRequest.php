@@ -6,6 +6,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Enums\RoleEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Unique;
 
 final class UpdateUserRequest extends FormRequest
 {
@@ -14,11 +15,15 @@ final class UpdateUserRequest extends FormRequest
         return $this->user()?->hasRole(RoleEnum::Admin->value) ?? false;
     }
 
+    /**
+     * @return array<string, list<string|Unique>>
+     */
     public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$this->route('user')->id],
+            /** @phpstan-ignore property.notFound */
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$this->route('user')?->id],
             'roles' => ['nullable', 'array'],
             'roles.*' => ['string', 'exists:roles,name'],
             'avatar' => ['nullable', 'string', 'url'],

@@ -14,6 +14,9 @@ final class StoreUserRequest extends FormRequest
         return $this->user()?->hasRole(RoleEnum::Admin->value) ?? false;
     }
 
+    /**
+     * @return array<string, array<int, string>>
+     */
     public function rules(): array
     {
         return [

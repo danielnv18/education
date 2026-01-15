@@ -41,6 +41,10 @@ final class User extends Authenticatable implements MustVerifyEmail
     use Notifiable;
     use SoftDeletes;
     use TwoFactorAuthenticatable;
+
+    /**
+     * @use WithData<UserData>
+     */
     use WithData;
 
     /**
