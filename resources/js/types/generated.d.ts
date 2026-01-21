@@ -1,4 +1,14 @@
 declare namespace App.Data {
+    export type MediaData = {
+        id: number;
+        uuid: string;
+        name: string;
+        mimeType: string;
+        size: number;
+        url: string;
+        previewUrl: string | null;
+        collection: string;
+    };
     export type RoleData = {
         name: string;
     };

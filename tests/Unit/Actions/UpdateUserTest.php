@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Actions\UpdateUser;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 it('may update a user', function (): void {
     $user = User::factory()->create([
@@ -56,4 +58,38 @@ it('keeps email verification when email stays the same', function (): void {
 
     expect($user->refresh()->email_verified_at)->not->toBeNull()
         ->and($user->name)->toBe('Updated Name');
+});
+
+it('ignores missing avatar media', function (): void {
+    config(['filesystems.default' => 'public']);
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+
+    $action = resolve(UpdateUser::class);
+
+    $action->handle($user, [
+        'avatar_media_id' => 9999,
+    ]);
+
+    expect($user->refresh()->getFirstMedia('avatar'))->toBeNull();
+});
+
+it('skips reattaching avatar when already in avatar collection', function (): void {
+    config(['filesystems.default' => 'public']);
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+
+    $media = $user->addMedia(UploadedFile::fake()->image('avatar.jpg'))
+        ->toMediaCollection('avatar');
+
+    $action = resolve(UpdateUser::class);
+
+    $action->handle($user, [
+        'avatar_media_id' => $media->id,
+    ]);
+
+    expect($user->refresh()->getFirstMedia('avatar'))->not->toBeNull()
+        ->and($user->getFirstMedia('avatar')?->id)->toBe($media->id);
 });

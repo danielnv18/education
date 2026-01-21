@@ -8,3 +8,4 @@
 - Use date-fns for date manipulations in typescript.
 - Always use the css variables defined in the project for colors, spacing, fonts, etc instead of utility class.
 - Use existing Roles and Permissions in tests instead of creating new ones. Check `database/seeders/RolePermissionSeeder.php` for existing roles and permissions.
+- Check the `docs/` directory for the plan, architecture, and other relevant documentation before starting a new feature.

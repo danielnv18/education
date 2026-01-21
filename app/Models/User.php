@@ -13,7 +13,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
+use Spatie\Image\Enums\Fit;
 use Spatie\LaravelData\WithData;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -30,7 +34,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read CarbonInterface $updated_at
  * @property-read CarbonInterface|null $deleted_at
  */
-final class User extends Authenticatable implements MustVerifyEmail
+final class User extends Authenticatable implements HasMedia, MustVerifyEmail
 {
     /**
      * @use HasFactory<UserFactory>
@@ -38,6 +42,7 @@ final class User extends Authenticatable implements MustVerifyEmail
     use HasFactory;
 
     use HasRoles;
+    use InteractsWithMedia;
     use Notifiable;
     use SoftDeletes;
     use TwoFactorAuthenticatable;
@@ -59,6 +64,21 @@ final class User extends Authenticatable implements MustVerifyEmail
 
     protected string $dataClass = UserData::class;
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')->singleFile();
+        $this->addMediaCollection('temporary');
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $conversion = $this->addMediaConversion('avatar_thumb')
+            ->performOnCollections('avatar')
+            ->nonQueued();
+
+        $conversion->fit(Fit::Crop, 256, 256);
+    }
+
     /**
      * @return array<string, string>
      */
@@ -78,5 +98,10 @@ final class User extends Authenticatable implements MustVerifyEmail
             'updated_at' => 'immutable_datetime',
             'deleted_at' => 'immutable_datetime',
         ];
+    }
+
+    public function getAvatarAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('avatar') ?: null;
     }
 }

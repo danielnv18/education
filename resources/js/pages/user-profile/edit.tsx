@@ -1,4 +1,4 @@
-import UserProfileController from '@/actions/App/Http/Controllers/UserProfileController';
+import { AppMediaInput, type MediaData } from '@/components/app-media-input';
 import { send } from '@/routes/verification';
 import { type BreadcrumbItem, type SharedData } from '@/types';
 import { Transition } from '@headlessui/react';
@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import userProfile from '@/routes/user-profile';
+import { useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -23,6 +24,18 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function Edit({ status }: { status?: string }) {
     const { auth } = usePage<SharedData>().props;
+    const [avatarMedia, setAvatarMedia] = useState<MediaData | null>(null);
+    const [removeAvatar, setRemoveAvatar] = useState(false);
+
+    const initialAvatar = useMemo(() => {
+        if (removeAvatar || avatarMedia) {
+            return undefined;
+        }
+
+        return auth.user.avatar
+            ? { preview: auth.user.avatar, name: auth.user.name }
+            : undefined;
+    }, [auth.user.avatar, auth.user.name, avatarMedia, removeAvatar]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -36,7 +49,8 @@ export default function Edit({ status }: { status?: string }) {
                     />
 
                     <Form
-                        {...UserProfileController.update.form()}
+                        action={userProfile.update().url}
+                        method="patch"
                         options={{
                             preserveScroll: true,
                         }}
@@ -80,6 +94,53 @@ export default function Edit({ status }: { status?: string }) {
                                     <InputError
                                         className="mt-2"
                                         message={errors.email}
+                                    />
+                                </div>
+
+                                <div className="grid gap-2">
+                                    <Label>Avatar</Label>
+                                    <AppMediaInput
+                                        label="Upload avatar"
+                                        display="minimal"
+                                        type="images"
+                                        maxFileSize={5 * 1024 * 1024}
+                                        backgroundUpload
+                                        value={initialAvatar}
+                                        onChange={(file) => {
+                                            if (!file) {
+                                                setAvatarMedia(null);
+                                                setRemoveAvatar(true);
+                                                return;
+                                            }
+
+                                            if (Array.isArray(file)) {
+                                                const media =
+                                                    (file[0] as
+                                                        | MediaData
+                                                        | undefined) ?? null;
+                                                setAvatarMedia(media);
+                                                setRemoveAvatar(media === null);
+
+                                                return;
+                                            }
+
+                                            setAvatarMedia(file as MediaData);
+                                            setRemoveAvatar(false);
+                                        }}
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                        Images only, up to 5MB. Changes apply
+                                        when you save.
+                                    </p>
+                                    <input
+                                        type="hidden"
+                                        name="avatar_media_id"
+                                        value={avatarMedia?.id ?? ''}
+                                    />
+                                    <input
+                                        type="hidden"
+                                        name="remove_avatar"
+                                        value={removeAvatar ? '1' : '0'}
                                     />
                                 </div>
 

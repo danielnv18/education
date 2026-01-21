@@ -24,6 +24,7 @@ export interface NavItem {
 
 export interface SharedData {
     name: string;
+    csrfToken: string;
     auth: Auth;
     sidebarOpen: boolean;
     [key: string]: unknown;

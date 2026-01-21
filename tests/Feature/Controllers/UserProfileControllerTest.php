@@ -3,6 +3,9 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 it('renders profile edit page', function (): void {
     $user = User::factory()->create();
@@ -144,4 +147,58 @@ it('allows keeping same email', function (): void {
 
     $response->assertRedirectToRoute('user-profile.edit')
         ->assertSessionDoesntHaveErrors();
+});
+
+it('applies uploaded avatar on save', function (): void {
+    config(['filesystems.default' => 'public']);
+    Storage::fake('public');
+
+    $user = User::factory()->create([
+        'name' => 'Avatar User',
+        'email' => 'avatar@example.com',
+    ]);
+
+    $media = $user->addMedia(UploadedFile::fake()->image('avatar.jpg')->size(1024))
+        ->toMediaCollection('temporary');
+
+    $response = $this->actingAs($user)
+        ->fromRoute('user-profile.edit')
+        ->patch(route('user-profile.update'), [
+            'name' => 'Avatar User',
+            'email' => 'avatar@example.com',
+            'avatar_media_id' => $media->id,
+        ]);
+
+    $response->assertRedirectToRoute('user-profile.edit');
+
+    $avatar = $user->refresh()->getFirstMedia('avatar');
+
+    expect($avatar)->not->toBeNull()
+        ->and($avatar?->collection_name)->toBe('avatar')
+        ->and(Media::query()->whereKey($media->id)->exists())->toBeFalse();
+});
+
+it('removes avatar when requested', function (): void {
+    config(['filesystems.default' => 'public']);
+    Storage::fake('public');
+
+    $user = User::factory()->create([
+        'name' => 'Avatar User',
+        'email' => 'avatar@example.com',
+    ]);
+
+    $user->addMedia(UploadedFile::fake()->image('avatar.jpg')->size(512))
+        ->toMediaCollection('avatar');
+
+    $response = $this->actingAs($user)
+        ->fromRoute('user-profile.edit')
+        ->patch(route('user-profile.update'), [
+            'name' => 'Avatar User',
+            'email' => 'avatar@example.com',
+            'remove_avatar' => true,
+        ]);
+
+    $response->assertRedirectToRoute('user-profile.edit');
+
+    expect($user->refresh()->getFirstMedia('avatar'))->toBeNull();
 });

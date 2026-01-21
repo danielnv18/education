@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Enums\RoleEnum;
+use App\Http\Controllers\MediaUploadController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserEmailResetNotificationController;
@@ -28,6 +29,9 @@ Route::middleware('auth')->group(function (): void {
     Route::redirect('settings', '/settings/profile');
     Route::get('settings/profile', [UserProfileController::class, 'edit'])->name('user-profile.edit');
     Route::patch('settings/profile', [UserProfileController::class, 'update'])->name('user-profile.update');
+
+    // Media uploads...
+    Route::post('media/uploads', MediaUploadController::class)->name('media.uploads.store');
 
     // User Password...
     Route::get('settings/password', [UserPasswordController::class, 'edit'])->name('password.edit');

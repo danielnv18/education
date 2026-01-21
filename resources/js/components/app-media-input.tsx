@@ -1,4 +1,7 @@
 import { cn } from '@/lib/utils';
+import { store as storeMediaUploads } from '@/routes/media/uploads';
+import type { SharedData } from '@/types';
+import { usePage } from '@inertiajs/react';
 import {
     FileCode,
     FileIcon,
@@ -9,10 +12,12 @@ import {
     UploadCloud,
     X,
 } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export type AppMediaInputType = 'all' | 'images' | 'documents';
 export type AppMediaInputDisplay = 'minimal' | 'medium' | 'full';
+
+export type MediaData = App.Data.MediaData;
 
 export interface AppMediaInputFile {
     id: string;
@@ -21,6 +26,9 @@ export interface AppMediaInputFile {
     name: string;
     size: number;
     type: string;
+    media?: MediaData;
+    progress?: number;
+    status?: 'uploading' | 'uploaded' | 'error';
 }
 
 export interface AppMediaInputInitialFile {
@@ -45,13 +53,26 @@ export interface AppMediaInputProps {
     type?: AppMediaInputType;
     display?: AppMediaInputDisplay;
     backgroundUpload?: boolean;
-    onChange?: (files: File | File[] | null) => void;
+    onChange?: (files: File | File[] | MediaData | MediaData[] | null) => void;
     className?: string;
 }
 
+/**
+ * AppMediaInput is a reusable file picker + previewer with two workflows:
+ * - Standard mode: selected File(s) are held in state and returned via onChange for form submit.
+ * - Background upload: files are uploaded immediately, and MediaData is emitted via onChange.
+ *
+ * Behavior notes:
+ * - Initial values accept File(s) or lightweight preview data for existing server files.
+ * - Validation enforces max size and basic type constraints (images/documents).
+ * - Background upload uses the Inertia csrfToken prop and stores files in "temporary".
+ * - Consumers decide when to attach or discard uploaded media.
+ * - Remove actions clear the local preview and emit null/empty onChange values.
+ */
+
 const FILE_TYPES: Record<AppMediaInputType, string> = {
     all: '*',
-    images: 'image/jpeg,image/png,image/gif,image/webp,image/svg+xml,image/avif',
+    images: 'image/jpeg,image/png,image/gif,image/webp,image/avif',
     documents: '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.odt,.ods,.odp',
 };
 
@@ -74,8 +95,9 @@ export function AppMediaInput({
     const [files, setFiles] = useState<AppMediaInputFile[]>([]);
     const [isDragging, setIsDragging] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
+    const uploadUrl = useMemo(() => storeMediaUploads().url, []);
+    const page = usePage<SharedData>();
 
-    // Sync internal state with prop value if provided
     useEffect(() => {
         if (value) {
             const initialValues = Array.isArray(value) ? value : [value];
@@ -91,11 +113,126 @@ export function AppMediaInput({
                         name: v.name || 'Unknown File',
                         size: v.size || 0,
                         type: v.type || '',
-                    };
+                        status: 'uploaded',
+                    } satisfies AppMediaInputFile;
                 }),
             );
         }
     }, [value]);
+
+    const emitChange = useCallback(
+        (entries: AppMediaInputFile[]) => {
+            if (!onChange) return;
+
+            if (backgroundUpload) {
+                const uploaded = entries
+                    .map((entry) => entry.media)
+                    .filter((media): media is MediaData => Boolean(media));
+
+                onChange(multiple ? uploaded : (uploaded[0] ?? null));
+
+                return;
+            }
+
+            onChange(
+                multiple
+                    ? entries
+                          .map((f) => f.file)
+                          .filter((f): f is File => f !== null)
+                    : entries[0]?.file || null,
+            );
+        },
+        [backgroundUpload, multiple, onChange],
+    );
+
+    const updateProgress = useCallback((id: string, progress: number) => {
+        setFiles((prev) =>
+            prev.map((file) =>
+                file.id === id
+                    ? {
+                          ...file,
+                          progress,
+                          status: 'uploading',
+                      }
+                    : file,
+            ),
+        );
+    }, []);
+
+    const markError = useCallback((id: string) => {
+        setFiles((prev) =>
+            prev.map((file) =>
+                file.id === id
+                    ? {
+                          ...file,
+                          status: 'error',
+                      }
+                    : file,
+            ),
+        );
+    }, []);
+
+    const markUploaded = useCallback(
+        (id: string, media: MediaData) => {
+            setFiles((prev) => {
+                const next = prev.map((file) =>
+                    file.id === id
+                        ? {
+                              ...file,
+                              media,
+                              status: 'uploaded' as const,
+                              progress: 100,
+                          }
+                        : file,
+                ) as AppMediaInputFile[];
+
+                emitChange(next);
+
+                return next;
+            });
+        },
+        [emitChange],
+    );
+
+    const uploadFile = useCallback(
+        async (fileEntry: AppMediaInputFile) => {
+            if (!fileEntry.file) return;
+
+            const formData = new FormData();
+            formData.append('file', fileEntry.file);
+            formData.append('collection', 'temporary');
+            formData.append('_token', page.props.csrfToken);
+
+            const csrf = page.props.csrfToken;
+
+            try {
+                // fetch does not expose upload progress; we mark as uploading and complete at the end.
+                updateProgress(fileEntry.id, 0);
+
+                const response = await fetch(uploadUrl, {
+                    method: 'POST',
+                    body: formData,
+                    credentials: 'include',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        ...(csrf ? { 'X-CSRF-TOKEN': csrf } : {}),
+                    },
+                });
+
+                if (!response.ok) {
+                    markError(fileEntry.id);
+                    return;
+                }
+
+                const payload = (await response.json()) as MediaData;
+                markUploaded(fileEntry.id, payload);
+            } catch (error) {
+                console.error(error);
+                markError(fileEntry.id);
+            }
+        },
+        [markError, markUploaded, page.props, updateProgress, uploadUrl],
+    );
 
     const validateFile = useCallback(
         (file: File) => {
@@ -144,16 +281,22 @@ export function AppMediaInput({
             if (multiple) {
                 updatedFiles = [
                     ...files,
-                    ...validFiles.map((f) => ({
-                        id: Math.random().toString(36).substring(7),
-                        file: f,
-                        preview: f.type.startsWith('image/')
-                            ? URL.createObjectURL(f)
-                            : null,
-                        name: f.name,
-                        size: f.size,
-                        type: f.type,
-                    })),
+                    ...validFiles.map(
+                        (f) =>
+                            ({
+                                id: Math.random().toString(36).substring(7),
+                                file: f,
+                                preview: f.type.startsWith('image/')
+                                    ? URL.createObjectURL(f)
+                                    : null,
+                                name: f.name,
+                                size: f.size,
+                                type: f.type,
+                                status: backgroundUpload
+                                    ? 'uploading'
+                                    : undefined,
+                            }) satisfies AppMediaInputFile,
+                    ),
                 ];
             } else {
                 updatedFiles = [
@@ -166,28 +309,28 @@ export function AppMediaInput({
                         name: validFiles[0].name,
                         size: validFiles[0].size,
                         type: validFiles[0].type,
+                        status: backgroundUpload ? 'uploading' : undefined,
                     },
                 ];
             }
 
             setFiles(updatedFiles);
 
-            if (onChange) {
-                onChange(
-                    multiple
-                        ? updatedFiles
-                              .map((f) => f.file)
-                              .filter((f): f is File => f !== null)
-                        : updatedFiles[0]?.file || null,
-                );
+            if (backgroundUpload) {
+                updatedFiles.forEach((entry) => uploadFile(entry));
+                return;
             }
 
-            // Background upload logic would go here if enabled
-            if (backgroundUpload) {
-                console.log('Simulating background upload for:', validFiles);
-            }
+            emitChange(updatedFiles);
         },
-        [files, multiple, onChange, backgroundUpload, validateFile],
+        [
+            backgroundUpload,
+            emitChange,
+            files,
+            multiple,
+            uploadFile,
+            validateFile,
+        ],
     );
 
     const onDragOver = (e: React.DragEvent) => {
@@ -208,15 +351,7 @@ export function AppMediaInput({
     const removeFile = (id: string) => {
         const updatedFiles = files.filter((f) => f.id !== id);
         setFiles(updatedFiles);
-        if (onChange) {
-            onChange(
-                multiple
-                    ? updatedFiles
-                          .map((f) => f.file)
-                          .filter((f): f is File => f !== null)
-                    : updatedFiles[0]?.file || null,
-            );
-        }
+        emitChange(updatedFiles);
     };
 
     const getFileIcon = (file: AppMediaInputFile) => {
@@ -309,7 +444,6 @@ export function AppMediaInput({
                 </div>
             </div>
 
-            {/* Previews */}
             {files.length > 0 && (
                 <div
                     className={cn(
@@ -344,6 +478,18 @@ export function AppMediaInput({
                                 <p className="text-xs text-gray-500">
                                     {formatSize(file.size)}
                                 </p>
+                                {backgroundUpload &&
+                                    file.status === 'uploading' && (
+                                        <p className="text-xs text-primary">
+                                            Uploading {file.progress ?? 0}%
+                                        </p>
+                                    )}
+                                {backgroundUpload &&
+                                    file.status === 'error' && (
+                                        <p className="text-xs text-red-500">
+                                            Upload failed. Remove and try again.
+                                        </p>
+                                    )}
                             </div>
 
                             <button
