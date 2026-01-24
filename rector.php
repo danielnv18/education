@@ -40,6 +40,7 @@ return RectorConfig::configure()
     ->withSkip([
         AddOverrideAttributeToOverriddenMethodsRector::class,
         MakeModelAttributesAndScopesProtectedRector::class,
+        __DIR__.'/app/Models/CourseUser.php',
     ])
     ->withPreparedSets(
         deadCode: true,
