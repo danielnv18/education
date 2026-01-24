@@ -8,7 +8,9 @@ use App\Data\UserData;
 use Carbon\CarbonInterface;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -100,8 +102,50 @@ final class User extends Authenticatable implements HasMedia, MustVerifyEmail
         ];
     }
 
-    public function getAvatarAttribute(): ?string
+    /**
+     * @return BelongsToMany<Course, $this, CourseUser>
+     */
+    public function courses(): BelongsToMany
     {
-        return $this->getFirstMediaUrl('avatar') ?: null;
+        return $this->belongsToMany(Course::class)
+            ->using(CourseUser::class)
+            ->withPivot(['role', 'status', 'enrolled_at', 'invited_at', 'invitation_id'])
+            ->withTimestamps();
+    }
+
+    /**
+     * @return BelongsToMany<Course, $this, CourseUser>
+     */
+    public function teachingCourses(): BelongsToMany
+    {
+        return $this->courses()->wherePivot('role', 'teacher');
+    }
+
+    /**
+     * @return BelongsToMany<Course, $this, CourseUser>
+     */
+    public function assistingCourses(): BelongsToMany
+    {
+        return $this->courses()->wherePivot('role', 'assistant');
+    }
+
+    /**
+     * @return BelongsToMany<Course, $this, CourseUser>
+     */
+    public function enrolledCourses(): BelongsToMany
+    {
+        return $this->courses()->wherePivot('role', 'student');
+    }
+
+    /**
+     * Get the user's avatar.
+     *
+     * @return Attribute<string|null, never>
+     */
+    public function avatar(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->getFirstMediaUrl('avatar') ?: null,
+        );
     }
 }
