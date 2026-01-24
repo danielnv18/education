@@ -24,13 +24,16 @@
 4. Deliver Pest feature tests for invitations, role assignments, and Fortify integration (registration/login guards, invitation acceptance).
 
 ## Phase 3 — Courses & Enrollment
-1. Build course migrations/models/factories/DTOs with metadata/publishing columns (`docs/SCHEMA.md` Course Structure).
-2. Implement `CourseUser` pivot with single-teacher constraint, role scopes, and actions for attaching teachers/assistants/students.
+- [x] Build course migrations/models/factories with metadata/publishing columns (`docs/SCHEMA.md` Course Structure).
+2. Build DTOs for courses.
+3. [x] Implement `CourseUser` pivot with single-teacher constraint and role scopes.
+4. Implement actions for attaching teachers/assistants/students.
 3. Add policies for course visibility and enrollment management, aligning with assistants' capabilities (refer to `docs/ARCHITECTURE.md` Domain Roles & Relationships).
 4. Write Pest tests validating course ownership rules, enrollment role scopes, and policy enforcement.
 
 ## Phase 4 — Modules & Lessons
-1. Scaffold module and lesson migrations/models/factories/DTOs with ordering, publish windows, and support for mixed module content (lessons, assignments, exams) (see `docs/SCHEMA.md` Modules & Lessons).
+1. [x] Scaffold module and lesson migrations/models/factories with ordering, publish windows, and support for mixed module content (`docs/SCHEMA.md` Modules & Lessons).
+2. Scaffold module and lesson DTOs.
 2. Integrate media collections for lessons and course banners via Medialibrary; add attachment actions (per `docs/TODO.md` Media & Content Handling).
 3. Create actions/form requests for CRUD, publishing toggles, and scheduling validation. Ensure Inertia props use DTOs.
 4. Cover module/lesson CRUD, scheduling validation, and media rules with Pest feature tests (including attachment upload handling).
