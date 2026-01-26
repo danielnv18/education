@@ -2,11 +2,14 @@
     "agents": [
         "opencode"
     ],
-    "editors": [
-        "opencode",
-        "phpstorm"
-    ],
-    "guidelines": [
+    "guidelines": true,
+    "packages": [
         "laravel/fortify"
+    ],
+    "skills": [
+        "wayfinder-development",
+        "pest-testing",
+        "inertia-react-development",
+        "tailwindcss-development"
     ]
 }
