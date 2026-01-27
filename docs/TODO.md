@@ -1,18 +1,20 @@
 # Learning Management System (LMS) MVP TODO
 
 ## Domain & Data Modelling
+
 - [x] Define Eloquent models for `User`, `Course`, `Module`, `Lesson`, and enrollment pivots following existing conventions.
 - [x] Add `SoftDeletes` support (migration column + trait and tests) for every model defined in this plan so content can be archived and restored.
 - [ ] Create a `user_profiles` table (1:1 with `users`) for extended profile data including bio, avatar, locale, and timezone.
 - [x] Model relationships: users ↔ courses (teachers, assistants, students), courses → modules (ordered), modules → lessons (ordered).
 - [x] Define course-user pivot structure to capture enrollment roles, invitations, and status tracking while assistants inherit consistent capabilities and gain access per assigned course.
-- [ ] Design DTOs with `spatie/laravel-data` for course/module/lesson payloads (creation, update, listing, publishing state).
+- [x] Design DTOs with `spatie/laravel-data` for course/module/lesson payloads (creation, update, listing, publishing state).
 - [ ] Identify lesson content types (rich text, embedded video URLs, attached documents) and the data structures needed to support them.
 - [ ] Implement publishing workflow using datetime fields (`publish_at`) for modules and lessons; ensure only content past publish datetime is visible.
 - [ ] Extend domain to support assignments, assignment submissions, exams, question banks, attendance records (present/late/absent), course titles, banner images (16:9), and rich course descriptions stored as Markdown in `description` columns.
 - [x] Standardise every status across the domain using PHP backed enums while persisting enum values in string columns.
 
 ## Permissions & Roles (`spatie/laravel-permission`)
+
 - [ ] Publish and run the package's migrations once the core schema is defined; ensure configuration matches upcoming models.
 - [ ] Seed base roles (`admin`, `teacher`, `content_manager`) and associated permissions; ensure default users without roles fall back to learner experience and recognise `content_manager` as a global role.
 - [x] Provide local-only seed users for each global role (admin, content_manager, teacher) for quick UI sign-ins.
@@ -22,6 +24,7 @@
 - [ ] Ensure middleware/guards enforce authorization consistently across Fortify/Inertia flows.
 
 ## Course & Enrollment Management
+
 - [ ] Outline actions (`app/Actions/...`) for creating/updating courses, assigning teachers, and enrolling users.
 - [ ] Implement admin-only user provisioning that issues invitations and password reset links and can be resent by admins or teachers.
 - [ ] Plan DTO-driven request validation layers (Form Requests) for course creation, teacher assignment, student enrollment.
@@ -33,6 +36,7 @@
 - [ ] Implement bulk assistant assignment UI to attach/detach users across courses efficiently.
 
 ## Module & Lesson Authoring
+
 - [ ] Design CRUD flows for modules (which can mix lessons, assignments, and exams) and lessons with publish toggles; ensure only published content is visible to learners.
 - [ ] Support unpublishing (revoking) lessons and modules after they have been published.
 - [ ] Decide ordering strategy (manual ordering fields vs. drag-and-drop later).
@@ -40,6 +44,7 @@
 - [ ] Evaluate need for draft vs. published versions and version history (MVP decision).
 
 ## Media & Content Handling (`spatie/laravel-medialibrary`)
+
 - [ ] Configure media collections for lesson resources (documents, embedded video thumbnails if needed, supplemental files) and course banner images (enforce 16:9 ratio).
 - [ ] Register `spatie/laravel-medialibrary` collections on models once those models are scaffolded.
 - [ ] Use the default filesystem disk for local/dev media storage, queue thumbnail conversions (4:3 and 16:9), and ensure configuration can flip to S3-compatible storage in production while enforcing 5 MB max images and 10 MB max documents.
@@ -48,6 +53,7 @@
 - [ ] Plan for embedding external video links vs. storing media locally.
 
 ## Frontend (Inertia + React)
+
 - [ ] Outline course dashboard UI for admins/teachers/content managers/students including role-based navigation, ensuring all navigation uses Inertia `<Link>` with `prefetch` on high-traffic routes.
 - [ ] Plan forms using `<Form>` or `useForm` helpers for course/module/lesson CRUD, enrollment, invitations, and grading; confirm validation and success flashes flow through shared props.
 - [ ] Integrate TipTap editor while persisting lesson body as Markdown for future editor flexibility (stored in `content` columns). Capture attachment uploads through Inertia form submissions and show progress via `router.on('progress')`.
@@ -60,12 +66,14 @@
 - [ ] Emphasize Tailwind CSS v4 utilities and design tokens alongside Shadcn primitives for layout, spacing, and theming.
 
 ## Testing Strategy (Pest)
+
 - [ ] Draft feature tests covering role permissions, course lifecycle, enrollment flows, publish visibility, exams, and assignments.
 - [ ] Create datasets for validation scenarios (e.g., invalid media uploads, enrollment constraints).
 - [ ] Include media handling tests leveraging temporary storage where needed.
 - [ ] Add automated grading and autosave behaviour tests for exams (unit + feature).
 
 ## Assignments & Submissions
+
 - [ ] Define assignment structure (attached to modules) supporting attachments, deadlines, manual enable, and datetime-based availability.
 - [ ] Design submission model capturing student attachments, rich text responses, timestamps, grades, and per-student deadline extensions.
 - [ ] Plan DTOs for assignments and submissions to power admin/teacher/content manager/assistant authoring and learner submissions.
@@ -75,6 +83,7 @@
 - [ ] Trigger student notification when a grade is published while leaving other assignment notifications out of scope for MVP.
 
 ## Exams & Question Banks
+
 - [ ] Design models for exams, exam sections, questions (single choice, multiple choice, rich text), question banks, and exam attempts.
 - [ ] Support configurable question counts per exam including random selection from question banks.
 - [ ] Implement scheduling windows (start/end datetimes) and time limits for exam attempts.
@@ -85,6 +94,7 @@
 - [ ] Plan analytics for exams (completion status, auto-graded scores, manual grading queues).
 
 ## Attendance Tracking
+
 - [ ] Model manually created attendance sessions for each course with statuses (`present`, `late`, `absent`) tied to students and timestamps.
 - [ ] Build actions that allow teachers, assistants, and content managers to create sessions, record attendance, update entries, and maintain history.
 - [ ] Ensure admins, teachers, assistants, and content managers can view attendance records; expose aggregated percentages/counts on teacher/assistant rosters and provide personal history views for students (course page + profile).
@@ -92,11 +102,13 @@
 - [ ] Consider future integration with `spatie/laravel-settings` if attendance policies need to be configurable per course or globally.
 
 ## TypeScript & DTO Synchronization
+
 - [ ] Integrate `spatie/typescript-transformer` to generate TypeScript typings from DTOs for frontend usage.
 - [ ] Determine generation workflow (Artisan command, build step) and configure paths for Inertia React components.
 - [ ] Ensure DTO changes trigger regenerated types and include developer documentation within TODO until implemented.
 
 ## Operational Considerations
+
 - [ ] Review need for background jobs (e.g., media processing) and queue configuration.
 - [ ] Ensure seeding strategies create demo data for courses/modules/lessons/assignments/exams.
 - [ ] Decide on audit/logging requirements for content changes (optional for MVP?).

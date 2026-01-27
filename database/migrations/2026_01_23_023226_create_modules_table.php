@@ -20,9 +20,7 @@ return new class extends Migration
             $table->string('slug');
             $table->longText('description')->nullable();
             $table->integer('order')->default(0);
-            $table->string('status')->index(); // implied by publish_at logic usually, but consistent with enums
             $table->timestamp('published_at')->nullable()->index();
-            $table->timestamp('unpublish_at')->nullable();
             $table->json('metadata')->default('[]');
             $table->foreignId('created_by_id')->nullable()->constrained('users');
             $table->foreignId('updated_by_id')->nullable()->constrained('users');

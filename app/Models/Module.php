@@ -19,9 +19,7 @@ use Illuminate\Support\Facades\Date;
  * @property-read string $slug
  * @property-read string|null $description
  * @property-read int $order
- * @property-read string $status
  * @property-read \Carbon\CarbonInterface|null $published_at
- * @property-read \Carbon\CarbonInterface|null $unpublish_at
  * @property-read bool $is_published
  * @property-read array<string, mixed> $metadata
  * @property-read int|null $created_by_id
@@ -38,7 +36,6 @@ final class Module extends Model
     protected $casts = [
         'metadata' => 'array',
         'published_at' => 'immutable_datetime',
-        'unpublish_at' => 'immutable_datetime',
     ];
 
     /**
@@ -83,12 +80,10 @@ final class Module extends Model
         return Attribute::make(
             get: function (mixed $value, array $attributes): bool {
                 $publishedAt = isset($attributes['published_at']) ? Date::parse($attributes['published_at']) : null;
-                $unpublishAt = isset($attributes['unpublish_at']) ? Date::parse($attributes['unpublish_at']) : null;
                 $now = now();
 
                 return $publishedAt instanceof \Carbon\CarbonInterface
-                    && $publishedAt->lte($now)
-                    && (! $unpublishAt instanceof \Carbon\CarbonInterface || $unpublishAt->gt($now));
+                    && $publishedAt->lte($now);
             },
         );
     }

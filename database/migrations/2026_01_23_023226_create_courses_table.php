@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('title');
             $table->longText('description')->nullable();
             $table->foreignId('banner_media_id')->nullable(); // constrain to media if possible, or just index
-            $table->foreignId('owner_id')->constrained('users'); // Teacher of record
+            $table->foreignId('teacher_id')->constrained('users'); // Teacher of record
             $table->string('status')->index(); // Draft, Published, etc.
             $table->timestamp('published_at')->nullable()->index();
             $table->timestamp('starts_at')->nullable()->index();

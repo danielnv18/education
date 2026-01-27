@@ -23,9 +23,7 @@ return new class extends Migration
             $table->string('content_type')->default('markdown'); // markdown, video_embed, etc.
             $table->integer('order')->default(0);
             $table->integer('duration_minutes')->nullable();
-            $table->string('status')->index();
             $table->timestamp('published_at')->nullable()->index();
-            $table->timestamp('unpublish_at')->nullable();
             $table->json('metadata')->default('[]');
             $table->foreignId('created_by_id')->nullable()->constrained('users');
             $table->foreignId('updated_by_id')->nullable()->constrained('users');

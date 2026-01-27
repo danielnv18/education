@@ -7,7 +7,7 @@ use App\Models\Lesson;
 use App\Models\Module;
 use App\Models\User;
 
-test('models can be created via factories', function (): void {
+it('creates models via factories', function (): void {
     $course = Course::factory()->create();
     $module = Module::factory()->for($course)->create();
     $lesson = Lesson::factory()->for($module)->create();
@@ -23,7 +23,7 @@ test('models can be created via factories', function (): void {
     expect($module->lessons)->toHaveCount(1);
 });
 
-test('models support soft deletes', function (): void {
+it('supports soft deletes across models', function (): void {
     $course = Course::factory()->create();
     $module = Module::factory()->for($course)->create();
     $lesson = Lesson::factory()->for($module)->create();
@@ -37,7 +37,7 @@ test('models support soft deletes', function (): void {
     expect($lesson->fresh()->trashed())->toBeTrue();
 });
 
-test('user can have courses and roles', function (): void {
+it('associates users to courses with roles', function (): void {
     $user = User::factory()->create();
     $course = Course::factory()->create();
 
@@ -65,10 +65,37 @@ test('user can have courses and roles', function (): void {
     expect($user->assistingCourses)->toHaveCount(0);
 });
 
-test('module publishing logic', function (): void {
+it('marks courses as published when status and publish_at permit', function (): void {
+    $course = Course::factory()->create([
+        'published_at' => now()->subDay(),
+        'status' => 'published',
+    ]);
+
+    expect($course->is_published)->toBeTrue();
+
+    $course->update([
+        'published_at' => now()->addDay(),
+    ]);
+
+    expect($course->is_published)->toBeFalse();
+
+    $course->update([
+        'published_at' => now()->subDay(),
+        'status' => 'draft',
+    ]);
+
+    expect($course->is_published)->toBeFalse();
+
+    $course->update([
+        'published_at' => null,
+    ]);
+
+    expect($course->is_published)->toBeFalse();
+});
+
+it('marks modules as published based on publish_at', function (): void {
     $module = Module::factory()->create([
         'published_at' => now()->subDay(),
-        'unpublish_at' => null,
     ]);
     expect($module->is_published)->toBeTrue();
 
@@ -76,13 +103,32 @@ test('module publishing logic', function (): void {
     expect($module->is_published)->toBeFalse();
 
     $module->update([
-        'published_at' => now()->subDay(),
-        'unpublish_at' => now()->subHour(),
+        'published_at' => null,
     ]);
     expect($module->is_published)->toBeFalse();
 });
 
-test('provenance relationships', function (): void {
+it('marks lessons as published based on publish_at', function (): void {
+    $lesson = Lesson::factory()->create([
+        'published_at' => now()->subDay(),
+    ]);
+
+    expect($lesson->is_published)->toBeTrue();
+
+    $lesson->update([
+        'published_at' => now()->addDay(),
+    ]);
+
+    expect($lesson->is_published)->toBeFalse();
+
+    $lesson->update([
+        'published_at' => null,
+    ]);
+
+    expect($lesson->is_published)->toBeFalse();
+});
+
+it('tracks provenance relationships', function (): void {
     $user = User::factory()->create();
     $course = Course::factory()->create(['created_by_id' => $user->id, 'updated_by_id' => $user->id]);
     $module = Module::factory()->for($course)->create(['created_by_id' => $user->id, 'updated_by_id' => $user->id]);
@@ -98,14 +144,14 @@ test('provenance relationships', function (): void {
     expect($lesson->updatedBy->id)->toBe($user->id);
 });
 
-test('user avatar accessor', function (): void {
+it('returns null when avatar is missing', function (): void {
     $user = User::factory()->create();
     expect($user->avatar)->toBeNull();
 });
 
-test('course owner relationship', function (): void {
+it('resolves the teacher relationship', function (): void {
     $user = User::factory()->create();
-    $course = Course::factory()->create(['owner_id' => $user->id]);
+    $course = Course::factory()->create(['teacher_id' => $user->id]);
 
-    expect($course->owner->id)->toBe($user->id);
+    expect($course->teacher->id)->toBe($user->id);
 });

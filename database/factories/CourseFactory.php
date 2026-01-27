@@ -23,7 +23,7 @@ final class CourseFactory extends Factory
             'slug' => fake()->slug(),
             'description' => fake()->paragraph(),
             'status' => fake()->randomElement(['draft', 'published']),
-            'owner_id' => \App\Models\User::factory(),
+            'teacher_id' => \App\Models\User::factory(),
             'metadata' => [],
             'published_at' => fake()->optional()->dateTime(),
             'starts_at' => fake()->optional()->dateTime(),

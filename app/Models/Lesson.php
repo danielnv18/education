@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Date;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -21,9 +23,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
  * @property-read string $content_type
  * @property-read int $order
  * @property-read int|null $duration_minutes
- * @property-read string $status
  * @property-read \Carbon\CarbonInterface|null $published_at
- * @property-read \Carbon\CarbonInterface|null $unpublish_at
  * @property-read array<string, mixed> $metadata
  * @property-read int|null $created_by_id
  * @property-read int|null $updated_by_id
@@ -39,7 +39,6 @@ final class Lesson extends Model implements HasMedia
     protected $casts = [
         'metadata' => 'array',
         'published_at' => 'immutable_datetime',
-        'unpublish_at' => 'immutable_datetime',
     ];
 
     /**
@@ -64,5 +63,23 @@ final class Lesson extends Model implements HasMedia
     public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by_id');
+    }
+
+    /**
+     * Determine if the lesson is published.
+     *
+     * @return Attribute<bool, never>
+     */
+    public function isPublished(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes): bool {
+                $publishedAt = isset($attributes['published_at']) ? Date::parse($attributes['published_at']) : null;
+                $now = now();
+
+                return $publishedAt instanceof \Carbon\CarbonInterface
+                    && $publishedAt->lte($now);
+            },
+        );
     }
 }

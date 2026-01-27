@@ -1,18 +1,20 @@
 # Architecture Overview
 
 ## Domain Roles & Relationships
-- **Teachers:** Each course has exactly one teacher-of-record. A teacher can own many courses, and teacher assignments are stored via the `course_user` pivot with the `teacher` role (enforced as one row per course). The `courses.owner_id` column points to the same teacher to simplify eager loading, and teachers can update course-level metadata, schedules, and enrollment assignments in addition to managing content.
+
+- **Teachers:** Each course has exactly one teacher-of-record. A teacher can own many courses, and teacher assignments are stored via the `course_user` pivot with the `teacher` role (enforced as one row per course). The `courses.teacher_id` column points to the same teacher to simplify eager loading, and teachers can update course-level metadata, schedules, and enrollment assignments in addition to managing content.
 - **Assistants:** Assistants are attached to courses through the same pivot, flagged with the `assistant` role. They can manage course content (modules, lessons, assignments, exams, attendance) but cannot modify course-level metadata or settings. There is no per-course capability override.
 - **Admins & Content Managers:** Global roles granted through `spatie/laravel-permission`. Admins own user lifecycle management (create, update, delete, restore, password resets). Content managers focus on course lifecycle and content, including accessing inactive courses, attaching/detaching teachers and assistants, and overseeing global course settings.
 - **Students:** Learners join courses via the pivot using the `student` role. Enrollment status determines visibility of course content.
 
 ## Enumerations
+
 | Enum                | Allowed Values                                  | Purpose                                                                                           |
-|---------------------|-------------------------------------------------|---------------------------------------------------------------------------------------------------|
+| ------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `CourseStatus`      | `draft`, `published`, `archived`                | Controls learner visibility and publishing cadence.                                               |
 | `CourseRole`        | `teacher`, `assistant`, `student`               | Defines per-course capabilities via the `course_user` pivot and enforces the single-teacher rule. |
 | `RoleEnum`          | `admin`, `content_manager`, `teacher`           | Global roles applied through `spatie/laravel-permission` to gate administrative features.         |
-| `PermissionEnum`    | see `App\Enums\PermissionEnum`                 | Canonical permission slugs aligned with `docs/PERMISSIONS.md`.                                     |
+| `PermissionEnum`    | see `App\Enums\PermissionEnum`                  | Canonical permission slugs aligned with `docs/PERMISSIONS.md`.                                    |
 | `EnrollmentStatus`  | `pending`, `active`, `inactive`                 | Tracks invitation lifecycle and course access for students/assistants.                            |
 | `InvitationStatus`  | `pending`, `accepted`, `declined`, `revoked`    | Governs invitation workflows and resend capability.                                               |
 | `LessonContentType` | `markdown`, `video_embed`, `document_bundle`    | Selects editor presets and rendering pipelines.                                                   |
@@ -25,16 +27,18 @@
 All enums are implemented as PHP backed enums and persisted as strings (≤50 chars) to keep flexibility across services. Modules no longer rely on a type enum; instead, they can mix lessons, assignments, and exams within the same container, and the UI adapts based on the resources present.
 
 ## Core Workflows
+
 - **Soft Deletion & Restoration:** All core domain models implement Laravel soft deletes so course data, submissions, and user accounts can be temporarily removed without losing history. Admins and content managers surface restore actions in their management UIs, while standard queries should continue to exclude trashed records unless `withTrashed()` is explicitly requested for oversight workflows.
 - **Course Publishing:** Courses remain in `draft` until explicitly published. Publishing expects at least one module and a teacher assignment. Archiving hides the course from learners but keeps admin visibility.
 - **Assistant Assignment:** Admins or content managers attach assistants via the course People tab. Once added, assistants can manage modules, lessons, assignments, exams, and attendance for that course without further configuration.
 - **Invitation Flow:** Invitations reference optional courses and roles. Pending invitations can be resent; acceptance activates the enrollment pivot and flips `EnrollmentStatus` to `active`. Declines or revocations mark the pivot `inactive`.
-- **Lesson & Assignment Publishing:** Modules/lessons respect `publish_at`/`unpublish_at`. Assignments honor `open_at`, `due_at`, and `close_at`, with overrides via assignment extensions.
+- **Lesson & Assignment Publishing:** Modules and lessons respect a single `publish_at` gate. Assignments honor `open_at`, `due_at`, and `close_at`, with overrides via assignment extensions.
 - **Exam Attempt Autosave:** Select questions persist instantly whenever answers change. Rich-text questions debounce saves to 30 seconds after the user stops typing (reset per keystroke). Autosave timestamps feed analytics and recovery flows.
 - **Submission Review:** Graders operate from the submission detail view. After grading, status moves to `graded`; returning work flips to `returned`. Concurrency is handled via manual reloads or broadcast notifications (future enhancement).
 - **Media Processing:** Files upload through Inertia forms. Locally, media is stored on the default disk; production swaps to S3-compatible storage via configuration. Thumbnail conversions (4:3 and 16:9) run asynchronously on the queue.
 
 ## Services & Supporting Layers
+
 - **Action Classes (`app/Actions`)** encapsulate domain behavior (course creation, enrollment, grading) and provide single `handle()` entry points so controllers, jobs, and console commands remain thin.
 - **Queued Jobs** handle heavy operations: media conversions, bulk notifications, and potential future grading batches.
 - **DTOs (`app/Data`)** define contract-safe payloads for API/Inertia props. Paired with `spatie/typescript-transformer` to keep TypeScript definitions in sync and aligned with Shadcn form components and validation states.
@@ -42,14 +46,16 @@ All enums are implemented as PHP backed enums and persisted as strings (≤50 ch
 - **Notifications & Auditing** (future): `NotificationLog` table records outbound notifications; optional audit logs can track instructor edits if the feature is enabled.
 
 ## Frontend Architecture Notes
+
 - **Inertia Patterns:** Use `<Form>` or `useForm` for all submissions; rely on shared props for auth context, flash messages, and notification counts. Apply `router.reload({ only: [...] })` to avoid full refreshes. Prefetch frequently visited routes (`prefetch cacheFor`) to keep navigation snappy.
 - **Autosave & Polling:** Limit polling to timers and grading queues. Exam autosave uses debounced requests instead of continuous polling; submissions and attendance rely on manual refresh or future events.
 - **Deferred Props:** Heavy data (lesson attachments, analytics) should use Inertia deferred props plus skeleton loaders to keep first paint quick.
 - **File Uploads:** Let Inertia convert forms to `FormData`; monitor upload progress via `router.on('progress')`.
 
 ## Backend Architecture Notes
+
 - **Relationships:** Use Eloquent pivot models (`CourseUser`) with scopes (`teachers()`, `assistants()`, `students()`) to keep queries expressive. Enforce single-teacher-per-course via database unique constraint (`unique(course_id, role)` for `teacher`) or validation in actions.
 - **Enum Casting:** Models expose enum casts via the `casts()` method to guarantee consistent serialization/deserialization.
-- **Validation:** Dedicated Form Request classes should reference enum rules and validate scheduling windows (e.g., `publish_at <= unpublish_at`).
+- **Validation:** Dedicated Form Request classes should reference enum rules and validate scheduling windows (e.g., lesson publish dates must be valid and present when required).
 - **Transactions:** Multi-model workflows (course creation with modules, enrollment with invitations) should run inside database transactions within their respective action classes.
 - **Configuration:** Media disks, queue connections, and future settings should rely on environment configuration, allowing dev (local disk) and prod (S3) parity without code changes.

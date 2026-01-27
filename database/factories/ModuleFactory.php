@@ -24,10 +24,8 @@ final class ModuleFactory extends Factory
             'slug' => fake()->slug(),
             'description' => fake()->paragraph(),
             'order' => fake()->randomNumber(),
-            'status' => fake()->randomElement(['draft', 'published']),
             'metadata' => [],
             'published_at' => fake()->optional()->dateTime(),
-            'unpublish_at' => fake()->optional()->dateTime(),
         ];
     }
 }
