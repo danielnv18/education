@@ -4,9 +4,16 @@ declare(strict_types=1);
 
 use App\Enums\RoleEnum;
 use App\Models\User;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
 use Spatie\Permission\Models\Role;
+
+use function Pest\Laravel\seed;
+
+beforeEach(function (): void {
+    seed(DatabaseSeeder::class);
+});
 
 it('renders the admin user index page', function (): void {
     $admin = User::factory()->asAdmin()->create();

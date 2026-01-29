@@ -4,7 +4,14 @@ declare(strict_types=1);
 
 use App\Data\RoleData;
 use App\Enums\RoleEnum;
+use Database\Seeders\DatabaseSeeder;
 use Spatie\Permission\Models\Role;
+
+use function Pest\Laravel\seed;
+
+beforeEach(function (): void {
+    seed(DatabaseSeeder::class);
+});
 
 it('creates role data from a model', function (): void {
     $role = Role::query()->where('name', RoleEnum::Teacher->value)->firstOrFail();

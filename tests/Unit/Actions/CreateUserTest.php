@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 use App\Actions\CreateUser;
 use App\Models\User;
-use Database\Seeders\RolesAndPermissionsSeeder;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
 
 use function Pest\Laravel\seed;
 
 it('may create a user', function (): void {
-    seed(RolesAndPermissionsSeeder::class);
+    seed(DatabaseSeeder::class);
 
     Event::fake([Registered::class]);
 

@@ -5,7 +5,14 @@ declare(strict_types=1);
 use App\Actions\Admin\UpdateUser;
 use App\Enums\RoleEnum;
 use App\Models\User;
+use Database\Seeders\DatabaseSeeder;
 use Spatie\Permission\Models\Role;
+
+use function Pest\Laravel\seed;
+
+beforeEach(function (): void {
+    seed(DatabaseSeeder::class);
+});
 
 it('updates user details and roles', function (): void {
     $role = Role::query()->where('name', RoleEnum::Teacher->value)->firstOrFail();
