@@ -1,4 +1,32 @@
 declare namespace App.Data {
+    export type CourseData = {
+        id: number;
+        slug: string;
+        title: string;
+        description: string | null;
+        status: App.Enums.CourseStatus;
+        publishedAt: string | null;
+        startsAt: string | null;
+        endsAt: string | null;
+        metadata: Array<never>;
+        teacherId: number;
+        modules: Array<App.Data.ModuleData> | null;
+        isPublished: boolean;
+    };
+    export type LessonData = {
+        id: number;
+        moduleId: number;
+        title: string;
+        slug: string;
+        summary: string | null;
+        content: string | null;
+        contentType: App.Enums.LessonContentType;
+        order: number;
+        durationMinutes: number | null;
+        publishedAt: string | null;
+        metadata: Array<never>;
+        isPublished: boolean;
+    };
     export type MediaData = {
         id: number;
         uuid: string;
@@ -8,6 +36,18 @@ declare namespace App.Data {
         url: string;
         previewUrl: string | null;
         collection: string;
+    };
+    export type ModuleData = {
+        id: number;
+        courseId: number;
+        title: string;
+        slug: string;
+        description: string | null;
+        order: number;
+        publishedAt: string | null;
+        isPublished: boolean;
+        metadata: Array<never>;
+        lessons: Array<App.Data.LessonData> | null;
     };
     export type RoleData = {
         name: string;
